@@ -1,0 +1,35 @@
+name: Feature request
+description: Propose a scoped FlopBench capability.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the user problem without assuming a solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: network
+    attributes:
+      label: Does this add network access?
+      options:
+        - "No"
+        - "Yes, user initiated"
+        - "Unsure"
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security and privacy considerations
+    validations:
+      required: true

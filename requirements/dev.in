@@ -1,0 +1,8 @@
+-r runtime.in
+build==1.6.0
+hatchling==1.32.0
+mypy==2.3.1
+nox==2026.8.17
+pytest==9.1.1
+pytest-cov==7.1.0
+ruff==0.16.5

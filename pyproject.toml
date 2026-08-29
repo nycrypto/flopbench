@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling==1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flopbench"
+version = "0.0.1"
+description = "Local-first readiness and benchmarking workbench for future FLOP participants"
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+license = "Apache-2.0"
+authors = [{ name = "FlopBench contributors" }]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
+dependencies = [
+  "fastapi==0.141.1",
+  "psutil==7.2.2",
+  "pydantic==2.13.5",
+  "typer==0.27.2",
+]
+
+[project.scripts]
+flopbench = "flopbench.cli:app"
+
+[project.urls]
+Documentation = "https://github.com/nycrypto/flopbench#readme"
+Issues = "https://github.com/nycrypto/flopbench/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flopbench"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers"
+cache_dir = ".cache/pytest"
+testpaths = ["tests"]
+markers = [
+  "stage0: repository foundation acceptance tests",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["flopbench"]
+omit = ["*/flopbench/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "C4", "DTZ", "ISC", "PIE", "PT", "RET", "RUF", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["src", "tests"]

@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a reproducible FlopBench defect using synthetic or redacted data.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include private keys, wallet seeds, API tokens, hostnames, user names, IP/MAC addresses, serial numbers, local paths, or unredacted reports. Report security vulnerabilities through a private security advisory, not this form.
+  - type: input
+    id: version
+    attributes:
+      label: FlopBench version or commit
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Windows
+        - Linux
+        - Fixture-only
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Use synthetic or redacted inputs only.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.coverage
+.cache/
+.mypy_cache/
+.nox/
+.pytest_cache/
+.ruff_cache/
+.venv/
+build/
+dist/
+htmlcov/
+*.egg-info/
+
+# Node
+node_modules/
+*.tsbuildinfo
+apps/web/dist/
+apps/web/coverage/
+playwright-report/
+test-results/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local FlopBench output (never commit reports)
+reports/
+*.flopbench-private.json
