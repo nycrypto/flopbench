@@ -2,7 +2,7 @@
 
 FlopBench is an independent community project and is not an official FLOP Labs or Flop Foundation product.
 
-At the Stage 3 candidate:
+At Stage 3:
 
 - miner and validator readiness uses only the selected versioned source profile and explicitly labeled community checks;
 - the validator network requirement is reported as `skipped` until the user-approved active test exists in Stage 4;

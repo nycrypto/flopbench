@@ -4,6 +4,10 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.2.0] - 2026-08-31
+
 ### English
 
 - Added explainable miner and validator readiness evaluation with stable reason codes.

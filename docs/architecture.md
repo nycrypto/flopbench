@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 3 readiness-engine candidate. Versioned contracts, passive
+Stage 3 readiness-engine release. Versioned contracts, passive
 OS/CPU/RAM/disk/GPU collection, and explainable miner/validator rules are
 implemented. Active-test, benchmark, API, and functional dashboard features
 remain future boundaries.
