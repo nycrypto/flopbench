@@ -1,0 +1,151 @@
+{
+  "$defs": {
+    "MinerParameters": {
+      "additionalProperties": false,
+      "description": "Normalized miner recommendations from a source profile.",
+      "properties": {
+        "recommended_vram_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Recommended Vram Bytes",
+          "type": "integer"
+        },
+        "source_text": {
+          "title": "Source Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recommended_vram_bytes",
+        "source_text"
+      ],
+      "title": "MinerParameters",
+      "type": "object"
+    },
+    "ProfileParameters": {
+      "additionalProperties": false,
+      "description": "Role-specific recommendations.",
+      "properties": {
+        "miner": {
+          "$ref": "#/$defs/MinerParameters"
+        },
+        "validator": {
+          "$ref": "#/$defs/ValidatorParameters"
+        }
+      },
+      "required": [
+        "miner",
+        "validator"
+      ],
+      "title": "ProfileParameters",
+      "type": "object"
+    },
+    "ProfileStatus": {
+      "description": "Maturity assigned by the upstream source.",
+      "enum": [
+        "draft",
+        "provisional",
+        "final"
+      ],
+      "title": "ProfileStatus",
+      "type": "string"
+    },
+    "ValidatorParameters": {
+      "additionalProperties": false,
+      "description": "Normalized validator recommendations from a source profile.",
+      "properties": {
+        "recommended_cpu_cores": {
+          "exclusiveMinimum": 0,
+          "title": "Recommended Cpu Cores",
+          "type": "integer"
+        },
+        "recommended_memory_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Recommended Memory Bytes",
+          "type": "integer"
+        },
+        "recommended_network_bits_per_second": {
+          "exclusiveMinimum": 0,
+          "title": "Recommended Network Bits Per Second",
+          "type": "integer"
+        },
+        "recommended_nvme_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Recommended Nvme Bytes",
+          "type": "integer"
+        },
+        "source_text": {
+          "title": "Source Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recommended_cpu_cores",
+        "recommended_memory_bytes",
+        "recommended_nvme_bytes",
+        "recommended_network_bits_per_second",
+        "source_text"
+      ],
+      "title": "ValidatorParameters",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/profile-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A versioned, attributable snapshot of upstream requirements.",
+  "properties": {
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9.-]+$",
+      "title": "Id",
+      "type": "string"
+    },
+    "parameters": {
+      "$ref": "#/$defs/ProfileParameters"
+    },
+    "provisional_notice": {
+      "title": "Provisional Notice",
+      "type": "string"
+    },
+    "retrieved_at": {
+      "format": "date",
+      "title": "Retrieved At",
+      "type": "string"
+    },
+    "schema": {
+      "const": "flopbench-source-profile-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "source_status": {
+      "$ref": "#/$defs/ProfileStatus"
+    },
+    "source_updated_at": {
+      "format": "date",
+      "title": "Source Updated At",
+      "type": "string"
+    },
+    "source_url": {
+      "format": "uri",
+      "minLength": 1,
+      "title": "Source Url",
+      "type": "string"
+    },
+    "source_version": {
+      "title": "Source Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "source_url",
+    "source_version",
+    "source_status",
+    "retrieved_at",
+    "source_updated_at",
+    "provisional_notice",
+    "parameters"
+  ],
+  "title": "SourceProfile",
+  "type": "object"
+}

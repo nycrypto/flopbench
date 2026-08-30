@@ -4,7 +4,17 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
-No changes yet.
+### English
+
+- Added the sourced `flop-teaser-0.1` draft profile with normalized capacity and network units.
+- Added strict Pydantic contracts and deterministic Draft 2020-12 JSON Schemas for profiles, readiness reports, benchmark reports, and receipts.
+- Added safe UTF-8/LF YAML loading, duplicate-key rejection, raw-file SHA-256 identity, fixtures, and Stage 1 acceptance tests.
+
+### Türkçe
+
+- Normalize edilmiş kapasite ve ağ birimleriyle kaynaklı `flop-teaser-0.1` taslak profili eklendi.
+- Profil, readiness raporu, benchmark raporu ve receipt için katı Pydantic sözleşmeleri ile deterministik Draft 2020-12 JSON Schema dosyaları eklendi.
+- Güvenli UTF-8/LF YAML yükleme, çift anahtar reddi, ham dosya SHA-256 kimliği, fixture'lar ve Aşama 1 kabul testleri eklendi.
 
 ## [0.0.1] - 2026-08-30
 

@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench şu anda Aşama 0 (`v0.0.1` geliştirme) durumundadır: depo iskeleti ve kalite kapıları. Donanım taraması, readiness kontrolleri, benchmark, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
+FlopBench, `v0.0.1` temeli üzerinde Aşama 1'i uygulamaktadır. Katı kaynak profili, readiness raporu, benchmark raporu ve receipt sözleşmeleri mevcuttur; donanım taraması, kural değerlendirmesi, benchmark çalıştırma, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -32,7 +32,7 @@ Linux üzerinde `.venv\Scripts\python` yerine `.venv/bin/python` kullanılır.
 
 ## Yerel dashboard
 
-Aşama 0 dashboard'u yalnızca yerelde çalışır. Derlemek ve `http://127.0.0.1:4173` adresinde açmak için:
+Dashboard hâlâ yalnızca yerelde çalışan temel bir kabuktur; işlevsel dashboard Aşama 7'de planlanmıştır. Mevcut kabuğu derlemek ve `http://127.0.0.1:4173` adresinde açmak için:
 
 ```powershell
 pnpm --filter @flopbench/web build

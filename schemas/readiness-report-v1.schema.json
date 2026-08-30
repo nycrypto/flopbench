@@ -1,0 +1,311 @@
+{
+  "$defs": {
+    "EnvironmentSummary": {
+      "additionalProperties": false,
+      "description": "Non-sensitive execution context included in readiness output.",
+      "properties": {
+        "architecture": {
+          "title": "Architecture",
+          "type": "string"
+        },
+        "os_family": {
+          "title": "Os Family",
+          "type": "string"
+        },
+        "privacy_level": {
+          "$ref": "#/$defs/PrivacyLevel"
+        }
+      },
+      "required": [
+        "os_family",
+        "architecture",
+        "privacy_level"
+      ],
+      "title": "EnvironmentSummary",
+      "type": "object"
+    },
+    "MetricConfidence": {
+      "description": "How a metric value was obtained.",
+      "enum": [
+        "measured",
+        "reported",
+        "derived",
+        "estimated",
+        "simulated"
+      ],
+      "title": "MetricConfidence",
+      "type": "string"
+    },
+    "PrivacyLevel": {
+      "description": "Intended disclosure level for a report.",
+      "enum": [
+        "private",
+        "support",
+        "public"
+      ],
+      "title": "PrivacyLevel",
+      "type": "string"
+    },
+    "ProfileReference": {
+      "additionalProperties": false,
+      "description": "Immutable link from a report to its exact source profile bytes.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "source_status": {
+          "$ref": "#/$defs/ProfileStatus"
+        }
+      },
+      "required": [
+        "id",
+        "sha256",
+        "source_status"
+      ],
+      "title": "ProfileReference",
+      "type": "object"
+    },
+    "ProfileStatus": {
+      "description": "Maturity assigned by the upstream source.",
+      "enum": [
+        "draft",
+        "provisional",
+        "final"
+      ],
+      "title": "ProfileStatus",
+      "type": "string"
+    },
+    "ReadinessCheck": {
+      "additionalProperties": false,
+      "description": "One explicit readiness rule outcome.",
+      "properties": {
+        "actual": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Actual"
+        },
+        "code": {
+          "pattern": "^[a-z][a-z0-9_.-]+$",
+          "title": "Code",
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/MetricConfidence"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "source_kind": {
+          "enum": [
+            "source_profile",
+            "community"
+          ],
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Threshold"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "code",
+        "status",
+        "source_kind",
+        "required",
+        "actual",
+        "threshold",
+        "unit",
+        "confidence",
+        "reason_codes"
+      ],
+      "title": "ReadinessCheck",
+      "type": "object"
+    },
+    "ResultStatus": {
+      "description": "Complete set of readiness result states.",
+      "enum": [
+        "pass",
+        "warn",
+        "fail",
+        "unknown",
+        "skipped",
+        "unsupported"
+      ],
+      "title": "ResultStatus",
+      "type": "string"
+    },
+    "ResultSummary": {
+      "additionalProperties": false,
+      "description": "Counters for every supported result state; no state may be omitted.",
+      "properties": {
+        "fail": {
+          "minimum": 0,
+          "title": "Fail",
+          "type": "integer"
+        },
+        "pass": {
+          "minimum": 0,
+          "title": "Pass",
+          "type": "integer"
+        },
+        "skipped": {
+          "minimum": 0,
+          "title": "Skipped",
+          "type": "integer"
+        },
+        "unknown": {
+          "minimum": 0,
+          "title": "Unknown",
+          "type": "integer"
+        },
+        "unsupported": {
+          "minimum": 0,
+          "title": "Unsupported",
+          "type": "integer"
+        },
+        "warn": {
+          "minimum": 0,
+          "title": "Warn",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pass",
+        "warn",
+        "fail",
+        "unknown",
+        "skipped",
+        "unsupported"
+      ],
+      "title": "ResultSummary",
+      "type": "object"
+    },
+    "Role": {
+      "description": "FLOP participant role evaluated by a readiness report.",
+      "enum": [
+        "miner",
+        "validator"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/readiness-report-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Published readiness-report-v1 contract.",
+  "properties": {
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/ReadinessCheck"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "environment": {
+      "$ref": "#/$defs/EnvironmentSummary"
+    },
+    "profile": {
+      "$ref": "#/$defs/ProfileReference"
+    },
+    "report_id": {
+      "format": "uuid",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "role": {
+      "$ref": "#/$defs/Role"
+    },
+    "schema": {
+      "const": "flopbench-readiness-report-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "summary": {
+      "$ref": "#/$defs/ResultSummary"
+    },
+    "tool_version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "report_id",
+    "role",
+    "profile",
+    "environment",
+    "checks",
+    "summary",
+    "created_at",
+    "tool_version"
+  ],
+  "title": "ReadinessReport",
+  "type": "object"
+}

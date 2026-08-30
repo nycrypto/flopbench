@@ -1,0 +1,63 @@
+{
+  "$id": "https://schemas.flopbench.dev/v1/receipt-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Published receipt-v1 envelope; cryptographic verification is Stage 8.",
+  "properties": {
+    "canonicalization": {
+      "const": "jcs-rfc8785",
+      "title": "Canonicalization",
+      "type": "string"
+    },
+    "did": {
+      "pattern": "^did:key:z[1-9A-HJ-NP-Za-km-z]+$",
+      "title": "Did",
+      "type": "string"
+    },
+    "report_schema": {
+      "enum": [
+        "flopbench-readiness-report-v1",
+        "flopbench-benchmark-report-v1"
+      ],
+      "title": "Report Schema",
+      "type": "string"
+    },
+    "report_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Report Sha256",
+      "type": "string"
+    },
+    "schema": {
+      "const": "flopbench-receipt-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "signature": {
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Signature",
+      "type": "string"
+    },
+    "signature_algorithm": {
+      "const": "Ed25519",
+      "title": "Signature Algorithm",
+      "type": "string"
+    },
+    "signed_at": {
+      "format": "date-time",
+      "title": "Signed At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "report_schema",
+    "report_sha256",
+    "did",
+    "canonicalization",
+    "signature_algorithm",
+    "signature",
+    "signed_at"
+  ],
+  "title": "Receipt",
+  "type": "object"
+}

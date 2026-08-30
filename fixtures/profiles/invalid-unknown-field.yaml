@@ -1,0 +1,19 @@
+schema: flopbench-source-profile-v1
+id: invalid-unknown-field
+source_url: https://flop.finance/teaser/
+source_version: "0.1"
+source_status: draft
+retrieved_at: 2026-08-30
+source_updated_at: 2026-08-26
+provisional_notice: Deliberately invalid fixture.
+unexpected: rejected
+parameters:
+  miner:
+    recommended_vram_bytes: 17179869184
+    source_text: 16 GB+ VRAM per unit
+  validator:
+    recommended_cpu_cores: 8
+    recommended_memory_bytes: 68719476736
+    recommended_nvme_bytes: 2199023255552
+    recommended_network_bits_per_second: 1000000000
+    source_text: Provisional validator values

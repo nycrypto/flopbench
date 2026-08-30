@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench is in Stage 0 (`v0.0.1` development): repository foundations and quality gates. Hardware probing, readiness checks, benchmarking, report signing, and PoUI simulation are not implemented yet.
+FlopBench is implementing Stage 1 on top of the `v0.0.1` foundation. Strict source-profile, readiness-report, benchmark-report, and receipt contracts are available; hardware probing, rule evaluation, benchmarking, report signing, and PoUI simulation are not implemented yet.
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
@@ -32,7 +32,7 @@ On Linux, replace `.venv\Scripts\python` with `.venv/bin/python`.
 
 ## Local dashboard
 
-The Stage 0 dashboard is local-only. Build and open it at `http://127.0.0.1:4173`:
+The dashboard is still a local-only foundation shell; the functional dashboard is scheduled for Stage 7. Build and open the current shell at `http://127.0.0.1:4173`:
 
 ```powershell
 pnpm --filter @flopbench/web build

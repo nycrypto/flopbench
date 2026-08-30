@@ -1,0 +1,215 @@
+{
+  "$defs": {
+    "BenchmarkFailures": {
+      "additionalProperties": false,
+      "description": "Explicit failed-run accounting.",
+      "properties": {
+        "cancelled": {
+          "minimum": 0,
+          "title": "Cancelled",
+          "type": "integer"
+        },
+        "error": {
+          "minimum": 0,
+          "title": "Error",
+          "type": "integer"
+        },
+        "timeout": {
+          "minimum": 0,
+          "title": "Timeout",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "timeout",
+        "error",
+        "cancelled"
+      ],
+      "title": "BenchmarkFailures",
+      "type": "object"
+    },
+    "BenchmarkMetrics": {
+      "additionalProperties": false,
+      "description": "Required benchmark metric series.",
+      "properties": {
+        "latency": {
+          "$ref": "#/$defs/MetricSeries"
+        },
+        "tokens_per_second": {
+          "$ref": "#/$defs/MetricSeries"
+        },
+        "ttft": {
+          "$ref": "#/$defs/MetricSeries"
+        }
+      },
+      "required": [
+        "ttft",
+        "tokens_per_second",
+        "latency"
+      ],
+      "title": "BenchmarkMetrics",
+      "type": "object"
+    },
+    "BenchmarkWorkload": {
+      "additionalProperties": false,
+      "description": "Deterministic benchmark input description.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "measured_runs": {
+          "exclusiveMinimum": 0,
+          "title": "Measured Runs",
+          "type": "integer"
+        },
+        "prompt_set_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Prompt Set Sha256",
+          "type": "string"
+        },
+        "warmup_runs": {
+          "minimum": 0,
+          "title": "Warmup Runs",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "prompt_set_sha256",
+        "warmup_runs",
+        "measured_runs"
+      ],
+      "title": "BenchmarkWorkload",
+      "type": "object"
+    },
+    "MetricConfidence": {
+      "description": "How a metric value was obtained.",
+      "enum": [
+        "measured",
+        "reported",
+        "derived",
+        "estimated",
+        "simulated"
+      ],
+      "title": "MetricConfidence",
+      "type": "string"
+    },
+    "MetricSeries": {
+      "additionalProperties": false,
+      "description": "Raw samples for one benchmark metric.",
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/MetricConfidence"
+        },
+        "samples": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "confidence",
+        "samples"
+      ],
+      "title": "MetricSeries",
+      "type": "object"
+    },
+    "ModelIdentity": {
+      "additionalProperties": false,
+      "description": "Model name and immutable content identity.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "digest_algorithm": {
+          "const": "sha256",
+          "title": "Digest Algorithm",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "digest_algorithm",
+        "digest"
+      ],
+      "title": "ModelIdentity",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/benchmark-report-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Published benchmark-report-v1 contract.",
+  "properties": {
+    "adapter": {
+      "title": "Adapter",
+      "type": "string"
+    },
+    "benchmark_id": {
+      "format": "uuid",
+      "title": "Benchmark Id",
+      "type": "string"
+    },
+    "failures": {
+      "$ref": "#/$defs/BenchmarkFailures"
+    },
+    "finished_at": {
+      "format": "date-time",
+      "title": "Finished At",
+      "type": "string"
+    },
+    "metrics": {
+      "$ref": "#/$defs/BenchmarkMetrics"
+    },
+    "model": {
+      "$ref": "#/$defs/ModelIdentity"
+    },
+    "schema": {
+      "const": "flopbench-benchmark-report-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "tool_version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+      "title": "Tool Version",
+      "type": "string"
+    },
+    "workload": {
+      "$ref": "#/$defs/BenchmarkWorkload"
+    }
+  },
+  "required": [
+    "schema",
+    "benchmark_id",
+    "adapter",
+    "model",
+    "workload",
+    "metrics",
+    "failures",
+    "started_at",
+    "finished_at",
+    "tool_version"
+  ],
+  "title": "BenchmarkReport",
+  "type": "object"
+}

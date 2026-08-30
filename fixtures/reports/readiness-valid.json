@@ -1,0 +1,38 @@
+{
+  "schema": "flopbench-readiness-report-v1",
+  "report_id": "018f4cf8-6c40-7b29-9c61-5c120cd9a001",
+  "role": "validator",
+  "profile": {
+    "id": "flop-teaser-0.1",
+    "sha256": "a58ba933752eff52b876fb3910cb31d824b14987a056fc62f2f919bfbe414f8c",
+    "source_status": "draft"
+  },
+  "environment": {
+    "os_family": "fixture-os",
+    "architecture": "x86_64",
+    "privacy_level": "private"
+  },
+  "checks": [
+    {
+      "code": "validator.memory_bytes",
+      "status": "fail",
+      "source_kind": "source_profile",
+      "required": true,
+      "actual": 34359738368,
+      "threshold": 68719476736,
+      "unit": "byte",
+      "confidence": "reported",
+      "reason_codes": ["below_provisional_threshold"]
+    }
+  ],
+  "summary": {
+    "pass": 0,
+    "warn": 0,
+    "fail": 1,
+    "unknown": 0,
+    "skipped": 0,
+    "unsupported": 0
+  },
+  "created_at": "2026-08-30T09:00:00Z",
+  "tool_version": "0.1.0-alpha.1"
+}

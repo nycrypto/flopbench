@@ -2,7 +2,9 @@
 
 ## Status
 
-Stage 0 foundation. Components described below are boundaries for future stages; only the package and web smoke shells exist today.
+Stage 1 data contracts. The package and web smoke shells remain in place, and
+versioned source-profile/report/receipt contracts are now implemented. Runtime
+probe, rule, benchmark, API, and dashboard features remain future boundaries.
 
 ## Component boundaries
 
