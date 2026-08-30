@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flopbench"
-version = "0.0.1"
+version = "0.1.0a1"
 description = "Local-first readiness and benchmarking workbench for future FLOP participants"
 readme = "README.md"
 requires-python = ">=3.14,<3.15"

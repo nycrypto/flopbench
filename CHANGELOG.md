@@ -4,6 +4,10 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.1.0-alpha.1] - 2026-08-30
+
 ### English
 
 - Added the sourced `flop-teaser-0.1` draft profile with normalized capacity and network units.

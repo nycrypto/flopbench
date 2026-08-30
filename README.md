@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench is implementing Stage 1 on top of the `v0.0.1` foundation. Strict source-profile, readiness-report, benchmark-report, and receipt contracts are available; hardware probing, rule evaluation, benchmarking, report signing, and PoUI simulation are not implemented yet.
+FlopBench has completed Stage 1 (`v0.1.0-alpha.1`). Strict source-profile, readiness-report, benchmark-report, and receipt contracts are available; hardware probing, rule evaluation, benchmarking, report signing, and PoUI simulation are not implemented yet.
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
