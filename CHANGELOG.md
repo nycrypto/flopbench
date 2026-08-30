@@ -4,7 +4,15 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
-No changes yet.
+### English
+
+- Added passive local OS, CPU, memory, disk, and NVIDIA NVML probing with safe GPU fallbacks.
+- Added deterministic hardware fixtures, public/private output, a published probe schema, and zero-network/security gates.
+
+### Türkçe
+
+- Pasif yerel OS, CPU, bellek, disk ve NVIDIA NVML probe'u ile güvenli GPU fallback'leri eklendi.
+- Deterministik donanım fixture'ları, public/private çıktı, yayımlanmış probe şeması ve sıfır ağ/güvenlik kapıları eklendi.
 
 ## [0.1.0-alpha.1] - 2026-08-30
 

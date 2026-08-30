@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 1'i (`v0.1.0-alpha.1`) tamamlamıştır. Katı kaynak profili, readiness raporu, benchmark raporu ve receipt sözleşmeleri mevcuttur; donanım taraması, kural değerlendirmesi, benchmark çalıştırma, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
+FlopBench Aşama 1'i (`v0.1.0-alpha.1`) tamamlamış ve Aşama 2 pasif probe'unu doğrulamaktadır. Katı veri sözleşmeleri ile yerel OS/CPU/RAM/disk/GPU tespiti mevcuttur; readiness kural değerlendirmesi, benchmark çalıştırma, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -40,6 +40,20 @@ pnpm --filter @flopbench/web preview
 ```
 
 Önizleme sunucusu yalnızca loopback adresine bağlanır; genel internetten veya ağdaki başka cihazlardan erişilemez.
+
+## Pasif donanım probe'u
+
+Ağ erişimi olmadan private veya redakte edilmiş public probe çalıştırmak için:
+
+```powershell
+flopbench probe --format json --privacy private
+flopbench probe --format json --privacy public
+flopbench probe --fixture fixtures/hardware/cpu-only.json --format json
+```
+
+Public çıktı hostname, kullanıcı adı, IP adresi, yerel yol, OS build bilgisi,
+GPU seri numarası ve PCI bus kimliğini kaldırır. Ayrıntılar için
+[`docs/privacy.md`](./docs/privacy.md) belgesine bakın.
 
 ## Kalite kapıları
 

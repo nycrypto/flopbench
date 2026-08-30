@@ -8,6 +8,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from flopbench.contracts import BenchmarkReport, ReadinessReport, Receipt, SourceProfile
+from flopbench.probe.models import ProbeReport
 
 SCHEMA_BASE = "https://schemas.flopbench.dev/v1"
 SCHEMA_MODELS: dict[str, type[BaseModel]] = {
@@ -15,6 +16,7 @@ SCHEMA_MODELS: dict[str, type[BaseModel]] = {
     "readiness-report-v1.schema.json": ReadinessReport,
     "benchmark-report-v1.schema.json": BenchmarkReport,
     "receipt-v1.schema.json": Receipt,
+    "probe-v1.schema.json": ProbeReport,
 }
 
 

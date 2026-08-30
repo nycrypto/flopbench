@@ -1,0 +1,400 @@
+{
+  "$defs": {
+    "CpuInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "logical_cores": {
+          "exclusiveMinimum": 0,
+          "title": "Logical Cores",
+          "type": "integer"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "physical_cores": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Physical Cores"
+        }
+      },
+      "required": [
+        "logical_cores",
+        "physical_cores"
+      ],
+      "title": "CpuInfo",
+      "type": "object"
+    },
+    "DiskInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "available_bytes": {
+          "minimum": 0,
+          "title": "Available Bytes",
+          "type": "integer"
+        },
+        "device": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Device"
+        },
+        "kind": {
+          "$ref": "#/$defs/DiskKind"
+        },
+        "mount_point": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mount Point"
+        },
+        "total_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Total Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "total_bytes",
+        "available_bytes"
+      ],
+      "title": "DiskInfo",
+      "type": "object"
+    },
+    "DiskKind": {
+      "enum": [
+        "nvme",
+        "ssd",
+        "hdd",
+        "unknown"
+      ],
+      "title": "DiskKind",
+      "type": "string"
+    },
+    "GpuDevice": {
+      "additionalProperties": false,
+      "properties": {
+        "driver_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Driver Version"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pci_bus_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pci Bus Id"
+        },
+        "serial_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Serial Number"
+        },
+        "vendor": {
+          "title": "Vendor",
+          "type": "string"
+        },
+        "vram_total_bytes": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vram Total Bytes"
+        }
+      },
+      "required": [
+        "vendor",
+        "name",
+        "vram_total_bytes"
+      ],
+      "title": "GpuDevice",
+      "type": "object"
+    },
+    "GpuProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "devices": {
+          "items": {
+            "$ref": "#/$defs/GpuDevice"
+          },
+          "title": "Devices",
+          "type": "array"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/GpuStatus"
+        }
+      },
+      "required": [
+        "provider",
+        "status",
+        "devices",
+        "reason_codes"
+      ],
+      "title": "GpuProbe",
+      "type": "object"
+    },
+    "GpuStatus": {
+      "enum": [
+        "detected",
+        "no-supported-gpu",
+        "unknown",
+        "unsupported"
+      ],
+      "title": "GpuStatus",
+      "type": "string"
+    },
+    "HostDetails": {
+      "additionalProperties": false,
+      "description": "Private-only host identifiers.",
+      "properties": {
+        "hostname": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hostname"
+        },
+        "ip_addresses": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ip Addresses",
+          "type": "array"
+        },
+        "user_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User Name"
+        }
+      },
+      "title": "HostDetails",
+      "type": "object"
+    },
+    "MemoryInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "available_bytes": {
+          "minimum": 0,
+          "title": "Available Bytes",
+          "type": "integer"
+        },
+        "total_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Total Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total_bytes",
+        "available_bytes"
+      ],
+      "title": "MemoryInfo",
+      "type": "object"
+    },
+    "PrivacyLevel": {
+      "description": "Intended disclosure level for a report.",
+      "enum": [
+        "private",
+        "support",
+        "public"
+      ],
+      "title": "PrivacyLevel",
+      "type": "string"
+    },
+    "ProbeSource": {
+      "enum": [
+        "live",
+        "fixture"
+      ],
+      "title": "ProbeSource",
+      "type": "string"
+    },
+    "SystemInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "title": "Architecture",
+          "type": "string"
+        },
+        "host": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HostDetails"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "os_family": {
+          "title": "Os Family",
+          "type": "string"
+        },
+        "os_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Os Version"
+        }
+      },
+      "required": [
+        "os_family",
+        "architecture"
+      ],
+      "title": "SystemInfo",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/probe-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    },
+    "cpu": {
+      "$ref": "#/$defs/CpuInfo"
+    },
+    "disks": {
+      "items": {
+        "$ref": "#/$defs/DiskInfo"
+      },
+      "title": "Disks",
+      "type": "array"
+    },
+    "gpu": {
+      "$ref": "#/$defs/GpuProbe"
+    },
+    "memory": {
+      "$ref": "#/$defs/MemoryInfo"
+    },
+    "privacy_level": {
+      "$ref": "#/$defs/PrivacyLevel"
+    },
+    "probe_id": {
+      "format": "uuid",
+      "title": "Probe Id",
+      "type": "string"
+    },
+    "schema": {
+      "const": "flopbench-probe-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/ProbeSource"
+    },
+    "system": {
+      "$ref": "#/$defs/SystemInfo"
+    },
+    "tool_version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "probe_id",
+    "captured_at",
+    "privacy_level",
+    "source",
+    "system",
+    "cpu",
+    "memory",
+    "disks",
+    "gpu",
+    "tool_version"
+  ],
+  "title": "ProbeReport",
+  "type": "object"
+}

@@ -2,9 +2,9 @@
 
 ## Status
 
-Stage 1 data contracts. The package and web smoke shells remain in place, and
-versioned source-profile/report/receipt contracts are now implemented. Runtime
-probe, rule, benchmark, API, and dashboard features remain future boundaries.
+Stage 2 passive probe candidate. Versioned contracts and passive
+OS/CPU/RAM/disk/GPU collection are implemented. Rule, active-test, benchmark,
+API, and functional dashboard features remain future boundaries.
 
 ## Component boundaries
 

@@ -29,5 +29,6 @@ final values.
 - Values are never rounded upward before comparison.
 - Timestamps are UTC and JSON Schema validation uses Draft 2020-12.
 
-The checked-in schemas are generated deterministically from Pydantic models.
+The checked-in schemas, including `flopbench-probe-v1`, are generated
+deterministically from Pydantic models.
 Contract tests fail if generated and committed bytes differ.

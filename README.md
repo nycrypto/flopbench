@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 1 (`v0.1.0-alpha.1`). Strict source-profile, readiness-report, benchmark-report, and receipt contracts are available; hardware probing, rule evaluation, benchmarking, report signing, and PoUI simulation are not implemented yet.
+FlopBench has completed Stage 1 (`v0.1.0-alpha.1`) and is validating the Stage 2 passive probe. Strict data contracts and local OS/CPU/RAM/disk/GPU inspection are available; readiness rule evaluation, benchmarking, report signing, and PoUI simulation are not implemented yet.
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
@@ -40,6 +40,20 @@ pnpm --filter @flopbench/web preview
 ```
 
 The preview server binds only to loopback; it is not reachable from the public internet or other devices on the network.
+
+## Passive hardware probe
+
+Run a private local probe or a redacted public probe without network access:
+
+```powershell
+flopbench probe --format json --privacy private
+flopbench probe --format json --privacy public
+flopbench probe --fixture fixtures/hardware/cpu-only.json --format json
+```
+
+Public output removes hostnames, user names, IP addresses, local paths, OS build
+strings, GPU serial numbers, and PCI bus identifiers. See
+[`docs/privacy.md`](./docs/privacy.md).
 
 ## Quality gates
 

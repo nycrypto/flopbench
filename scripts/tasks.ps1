@@ -26,10 +26,10 @@ try {
         "test-unit" { & $PythonCommand -m nox -s unit }
         "test-contract" { & $PythonCommand -m nox -s contract }
         "test-integration" { Write-Output "Integration tests begin in a later stage." }
-        "test-security" { Write-Output "Security suites begin with the relevant implementation stages." }
+        "test-security" { & $PythonCommand -m nox -s security }
         "test-web" { pnpm --filter "@flopbench/web" test }
         "test-all" {
-            & $PythonCommand -m nox -s unit contract
+            & $PythonCommand -m nox -s unit contract security
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             pnpm --filter "@flopbench/web" test
         }
