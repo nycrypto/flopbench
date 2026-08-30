@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 2 (`v0.1.0`). Strict data contracts and passive local OS/CPU/RAM/disk/GPU inspection are available; readiness rule evaluation, benchmarking, report signing, and PoUI simulation are not implemented yet.
+FlopBench has completed Stage 2 (`v0.1.0`) and is validating the Stage 3 readiness engine. Strict data contracts, passive local hardware inspection, and explainable miner/validator checks are available; active validator tests, benchmarking, report signing, and PoUI simulation are not implemented yet.
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
@@ -54,6 +54,22 @@ flopbench probe --fixture fixtures/hardware/cpu-only.json --format json
 Public output removes hostnames, user names, IP addresses, local paths, OS build
 strings, GPU serial numbers, and PCI bus identifiers. See
 [`docs/privacy.md`](./docs/privacy.md).
+
+## Readiness checks
+
+Evaluate live hardware or a deterministic fixture against the versioned source
+profile:
+
+```powershell
+flopbench check miner
+flopbench check validator
+flopbench check miner --fixture fixtures/hardware/linux-nvidia-16gb.json --format json
+```
+
+Source-profile decisions and FlopBench community health checks are kept in
+separate fields and terminal sections. Every decision has a stable reason code;
+`unknown` and `unsupported` are not converted to hardware failures. The bundled
+profile is visibly marked `draft`. See [`docs/readiness.md`](./docs/readiness.md).
 
 ## Quality gates
 

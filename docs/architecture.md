@@ -2,9 +2,10 @@
 
 ## Status
 
-Stage 2 passive probe release. Versioned contracts and passive
-OS/CPU/RAM/disk/GPU collection are implemented. Rule, active-test, benchmark,
-API, and functional dashboard features remain future boundaries.
+Stage 3 readiness-engine candidate. Versioned contracts, passive
+OS/CPU/RAM/disk/GPU collection, and explainable miner/validator rules are
+implemented. Active-test, benchmark, API, and functional dashboard features
+remain future boundaries.
 
 ## Component boundaries
 
@@ -21,6 +22,7 @@ Optional external signer / future official testnet adapter
 ```
 
 - `src/flopbench`: Python CLI and domain core.
+- `src/flopbench/readiness`: pure profile-versus-probe rules and output formatting.
 - `apps/api`: future FastAPI composition root; it must bind only to loopback.
 - `apps/web`: local React dashboard; it receives no private signing material.
 - `schemas`, `profiles`, and `fixtures`: versioned contracts and deterministic test data added from Stage 1 onward.

@@ -4,7 +4,15 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
-No changes yet.
+### English
+
+- Added explainable miner and validator readiness evaluation with stable reason codes.
+- Kept sourced profile results separate from FlopBench community health checks.
+
+### Türkçe
+
+- Kararlı reason code değerleriyle açıklanabilir miner ve validator readiness değerlendirmesi eklendi.
+- Kaynak profil sonuçları FlopBench topluluk sağlık kontrollerinden ayrı tutuldu.
 
 ## [0.1.0] - 2026-08-31
 

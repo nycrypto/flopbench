@@ -45,6 +45,7 @@ markers = [
   "stage0: repository foundation acceptance tests",
   "stage1: source profile and schema acceptance tests",
   "stage2: passive system probe acceptance tests",
+  "stage3: miner and validator readiness acceptance tests",
 ]
 
 [tool.coverage.run]

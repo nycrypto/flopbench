@@ -2,9 +2,10 @@
 
 FlopBench is an independent community project and is not an official FLOP Labs or Flop Foundation product.
 
-At Stage 2:
+At the Stage 3 candidate:
 
-- the passive hardware probe exists, but no readiness assessment exists;
+- miner and validator readiness uses only the selected versioned source profile and explicitly labeled community checks;
+- the validator network requirement is reported as `skipped` until the user-approved active test exists in Stage 4;
 - disk media type remains `unknown` when the operating system cannot provide a reliable answer;
 - live AMD identification has a safe fallback; a native AMD provider is not yet implemented;
 - no inference benchmark runs;
@@ -16,5 +17,5 @@ The FLOP teaser is a draft and its parameters are provisional. The
 `flop-teaser-0.1` profile records its source URL, retrieval date, status, and
 raw-file content hash; this does not turn the values into official eligibility
 criteria. Published contracts distinguish measured, reported, derived,
-estimated, and simulated data. The Stage 2 runtime produces only a local probe
-report; it does not produce a readiness or eligibility result.
+estimated, and simulated data. The Stage 3 runtime produces a local readiness
+comparison, not a protocol participation or reward determination.

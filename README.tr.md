@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 2'yi (`v0.1.0`) tamamlamıştır. Katı veri sözleşmeleri ile pasif yerel OS/CPU/RAM/disk/GPU tespiti mevcuttur; readiness kural değerlendirmesi, benchmark çalıştırma, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
+FlopBench Aşama 2'yi (`v0.1.0`) tamamlamış ve Aşama 3 readiness motorunu doğrulamaktadır. Katı veri sözleşmeleri, pasif yerel donanım tespiti ve açıklanabilir miner/validator kontrolleri mevcuttur; aktif validator testleri, benchmark çalıştırma, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -54,6 +54,23 @@ flopbench probe --fixture fixtures/hardware/cpu-only.json --format json
 Public çıktı hostname, kullanıcı adı, IP adresi, yerel yol, OS build bilgisi,
 GPU seri numarası ve PCI bus kimliğini kaldırır. Ayrıntılar için
 [`docs/privacy.md`](./docs/privacy.md) belgesine bakın.
+
+## Readiness kontrolleri
+
+Canlı donanımı veya deterministik bir fixture'ı sürümlü kaynak profiliyle
+karşılaştırmak için:
+
+```powershell
+flopbench check miner
+flopbench check validator
+flopbench check miner --fixture fixtures/hardware/linux-nvidia-16gb.json --format json
+```
+
+Kaynak profil kararları ile FlopBench topluluk sağlık kontrolleri ayrı alan ve
+terminal bölümlerinde tutulur. Her karar kararlı bir reason code taşır;
+`unknown` ve `unsupported` donanım yetersizliğine çevrilmez. Birlikte gelen
+profil görünür biçimde `draft` olarak işaretlenir. Ayrıntılar için
+[`docs/readiness.md`](./docs/readiness.md) belgesine bakın.
 
 ## Kalite kapıları
 

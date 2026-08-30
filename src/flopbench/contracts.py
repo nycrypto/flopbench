@@ -7,6 +7,7 @@ capacity and bits per second for network throughput.
 
 from __future__ import annotations
 
+from collections import Counter
 from datetime import UTC, date, datetime
 from enum import StrEnum
 from typing import Annotated, Literal, Self
@@ -150,6 +151,7 @@ class EnvironmentSummary(StrictModel):
 
 
 ScalarValue = StrictBool | StrictInt | StrictFloat | StrictStr
+ReasonCode = Annotated[str, Field(pattern=r"^[a-z][a-z0-9_.-]+$")]
 
 
 class ReadinessCheck(StrictModel):
@@ -163,7 +165,7 @@ class ReadinessCheck(StrictModel):
     threshold: ScalarValue | None
     unit: StrictStr | None
     confidence: MetricConfidence
-    reason_codes: list[StrictStr]
+    reason_codes: Annotated[list[ReasonCode], Field(min_length=1)]
 
 
 class ResultSummary(StrictModel):
@@ -212,6 +214,17 @@ class ReadinessReport(StrictModel):
 
         if self.summary.total != len(self.checks):
             raise ValueError("summary total must equal the number of checks")
+        counts = Counter(check.status for check in self.checks)
+        expected = {
+            ResultStatus.PASS: self.summary.pass_,
+            ResultStatus.WARN: self.summary.warn,
+            ResultStatus.FAIL: self.summary.fail,
+            ResultStatus.UNKNOWN: self.summary.unknown,
+            ResultStatus.SKIPPED: self.summary.skipped,
+            ResultStatus.UNSUPPORTED: self.summary.unsupported,
+        }
+        if any(counts[status] != count for status, count in expected.items()):
+            raise ValueError("summary counters must match check statuses")
         return self
 
 
