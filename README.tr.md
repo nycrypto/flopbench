@@ -30,6 +30,17 @@ pnpm install --frozen-lockfile
 
 Linux üzerinde `.venv\Scripts\python` yerine `.venv/bin/python` kullanılır.
 
+## Yerel dashboard
+
+Aşama 0 dashboard'u yalnızca yerelde çalışır. Derlemek ve `http://127.0.0.1:4173` adresinde açmak için:
+
+```powershell
+pnpm --filter @flopbench/web build
+pnpm --filter @flopbench/web preview
+```
+
+Önizleme sunucusu yalnızca loopback adresine bağlanır; genel internetten veya ağdaki başka cihazlardan erişilemez.
+
 ## Kalite kapıları
 
 ```powershell

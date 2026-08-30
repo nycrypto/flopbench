@@ -30,6 +30,17 @@ pnpm install --frozen-lockfile
 
 On Linux, replace `.venv\Scripts\python` with `.venv/bin/python`.
 
+## Local dashboard
+
+The Stage 0 dashboard is local-only. Build and open it at `http://127.0.0.1:4173`:
+
+```powershell
+pnpm --filter @flopbench/web build
+pnpm --filter @flopbench/web preview
+```
+
+The preview server binds only to loopback; it is not reachable from the public internet or other devices on the network.
+
 ## Quality gates
 
 ```powershell
