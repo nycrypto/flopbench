@@ -2,10 +2,11 @@
 
 FlopBench is an independent community project and is not an official FLOP Labs or Flop Foundation product.
 
-At Stage 3:
+At the Stage 4 candidate:
 
 - miner and validator readiness uses only the selected versioned source profile and explicitly labeled community checks;
-- the validator network requirement is reported as `skipped` until the user-approved active test exists in Stage 4;
+- validator-doctor network tests measure TCP connection latency, jitter, and connection loss, not bandwidth;
+- NTP and network results depend on the explicitly selected target and are not run by default;
 - disk media type remains `unknown` when the operating system cannot provide a reliable answer;
 - live AMD identification has a safe fallback; a native AMD provider is not yet implemented;
 - no inference benchmark runs;

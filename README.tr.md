@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 3'ü (`v0.2.0`) tamamlamıştır. Katı veri sözleşmeleri, pasif yerel donanım tespiti ve açıklanabilir miner/validator kontrolleri mevcuttur; aktif validator testleri, benchmark çalıştırma, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
+FlopBench Aşama 3'ü (`v0.2.0`) tamamlamış ve Aşama 4 aktif validator sağlık testlerini doğrulamaktadır. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri ve onay kapılı sınırlı disk/ağ/saat testleri mevcuttur; benchmark, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -71,6 +71,22 @@ terminal bölümlerinde tutulur. Her karar kararlı bir reason code taşır;
 `unknown` ve `unsupported` donanım yetersizliğine çevrilmez. Birlikte gelen
 profil görünür biçimde `draft` olarak işaretlenir. Ayrıntılar için
 [`docs/readiness.md`](./docs/readiness.md) belgesine bakın.
+
+## Aktif validator sağlık testleri
+
+Gösterilen disk limitini, ağ hedefini ve gönderilecek veriyi inceleyip planı
+terminalden veya açık bayrakla onaylayın:
+
+```powershell
+flopbench doctor validator
+flopbench doctor validator --approve --disk-bytes 1048576 --format json
+flopbench doctor validator --network-target 127.0.0.1:443 --ntp-server 127.0.0.1
+```
+
+Hedef açıkça verilmedikçe ağ veya saat testi çalışmaz. Disk dosyaları yalnızca
+izole geçici dizinde tutulur; başarı, hata, zaman aşımı veya iptal sonrasında
+silinir. Ayrıntılar için [`docs/active-tests.md`](./docs/active-tests.md)
+belgesine bakın.
 
 ## Kalite kapıları
 

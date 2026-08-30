@@ -46,6 +46,7 @@ markers = [
   "stage1: source profile and schema acceptance tests",
   "stage2: passive system probe acceptance tests",
   "stage3: miner and validator readiness acceptance tests",
+  "stage4: active validator health acceptance tests",
 ]
 
 [tool.coverage.run]

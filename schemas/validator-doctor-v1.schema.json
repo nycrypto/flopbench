@@ -1,0 +1,355 @@
+{
+  "$defs": {
+    "ClockTestResult": {
+      "additionalProperties": false,
+      "properties": {
+        "offset_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Offset Ms"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "round_trip_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Round Trip Ms"
+        },
+        "server": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Server"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        }
+      },
+      "required": [
+        "status",
+        "server",
+        "offset_ms",
+        "round_trip_ms",
+        "reason_codes"
+      ],
+      "title": "ClockTestResult",
+      "type": "object"
+    },
+    "DiskTestResult": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes_tested": {
+          "minimum": 0,
+          "title": "Bytes Tested",
+          "type": "integer"
+        },
+        "read_bytes_per_second": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Read Bytes Per Second"
+        },
+        "read_latency_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Read Latency P95 Ms"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        },
+        "write_bytes_per_second": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Write Bytes Per Second"
+        },
+        "write_latency_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Write Latency P95 Ms"
+        }
+      },
+      "required": [
+        "status",
+        "bytes_tested",
+        "write_bytes_per_second",
+        "read_bytes_per_second",
+        "write_latency_p95_ms",
+        "read_latency_p95_ms",
+        "reason_codes"
+      ],
+      "title": "DiskTestResult",
+      "type": "object"
+    },
+    "NetworkTestResult": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "minimum": 0,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "jitter_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Jitter P95 Ms"
+        },
+        "latency_p50_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency P50 Ms"
+        },
+        "latency_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency P95 Ms"
+        },
+        "packet_loss_percent": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Packet Loss Percent"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "received": {
+          "minimum": 0,
+          "title": "Received",
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Target"
+        }
+      },
+      "required": [
+        "status",
+        "target",
+        "attempts",
+        "received",
+        "packet_loss_percent",
+        "latency_p50_ms",
+        "latency_p95_ms",
+        "jitter_p95_ms",
+        "reason_codes"
+      ],
+      "title": "NetworkTestResult",
+      "type": "object"
+    },
+    "ResultStatus": {
+      "description": "Complete set of readiness result states.",
+      "enum": [
+        "pass",
+        "warn",
+        "fail",
+        "unknown",
+        "skipped",
+        "unsupported"
+      ],
+      "title": "ResultStatus",
+      "type": "string"
+    },
+    "TestLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "disk_bytes": {
+          "default": 8388608,
+          "maximum": 67108864,
+          "minimum": 1024,
+          "title": "Disk Bytes",
+          "type": "integer"
+        },
+        "disk_chunk_bytes": {
+          "default": 1048576,
+          "maximum": 1048576,
+          "minimum": 1024,
+          "title": "Disk Chunk Bytes",
+          "type": "integer"
+        },
+        "max_duration_seconds": {
+          "default": 10.0,
+          "exclusiveMinimum": 0,
+          "maximum": 30,
+          "title": "Max Duration Seconds",
+          "type": "number"
+        },
+        "network_attempts": {
+          "default": 5,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Network Attempts",
+          "type": "integer"
+        },
+        "network_timeout_seconds": {
+          "default": 2.0,
+          "exclusiveMinimum": 0,
+          "maximum": 5,
+          "title": "Network Timeout Seconds",
+          "type": "number"
+        }
+      },
+      "title": "TestLimits",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/validator-doctor-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approved": {
+      "const": true,
+      "title": "Approved",
+      "type": "boolean"
+    },
+    "clock": {
+      "$ref": "#/$defs/ClockTestResult"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "disk": {
+      "$ref": "#/$defs/DiskTestResult"
+    },
+    "doctor_id": {
+      "format": "uuid",
+      "title": "Doctor Id",
+      "type": "string"
+    },
+    "limits": {
+      "$ref": "#/$defs/TestLimits"
+    },
+    "network": {
+      "$ref": "#/$defs/NetworkTestResult"
+    },
+    "schema": {
+      "const": "flopbench-validator-doctor-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "tool_version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "doctor_id",
+    "created_at",
+    "approved",
+    "limits",
+    "disk",
+    "network",
+    "clock",
+    "tool_version"
+  ],
+  "title": "ValidatorDoctorReport",
+  "type": "object"
+}

@@ -2,10 +2,10 @@
 
 ## Status
 
-Stage 3 readiness-engine release. Versioned contracts, passive
-OS/CPU/RAM/disk/GPU collection, and explainable miner/validator rules are
-implemented. Active-test, benchmark, API, and functional dashboard features
-remain future boundaries.
+Stage 4 active validator-test candidate. Versioned contracts, passive hardware
+collection, explainable readiness rules, and consent-gated bounded disk,
+network, and clock tests are implemented. Benchmark, API, and functional
+dashboard features remain future boundaries.
 
 ## Component boundaries
 
@@ -23,6 +23,7 @@ Optional external signer / future official testnet adapter
 
 - `src/flopbench`: Python CLI and domain core.
 - `src/flopbench/readiness`: pure profile-versus-probe rules and output formatting.
+- `src/flopbench/validator_doctor`: approval-gated active tests and bounded adapters.
 - `apps/api`: future FastAPI composition root; it must bind only to loopback.
 - `apps/web`: local React dashboard; it receives no private signing material.
 - `schemas`, `profiles`, and `fixtures`: versioned contracts and deterministic test data added from Stage 1 onward.

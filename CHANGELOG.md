@@ -4,7 +4,15 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
-No changes yet.
+### English
+
+- Added consent-gated, bounded disk, TCP-connect network, and optional NTP health tests.
+- Added deterministic active-test fixtures, cleanup guarantees, and a validator-doctor schema.
+
+### Türkçe
+
+- Onay kapılı, sınırlı disk, TCP bağlantı ağı ve isteğe bağlı NTP sağlık testleri eklendi.
+- Deterministik aktif test fixture'ları, temizleme garantileri ve validator-doctor şeması eklendi.
 
 ## [0.2.0] - 2026-08-31
 

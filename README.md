@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 3 (`v0.2.0`). Strict data contracts, passive local hardware inspection, and explainable miner/validator checks are available; active validator tests, benchmarking, report signing, and PoUI simulation are not implemented yet.
+FlopBench has completed Stage 3 (`v0.2.0`) and is validating Stage 4 active validator health tests. Strict data contracts, passive hardware inspection, explainable readiness checks, and consent-gated bounded disk/network/clock tests are available; benchmarking, report signing, and PoUI simulation are not implemented yet.
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
@@ -70,6 +70,22 @@ Source-profile decisions and FlopBench community health checks are kept in
 separate fields and terminal sections. Every decision has a stable reason code;
 `unknown` and `unsupported` are not converted to hardware failures. The bundled
 profile is visibly marked `draft`. See [`docs/readiness.md`](./docs/readiness.md).
+
+## Active validator health tests
+
+Review the displayed disk limit, network target, and transmitted data, then
+approve the plan interactively or with an explicit flag:
+
+```powershell
+flopbench doctor validator
+flopbench doctor validator --approve --disk-bytes 1048576 --format json
+flopbench doctor validator --network-target 127.0.0.1:443 --ntp-server 127.0.0.1
+```
+
+No network or clock test runs unless its target is explicitly supplied. Disk
+files live only in an isolated temporary directory and are removed after
+success, failure, timeout, or cancellation. See
+[`docs/active-tests.md`](./docs/active-tests.md).
 
 ## Quality gates
 
