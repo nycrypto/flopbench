@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 2 passive probe candidate. Versioned contracts and passive
+Stage 2 passive probe release. Versioned contracts and passive
 OS/CPU/RAM/disk/GPU collection are implemented. Rule, active-test, benchmark,
 API, and functional dashboard features remain future boundaries.
 

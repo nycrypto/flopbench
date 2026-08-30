@@ -4,6 +4,10 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.1.0] - 2026-08-31
+
 ### English
 
 - Added passive local OS, CPU, memory, disk, and NVIDIA NVML probing with safe GPU fallbacks.
