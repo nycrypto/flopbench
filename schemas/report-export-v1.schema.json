@@ -1,0 +1,1845 @@
+{
+  "$defs": {
+    "BenchmarkAdapterIdentity": {
+      "additionalProperties": false,
+      "description": "Runtime identity without leaking a full endpoint URL.",
+      "properties": {
+        "endpoint_scope": {
+          "enum": [
+            "none",
+            "loopback",
+            "allowlisted_external"
+          ],
+          "title": "Endpoint Scope",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "runtime_version": {
+          "title": "Runtime Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "runtime_version",
+        "endpoint_scope"
+      ],
+      "title": "BenchmarkAdapterIdentity",
+      "type": "object"
+    },
+    "BenchmarkFailures": {
+      "additionalProperties": false,
+      "description": "Explicit failed-run accounting.",
+      "properties": {
+        "cancelled": {
+          "minimum": 0,
+          "title": "Cancelled",
+          "type": "integer"
+        },
+        "error": {
+          "minimum": 0,
+          "title": "Error",
+          "type": "integer"
+        },
+        "timeout": {
+          "minimum": 0,
+          "title": "Timeout",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "timeout",
+        "error",
+        "cancelled"
+      ],
+      "title": "BenchmarkFailures",
+      "type": "object"
+    },
+    "BenchmarkMetricSummary": {
+      "additionalProperties": false,
+      "description": "Raw successful samples plus nearest-rank percentiles.",
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/MetricConfidence"
+        },
+        "p50": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "P50"
+        },
+        "p95": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "P95"
+        },
+        "samples": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "title": "Samples",
+          "type": "array"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "confidence",
+        "samples",
+        "p50",
+        "p95"
+      ],
+      "title": "BenchmarkMetricSummary",
+      "type": "object"
+    },
+    "BenchmarkMetrics": {
+      "additionalProperties": false,
+      "description": "Required benchmark metric series.",
+      "properties": {
+        "latency": {
+          "$ref": "#/$defs/MetricSeries"
+        },
+        "tokens_per_second": {
+          "$ref": "#/$defs/MetricSeries"
+        },
+        "ttft": {
+          "$ref": "#/$defs/MetricSeries"
+        }
+      },
+      "required": [
+        "ttft",
+        "tokens_per_second",
+        "latency"
+      ],
+      "title": "BenchmarkMetrics",
+      "type": "object"
+    },
+    "BenchmarkMetricsV2": {
+      "additionalProperties": false,
+      "description": "Required benchmark summaries.",
+      "properties": {
+        "latency": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        },
+        "peak_vram": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        },
+        "tokens_per_second": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        },
+        "ttft": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        }
+      },
+      "required": [
+        "ttft",
+        "tokens_per_second",
+        "latency",
+        "peak_vram"
+      ],
+      "title": "BenchmarkMetricsV2",
+      "type": "object"
+    },
+    "BenchmarkModelIdentity": {
+      "additionalProperties": false,
+      "description": "Model name and immutable content digest.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "digest_algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Digest Algorithm",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "digest"
+      ],
+      "title": "BenchmarkModelIdentity",
+      "type": "object"
+    },
+    "BenchmarkOutcome": {
+      "description": "Every terminal state of one measured request.",
+      "enum": [
+        "success",
+        "timeout",
+        "error",
+        "cancelled",
+        "partial"
+      ],
+      "title": "BenchmarkOutcome",
+      "type": "string"
+    },
+    "BenchmarkOutcomeSummary": {
+      "additionalProperties": false,
+      "description": "Complete measured-run accounting, including partial requests.",
+      "properties": {
+        "cancelled": {
+          "minimum": 0,
+          "title": "Cancelled",
+          "type": "integer"
+        },
+        "error": {
+          "minimum": 0,
+          "title": "Error",
+          "type": "integer"
+        },
+        "error_rate": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Error Rate",
+          "type": "number"
+        },
+        "partial": {
+          "minimum": 0,
+          "title": "Partial",
+          "type": "integer"
+        },
+        "success": {
+          "minimum": 0,
+          "title": "Success",
+          "type": "integer"
+        },
+        "timeout": {
+          "minimum": 0,
+          "title": "Timeout",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "success",
+        "timeout",
+        "error",
+        "cancelled",
+        "partial",
+        "error_rate"
+      ],
+      "title": "BenchmarkOutcomeSummary",
+      "type": "object"
+    },
+    "BenchmarkReport": {
+      "additionalProperties": false,
+      "description": "Published benchmark-report-v1 contract.",
+      "properties": {
+        "adapter": {
+          "title": "Adapter",
+          "type": "string"
+        },
+        "benchmark_id": {
+          "format": "uuid",
+          "title": "Benchmark Id",
+          "type": "string"
+        },
+        "failures": {
+          "$ref": "#/$defs/BenchmarkFailures"
+        },
+        "finished_at": {
+          "format": "date-time",
+          "title": "Finished At",
+          "type": "string"
+        },
+        "metrics": {
+          "$ref": "#/$defs/BenchmarkMetrics"
+        },
+        "model": {
+          "$ref": "#/$defs/ModelIdentity"
+        },
+        "schema": {
+          "const": "flopbench-benchmark-report-v1",
+          "title": "Schema",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "tool_version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Tool Version",
+          "type": "string"
+        },
+        "workload": {
+          "$ref": "#/$defs/BenchmarkWorkload"
+        }
+      },
+      "required": [
+        "schema",
+        "benchmark_id",
+        "adapter",
+        "model",
+        "workload",
+        "metrics",
+        "failures",
+        "started_at",
+        "finished_at",
+        "tool_version"
+      ],
+      "title": "BenchmarkReport",
+      "type": "object"
+    },
+    "BenchmarkReportV2": {
+      "additionalProperties": false,
+      "description": "Published benchmark-report-v2 contract emitted by Stage 5.",
+      "properties": {
+        "adapter": {
+          "$ref": "#/$defs/BenchmarkAdapterIdentity"
+        },
+        "benchmark_id": {
+          "format": "uuid",
+          "title": "Benchmark Id",
+          "type": "string"
+        },
+        "finished_at": {
+          "format": "date-time",
+          "title": "Finished At",
+          "type": "string"
+        },
+        "metrics": {
+          "$ref": "#/$defs/BenchmarkMetricsV2"
+        },
+        "model": {
+          "$ref": "#/$defs/BenchmarkModelIdentity"
+        },
+        "outcomes": {
+          "$ref": "#/$defs/BenchmarkOutcomeSummary"
+        },
+        "runs": {
+          "items": {
+            "$ref": "#/$defs/BenchmarkRunRecord"
+          },
+          "title": "Runs",
+          "type": "array"
+        },
+        "schema": {
+          "const": "flopbench-benchmark-report-v2",
+          "title": "Schema",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "tool_version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Tool Version",
+          "type": "string"
+        },
+        "workload": {
+          "$ref": "#/$defs/BenchmarkWorkloadIdentity"
+        }
+      },
+      "required": [
+        "schema",
+        "benchmark_id",
+        "adapter",
+        "model",
+        "workload",
+        "runs",
+        "metrics",
+        "outcomes",
+        "started_at",
+        "finished_at",
+        "tool_version"
+      ],
+      "title": "BenchmarkReportV2",
+      "type": "object"
+    },
+    "BenchmarkRunRecord": {
+      "additionalProperties": false,
+      "description": "Auditable outcome of one warmup or measured request.",
+      "properties": {
+        "error_code": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Code"
+        },
+        "generated_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Generated Tokens"
+        },
+        "latency_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latency Seconds"
+        },
+        "outcome": {
+          "$ref": "#/$defs/BenchmarkOutcome"
+        },
+        "peak_vram_bytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Peak Vram Bytes"
+        },
+        "prompt_id": {
+          "title": "Prompt Id",
+          "type": "string"
+        },
+        "raw_response_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Response Sha256"
+        },
+        "sequence": {
+          "exclusiveMinimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "tokens_per_second": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tokens Per Second"
+        },
+        "ttft_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ttft Seconds"
+        },
+        "warmup": {
+          "title": "Warmup",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "sequence",
+        "prompt_id",
+        "warmup",
+        "outcome"
+      ],
+      "title": "BenchmarkRunRecord",
+      "type": "object"
+    },
+    "BenchmarkWorkload": {
+      "additionalProperties": false,
+      "description": "Deterministic benchmark input description.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "measured_runs": {
+          "exclusiveMinimum": 0,
+          "title": "Measured Runs",
+          "type": "integer"
+        },
+        "prompt_set_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Prompt Set Sha256",
+          "type": "string"
+        },
+        "warmup_runs": {
+          "minimum": 0,
+          "title": "Warmup Runs",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "prompt_set_sha256",
+        "warmup_runs",
+        "measured_runs"
+      ],
+      "title": "BenchmarkWorkload",
+      "type": "object"
+    },
+    "BenchmarkWorkloadIdentity": {
+      "additionalProperties": false,
+      "description": "Exact versioned workload bytes and execution counts.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "measured_runs": {
+          "exclusiveMinimum": 0,
+          "title": "Measured Runs",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Version",
+          "type": "string"
+        },
+        "warmup_runs": {
+          "minimum": 0,
+          "title": "Warmup Runs",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "warmup_runs",
+        "measured_runs"
+      ],
+      "title": "BenchmarkWorkloadIdentity",
+      "type": "object"
+    },
+    "ClockTestResult": {
+      "additionalProperties": false,
+      "properties": {
+        "offset_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Offset Ms"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "round_trip_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Round Trip Ms"
+        },
+        "server": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Server"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        }
+      },
+      "required": [
+        "status",
+        "server",
+        "offset_ms",
+        "round_trip_ms",
+        "reason_codes"
+      ],
+      "title": "ClockTestResult",
+      "type": "object"
+    },
+    "CpuInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "logical_cores": {
+          "exclusiveMinimum": 0,
+          "title": "Logical Cores",
+          "type": "integer"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "physical_cores": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Physical Cores"
+        }
+      },
+      "required": [
+        "logical_cores",
+        "physical_cores"
+      ],
+      "title": "CpuInfo",
+      "type": "object"
+    },
+    "DiskInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "available_bytes": {
+          "minimum": 0,
+          "title": "Available Bytes",
+          "type": "integer"
+        },
+        "device": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Device"
+        },
+        "kind": {
+          "$ref": "#/$defs/DiskKind"
+        },
+        "mount_point": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mount Point"
+        },
+        "total_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Total Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "total_bytes",
+        "available_bytes"
+      ],
+      "title": "DiskInfo",
+      "type": "object"
+    },
+    "DiskKind": {
+      "enum": [
+        "nvme",
+        "ssd",
+        "hdd",
+        "unknown"
+      ],
+      "title": "DiskKind",
+      "type": "string"
+    },
+    "DiskTestResult": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes_tested": {
+          "minimum": 0,
+          "title": "Bytes Tested",
+          "type": "integer"
+        },
+        "read_bytes_per_second": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Read Bytes Per Second"
+        },
+        "read_latency_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Read Latency P95 Ms"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        },
+        "write_bytes_per_second": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Write Bytes Per Second"
+        },
+        "write_latency_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Write Latency P95 Ms"
+        }
+      },
+      "required": [
+        "status",
+        "bytes_tested",
+        "write_bytes_per_second",
+        "read_bytes_per_second",
+        "write_latency_p95_ms",
+        "read_latency_p95_ms",
+        "reason_codes"
+      ],
+      "title": "DiskTestResult",
+      "type": "object"
+    },
+    "EnvironmentSummary": {
+      "additionalProperties": false,
+      "description": "Non-sensitive execution context included in readiness output.",
+      "properties": {
+        "architecture": {
+          "title": "Architecture",
+          "type": "string"
+        },
+        "os_family": {
+          "title": "Os Family",
+          "type": "string"
+        },
+        "privacy_level": {
+          "$ref": "#/$defs/PrivacyLevel"
+        }
+      },
+      "required": [
+        "os_family",
+        "architecture",
+        "privacy_level"
+      ],
+      "title": "EnvironmentSummary",
+      "type": "object"
+    },
+    "GpuDevice": {
+      "additionalProperties": false,
+      "properties": {
+        "driver_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Driver Version"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pci_bus_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pci Bus Id"
+        },
+        "serial_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Serial Number"
+        },
+        "vendor": {
+          "title": "Vendor",
+          "type": "string"
+        },
+        "vram_total_bytes": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vram Total Bytes"
+        }
+      },
+      "required": [
+        "vendor",
+        "name",
+        "vram_total_bytes"
+      ],
+      "title": "GpuDevice",
+      "type": "object"
+    },
+    "GpuProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "devices": {
+          "items": {
+            "$ref": "#/$defs/GpuDevice"
+          },
+          "title": "Devices",
+          "type": "array"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/GpuStatus"
+        }
+      },
+      "required": [
+        "provider",
+        "status",
+        "devices",
+        "reason_codes"
+      ],
+      "title": "GpuProbe",
+      "type": "object"
+    },
+    "GpuStatus": {
+      "enum": [
+        "detected",
+        "no-supported-gpu",
+        "unknown",
+        "unsupported"
+      ],
+      "title": "GpuStatus",
+      "type": "string"
+    },
+    "HostDetails": {
+      "additionalProperties": false,
+      "description": "Private-only host identifiers.",
+      "properties": {
+        "hostname": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hostname"
+        },
+        "ip_addresses": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ip Addresses",
+          "type": "array"
+        },
+        "user_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User Name"
+        }
+      },
+      "title": "HostDetails",
+      "type": "object"
+    },
+    "MemoryInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "available_bytes": {
+          "minimum": 0,
+          "title": "Available Bytes",
+          "type": "integer"
+        },
+        "total_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Total Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total_bytes",
+        "available_bytes"
+      ],
+      "title": "MemoryInfo",
+      "type": "object"
+    },
+    "MetricConfidence": {
+      "description": "How a metric value was obtained.",
+      "enum": [
+        "measured",
+        "reported",
+        "derived",
+        "estimated",
+        "simulated"
+      ],
+      "title": "MetricConfidence",
+      "type": "string"
+    },
+    "MetricSeries": {
+      "additionalProperties": false,
+      "description": "Raw samples for one benchmark metric.",
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/MetricConfidence"
+        },
+        "samples": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "confidence",
+        "samples"
+      ],
+      "title": "MetricSeries",
+      "type": "object"
+    },
+    "ModelIdentity": {
+      "additionalProperties": false,
+      "description": "Model name and immutable content identity.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "digest_algorithm": {
+          "const": "sha256",
+          "title": "Digest Algorithm",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "digest_algorithm",
+        "digest"
+      ],
+      "title": "ModelIdentity",
+      "type": "object"
+    },
+    "NetworkTestResult": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "minimum": 0,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "jitter_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Jitter P95 Ms"
+        },
+        "latency_p50_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency P50 Ms"
+        },
+        "latency_p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency P95 Ms"
+        },
+        "packet_loss_percent": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Packet Loss Percent"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "received": {
+          "minimum": 0,
+          "title": "Received",
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Target"
+        }
+      },
+      "required": [
+        "status",
+        "target",
+        "attempts",
+        "received",
+        "packet_loss_percent",
+        "latency_p50_ms",
+        "latency_p95_ms",
+        "jitter_p95_ms",
+        "reason_codes"
+      ],
+      "title": "NetworkTestResult",
+      "type": "object"
+    },
+    "PrivacyLevel": {
+      "description": "Intended disclosure level for a report.",
+      "enum": [
+        "private",
+        "support",
+        "public"
+      ],
+      "title": "PrivacyLevel",
+      "type": "string"
+    },
+    "ProbeReport": {
+      "additionalProperties": false,
+      "properties": {
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "cpu": {
+          "$ref": "#/$defs/CpuInfo"
+        },
+        "disks": {
+          "items": {
+            "$ref": "#/$defs/DiskInfo"
+          },
+          "title": "Disks",
+          "type": "array"
+        },
+        "gpu": {
+          "$ref": "#/$defs/GpuProbe"
+        },
+        "memory": {
+          "$ref": "#/$defs/MemoryInfo"
+        },
+        "privacy_level": {
+          "$ref": "#/$defs/PrivacyLevel"
+        },
+        "probe_id": {
+          "format": "uuid",
+          "title": "Probe Id",
+          "type": "string"
+        },
+        "schema": {
+          "const": "flopbench-probe-v1",
+          "title": "Schema",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/ProbeSource"
+        },
+        "system": {
+          "$ref": "#/$defs/SystemInfo"
+        },
+        "tool_version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Tool Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema",
+        "probe_id",
+        "captured_at",
+        "privacy_level",
+        "source",
+        "system",
+        "cpu",
+        "memory",
+        "disks",
+        "gpu",
+        "tool_version"
+      ],
+      "title": "ProbeReport",
+      "type": "object"
+    },
+    "ProbeSource": {
+      "enum": [
+        "live",
+        "fixture"
+      ],
+      "title": "ProbeSource",
+      "type": "string"
+    },
+    "ProfileReference": {
+      "additionalProperties": false,
+      "description": "Immutable link from a report to its exact source profile bytes.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "source_status": {
+          "$ref": "#/$defs/ProfileStatus"
+        }
+      },
+      "required": [
+        "id",
+        "sha256",
+        "source_status"
+      ],
+      "title": "ProfileReference",
+      "type": "object"
+    },
+    "ProfileStatus": {
+      "description": "Maturity assigned by the upstream source.",
+      "enum": [
+        "draft",
+        "provisional",
+        "final"
+      ],
+      "title": "ProfileStatus",
+      "type": "string"
+    },
+    "ReadinessCheck": {
+      "additionalProperties": false,
+      "description": "One explicit readiness rule outcome.",
+      "properties": {
+        "actual": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Actual"
+        },
+        "code": {
+          "pattern": "^[a-z][a-z0-9_.-]+$",
+          "title": "Code",
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/MetricConfidence"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "source_kind": {
+          "enum": [
+            "source_profile",
+            "community"
+          ],
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ResultStatus"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Threshold"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "code",
+        "status",
+        "source_kind",
+        "required",
+        "actual",
+        "threshold",
+        "unit",
+        "confidence",
+        "reason_codes"
+      ],
+      "title": "ReadinessCheck",
+      "type": "object"
+    },
+    "ReadinessReport": {
+      "additionalProperties": false,
+      "description": "Published readiness-report-v1 contract.",
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/ReadinessCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "environment": {
+          "$ref": "#/$defs/EnvironmentSummary"
+        },
+        "profile": {
+          "$ref": "#/$defs/ProfileReference"
+        },
+        "report_id": {
+          "format": "uuid",
+          "title": "Report Id",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/Role"
+        },
+        "schema": {
+          "const": "flopbench-readiness-report-v1",
+          "title": "Schema",
+          "type": "string"
+        },
+        "summary": {
+          "$ref": "#/$defs/ResultSummary"
+        },
+        "tool_version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Tool Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema",
+        "report_id",
+        "role",
+        "profile",
+        "environment",
+        "checks",
+        "summary",
+        "created_at",
+        "tool_version"
+      ],
+      "title": "ReadinessReport",
+      "type": "object"
+    },
+    "ReportDigest": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "canonicalization": {
+          "const": "jcs-rfc8785",
+          "default": "jcs-rfc8785",
+          "title": "Canonicalization",
+          "type": "string"
+        },
+        "scope": {
+          "const": "document",
+          "default": "document",
+          "title": "Scope",
+          "type": "string"
+        },
+        "value": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ReportDigest",
+      "type": "object"
+    },
+    "ReportDocument": {
+      "additionalProperties": false,
+      "properties": {
+        "comparison_profile": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProfileReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload": {
+          "$ref": "#/$defs/ReportPayload"
+        },
+        "privacy_level": {
+          "$ref": "#/$defs/PrivacyLevel"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ReportProvenance"
+        },
+        "schema": {
+          "const": "flopbench-report-document-v1",
+          "title": "Schema",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema",
+        "privacy_level",
+        "payload",
+        "comparison_profile",
+        "provenance"
+      ],
+      "title": "ReportDocument",
+      "type": "object"
+    },
+    "ReportPayload": {
+      "discriminator": {
+        "mapping": {
+          "flopbench-benchmark-report-v1": "#/$defs/BenchmarkReport",
+          "flopbench-benchmark-report-v2": "#/$defs/BenchmarkReportV2",
+          "flopbench-probe-v1": "#/$defs/ProbeReport",
+          "flopbench-readiness-report-v1": "#/$defs/ReadinessReport",
+          "flopbench-validator-doctor-v1": "#/$defs/ValidatorDoctorReport"
+        },
+        "propertyName": "schema"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReadinessReport"
+        },
+        {
+          "$ref": "#/$defs/BenchmarkReport"
+        },
+        {
+          "$ref": "#/$defs/BenchmarkReportV2"
+        },
+        {
+          "$ref": "#/$defs/ProbeReport"
+        },
+        {
+          "$ref": "#/$defs/ValidatorDoctorReport"
+        }
+      ]
+    },
+    "ReportProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "authenticity": {
+          "const": "unverified-local-observations",
+          "default": "unverified-local-observations",
+          "title": "Authenticity",
+          "type": "string"
+        },
+        "canonicalizer": {
+          "const": "rfc8785/0.1.4",
+          "default": "rfc8785/0.1.4",
+          "title": "Canonicalizer",
+          "type": "string"
+        },
+        "exporter_version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Exporter Version",
+          "type": "string"
+        },
+        "profile_binding": {
+          "enum": [
+            "source-report",
+            "user-selected",
+            "none"
+          ],
+          "title": "Profile Binding",
+          "type": "string"
+        },
+        "redaction_policy": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Redaction Policy",
+          "type": "string"
+        },
+        "source_jcs_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source Jcs Sha256"
+        },
+        "source_tool_version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Source Tool Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "exporter_version",
+        "source_tool_version",
+        "source_jcs_sha256",
+        "profile_binding"
+      ],
+      "title": "ReportProvenance",
+      "type": "object"
+    },
+    "ResultStatus": {
+      "description": "Complete set of readiness result states.",
+      "enum": [
+        "pass",
+        "warn",
+        "fail",
+        "unknown",
+        "skipped",
+        "unsupported"
+      ],
+      "title": "ResultStatus",
+      "type": "string"
+    },
+    "ResultSummary": {
+      "additionalProperties": false,
+      "description": "Counters for every supported result state; no state may be omitted.",
+      "properties": {
+        "fail": {
+          "minimum": 0,
+          "title": "Fail",
+          "type": "integer"
+        },
+        "pass": {
+          "minimum": 0,
+          "title": "Pass",
+          "type": "integer"
+        },
+        "skipped": {
+          "minimum": 0,
+          "title": "Skipped",
+          "type": "integer"
+        },
+        "unknown": {
+          "minimum": 0,
+          "title": "Unknown",
+          "type": "integer"
+        },
+        "unsupported": {
+          "minimum": 0,
+          "title": "Unsupported",
+          "type": "integer"
+        },
+        "warn": {
+          "minimum": 0,
+          "title": "Warn",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pass",
+        "warn",
+        "fail",
+        "unknown",
+        "skipped",
+        "unsupported"
+      ],
+      "title": "ResultSummary",
+      "type": "object"
+    },
+    "Role": {
+      "description": "FLOP participant role evaluated by a readiness report.",
+      "enum": [
+        "miner",
+        "validator"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "SystemInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "title": "Architecture",
+          "type": "string"
+        },
+        "host": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HostDetails"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "os_family": {
+          "title": "Os Family",
+          "type": "string"
+        },
+        "os_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Os Version"
+        }
+      },
+      "required": [
+        "os_family",
+        "architecture"
+      ],
+      "title": "SystemInfo",
+      "type": "object"
+    },
+    "TestLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "disk_bytes": {
+          "default": 8388608,
+          "maximum": 67108864,
+          "minimum": 1024,
+          "title": "Disk Bytes",
+          "type": "integer"
+        },
+        "disk_chunk_bytes": {
+          "default": 1048576,
+          "maximum": 1048576,
+          "minimum": 1024,
+          "title": "Disk Chunk Bytes",
+          "type": "integer"
+        },
+        "max_duration_seconds": {
+          "default": 10.0,
+          "exclusiveMinimum": 0,
+          "maximum": 30,
+          "title": "Max Duration Seconds",
+          "type": "number"
+        },
+        "network_attempts": {
+          "default": 5,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Network Attempts",
+          "type": "integer"
+        },
+        "network_timeout_seconds": {
+          "default": 2.0,
+          "exclusiveMinimum": 0,
+          "maximum": 5,
+          "title": "Network Timeout Seconds",
+          "type": "number"
+        }
+      },
+      "title": "TestLimits",
+      "type": "object"
+    },
+    "ValidatorDoctorReport": {
+      "additionalProperties": false,
+      "properties": {
+        "approved": {
+          "const": true,
+          "title": "Approved",
+          "type": "boolean"
+        },
+        "clock": {
+          "$ref": "#/$defs/ClockTestResult"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "disk": {
+          "$ref": "#/$defs/DiskTestResult"
+        },
+        "doctor_id": {
+          "format": "uuid",
+          "title": "Doctor Id",
+          "type": "string"
+        },
+        "limits": {
+          "$ref": "#/$defs/TestLimits"
+        },
+        "network": {
+          "$ref": "#/$defs/NetworkTestResult"
+        },
+        "schema": {
+          "const": "flopbench-validator-doctor-v1",
+          "title": "Schema",
+          "type": "string"
+        },
+        "tool_version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Tool Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema",
+        "doctor_id",
+        "created_at",
+        "approved",
+        "limits",
+        "disk",
+        "network",
+        "clock",
+        "tool_version"
+      ],
+      "title": "ValidatorDoctorReport",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/report-export-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "digest": {
+      "$ref": "#/$defs/ReportDigest"
+    },
+    "document": {
+      "$ref": "#/$defs/ReportDocument"
+    },
+    "schema": {
+      "const": "flopbench-report-export-v1",
+      "title": "Schema",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "document",
+    "digest"
+  ],
+  "title": "ReportExport",
+  "type": "object"
+}

@@ -37,3 +37,15 @@ explicit approval flag. Redirects are not followed. Runtime response content
 is not stored in the report; only a SHA-256 digest of the bounded response is
 retained. Optional OpenAI-compatible API keys are read from the selected
 environment variable and are not serialized.
+
+## Stage 6 report exports
+
+Report exports add a `support` level between private and public. Support output
+removes host, user, IP, path, device, GPU serial/bus, active-test target, and NTP
+server fields while retaining OS version details. Public output also removes the
+OS version. All levels reject credential-like strings that remain after their
+redaction transform.
+
+Public files require a digest-bound preview confirmation and are never written
+by the export command without it. Offline HTML contains no scripts or external
+resources and escapes all report values. See [reporting.md](./reporting.md).

@@ -24,6 +24,7 @@ dependencies = [
   "psutil==7.2.2",
   "pydantic==2.13.5",
   "PyYAML==6.0.3",
+  "rfc8785==0.1.4",
   "typer==0.27.2",
 ]
 
@@ -48,6 +49,7 @@ markers = [
   "stage3: miner and validator readiness acceptance tests",
   "stage4: active validator health acceptance tests",
   "stage5: inference benchmark acceptance tests",
+  "stage6: reporting and redaction acceptance tests",
 ]
 
 [tool.coverage.run]

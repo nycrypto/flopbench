@@ -2,7 +2,7 @@
 
 FlopBench is an independent community project and is not an official FLOP Labs or Flop Foundation product.
 
-At the Stage 5 candidate:
+At the Stage 6 candidate:
 
 - miner and validator readiness uses only the selected versioned source profile and explicitly labeled community checks;
 - validator-doctor network tests measure TCP connection latency, jitter, and connection loss, not bandwidth;
@@ -11,8 +11,9 @@ At the Stage 5 candidate:
 - live AMD identification has a safe fallback; a native AMD provider is not yet implemented;
 - inference benchmarks are local measurements and are not official FLOP scores;
 - OpenAI-compatible runtimes require the operator to provide the model digest;
-- no estimated FLOP value is emitted in Stage 5;
-- no report, signature, DID receipt, or PoUI simulation is produced;
+- no estimated FLOP value is emitted;
+- report digests provide change detection but are not signatures or identity proofs;
+- no DID receipt or PoUI simulation is produced;
 - no FLOP testnet or mainnet request is supported;
 - no eligibility, airdrop score, token amount, reward, ROI, stake, wallet, claim, or real slashing behavior is provided.
 

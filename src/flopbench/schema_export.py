@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from flopbench.benchmark.models import BenchmarkReportV2
 from flopbench.contracts import BenchmarkReport, ReadinessReport, Receipt, SourceProfile
 from flopbench.probe.models import ProbeReport
+from flopbench.reporting.models import ReportExport
 from flopbench.validator_doctor.models import ValidatorDoctorReport
 
 SCHEMA_BASE = "https://schemas.flopbench.dev/v1"
@@ -21,6 +22,7 @@ SCHEMA_MODELS: dict[str, type[BaseModel]] = {
     "receipt-v1.schema.json": Receipt,
     "probe-v1.schema.json": ProbeReport,
     "validator-doctor-v1.schema.json": ValidatorDoctorReport,
+    "report-export-v1.schema.json": ReportExport,
 }
 
 

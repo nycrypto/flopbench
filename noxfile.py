@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import tempfile
+
 import nox
 
 nox.options.default_venv_backend = "virtualenv"
@@ -14,7 +16,7 @@ def install_project(session: nox.Session) -> None:
 def pytest_isolation_args(session: nox.Session) -> list[str]:
     """Keep pytest temp/cache state private to this Nox session invocation."""
 
-    temporary_directory = session.create_tmp()
+    temporary_directory = tempfile.mkdtemp(prefix=f"flopbench-{session.name}-")
     return [
         "--basetemp",
         f"{temporary_directory}/pytest",
@@ -44,7 +46,7 @@ def contract(session: nox.Session) -> None:
         "pytest",
         "tests/contract",
         "-m",
-        "stage0 or stage1 or stage2 or stage3 or stage4 or stage5",
+        "stage0 or stage1 or stage2 or stage3 or stage4 or stage5 or stage6",
         *pytest_isolation_args(session),
     )
 
@@ -61,6 +63,7 @@ def security(session: nox.Session) -> None:
         "--cov=flopbench.benchmark.endpoint",
         "--cov=flopbench.benchmark.transport",
         "--cov=flopbench.benchmark.response_limits",
+        "--cov=flopbench.reporting.redaction",
         "--cov-branch",
         "--cov-report=term-missing",
         "--cov-fail-under=100",

@@ -4,6 +4,18 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+### English
+
+- Added private, support, and public report exports with RFC 8785 canonical JSON and SHA-256 provenance.
+- Added digest-bound public preview consent, standalone offline HTML, terminal summaries, bounded diff, and compatibility-gated benchmark comparison.
+- Added strict report schema validation and security coverage for secret leakage, HTML injection, symbolic links, malformed input, and oversized input.
+
+### Türkçe
+
+- RFC 8785 canonical JSON ve SHA-256 provenance ile private, support ve public rapor dışa aktarımları eklendi.
+- Digest'e bağlı public önizleme onayı, bağımsız çevrimdışı HTML, terminal özetleri, sınırlı diff ve uyumluluk kapılı benchmark karşılaştırması eklendi.
+- Secret sızıntısı, HTML injection, sembolik bağlantı, bozuk girdi ve aşırı büyük girdi için katı rapor şema doğrulaması ve güvenlik kapsamı eklendi.
+
 ## [0.4.0] - 2026-09-07
 
 ### English

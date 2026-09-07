@@ -4,7 +4,7 @@ import json
 import os
 from enum import StrEnum
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Never
 
 import typer
 from pydantic import ValidationError
@@ -30,6 +30,11 @@ from flopbench.probe.service import (
 from flopbench.profile_loader import ProfileLoadError, load_profile
 from flopbench.readiness.engine import evaluate_readiness
 from flopbench.readiness.formatters import readiness_json, readiness_terminal
+from flopbench.reporting.canonical import canonical_bytes
+from flopbench.reporting.compare import compare_benchmarks, diff_exports
+from flopbench.reporting.errors import ReportError
+from flopbench.reporting.render import render_html, render_json, render_terminal
+from flopbench.reporting.service import create_export, load_export, load_report, write_new_file
 from flopbench.validator_doctor.formatters import doctor_json, doctor_terminal
 from flopbench.validator_doctor.models import NetworkTarget, TestLimits
 from flopbench.validator_doctor.service import (
@@ -49,6 +54,8 @@ doctor_app = typer.Typer(help="Run bounded, user-approved active health tests.")
 app.add_typer(doctor_app, name="doctor")
 benchmark_app = typer.Typer(help="Run provider-independent inference benchmarks.")
 app.add_typer(benchmark_app, name="benchmark")
+report_app = typer.Typer(help="Export, inspect, and compare privacy-aware reports.")
+app.add_typer(report_app, name="report")
 
 DEFAULT_PROFILE = Path("profiles/flop-teaser-0.1.yaml")
 DEFAULT_WORKLOAD = Path(__file__).resolve().parent / "workloads" / "smoke-v1.json"
@@ -84,6 +91,12 @@ class BenchmarkAdapterName(StrEnum):
     MOCK = "mock"
     OLLAMA = "ollama"
     OPENAI_COMPATIBLE = "openai-compatible"
+
+
+class ReportOutputFormat(StrEnum):
+    JSON = "json"
+    HTML = "html"
+    TERMINAL = "terminal"
 
 
 @app.command()
@@ -447,3 +460,94 @@ def benchmark_run(
     typer.echo(canonical_benchmark_json(report))
     if any(run.outcome == "cancelled" for run in report.runs):
         raise typer.Exit(code=130)
+
+
+def _report_failure(exc: ReportError) -> Never:
+    typer.echo(
+        json.dumps({"code": exc.code, "message": str(exc)}, separators=(",", ":"), sort_keys=True),
+        err=True,
+    )
+    raise typer.Exit(code=2) from exc
+
+
+@report_app.command("export")
+def report_export(
+    source: Annotated[Path, typer.Argument(help="Source FlopBench JSON report.")],
+    privacy: Annotated[
+        PrivacyLevel, typer.Option("--privacy", help="private, support, or public disclosure.")
+    ] = PrivacyLevel.PRIVATE,
+    output_format: Annotated[
+        ReportOutputFormat, typer.Option("--format", help="json, html, or terminal.")
+    ] = ReportOutputFormat.JSON,
+    output: Annotated[
+        Path | None, typer.Option("--output", help="Write a new output file.")
+    ] = None,
+    profile_path: Annotated[
+        Path | None, typer.Option("--profile", help="Bind a benchmark to this source profile.")
+    ] = None,
+    confirm_preview: Annotated[
+        str | None,
+        typer.Option(
+            "--confirm-preview",
+            help="For public writes, the exact digest shown by a prior preview.",
+        ),
+    ] = None,
+) -> None:
+    """Preview or export a deterministic, redacted report."""
+
+    try:
+        loaded_profile = load_profile(profile_path) if profile_path is not None else None
+        exported = create_export(load_report(source), privacy, profile=loaded_profile)
+        if output_format is ReportOutputFormat.JSON:
+            rendered = render_json(exported)
+        elif output_format is ReportOutputFormat.HTML:
+            rendered = render_html(exported)
+        else:
+            rendered = render_terminal(exported).encode("utf-8")
+        if output is None:
+            typer.echo(rendered.decode("utf-8"))
+            typer.echo(f"Preview digest: {exported.digest.value}", err=True)
+            return
+        if privacy is PrivacyLevel.PUBLIC and confirm_preview != exported.digest.value:
+            raise ReportError(
+                "report.public_preview_required",
+                "Public output requires its exact preview digest",
+            )
+        write_new_file(output, rendered)
+        typer.echo(f"Wrote {output.name}; digest sha256:{exported.digest.value}")
+    except ProfileLoadError as exc:
+        _report_failure(ReportError(str(exc.code), str(exc)))
+    except ReportError as exc:
+        _report_failure(exc)
+    except ValueError:
+        _report_failure(
+            ReportError("report.secret_detected", "Report contains credential-like material")
+        )
+
+
+@report_app.command("diff")
+def report_diff(
+    left: Annotated[Path, typer.Argument(help="First report export.")],
+    right: Annotated[Path, typer.Argument(help="Second report export.")],
+) -> None:
+    """Show a bounded structural diff between verified exports."""
+
+    try:
+        result = diff_exports(load_export(left), load_export(right))
+    except ReportError as exc:
+        _report_failure(exc)
+    typer.echo(canonical_bytes(result.model_dump(mode="json", by_alias=True)).decode("utf-8"))
+
+
+@report_app.command("compare")
+def report_compare(
+    left: Annotated[Path, typer.Argument(help="First benchmark export.")],
+    right: Annotated[Path, typer.Argument(help="Second benchmark export.")],
+) -> None:
+    """Compare only benchmarks with identical methodology context."""
+
+    try:
+        result = compare_benchmarks(load_export(left), load_export(right))
+    except ReportError as exc:
+        _report_failure(exc)
+    typer.echo(canonical_bytes(result.model_dump(mode="json", by_alias=True)).decode("utf-8"))

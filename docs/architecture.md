@@ -2,10 +2,11 @@
 
 ## Status
 
-Stage 5 inference-benchmark candidate. Versioned contracts, passive hardware
-collection, explainable readiness rules, consent-gated bounded health tests,
-and provider-independent inference benchmarking are implemented. API and
-functional dashboard features remain future boundaries.
+Stage 6 reporting candidate. Versioned contracts, passive hardware collection,
+explainable readiness rules, consent-gated bounded health tests,
+provider-independent inference benchmarking, privacy-aware exports, and
+compatibility-gated comparison are implemented. API and functional dashboard
+features remain future boundaries.
 
 ## Component boundaries
 
@@ -24,6 +25,7 @@ Optional external signer / future official testnet adapter
 - `src/flopbench`: Python CLI and domain core.
 - `src/flopbench/readiness`: pure profile-versus-probe rules and output formatting.
 - `src/flopbench/validator_doctor`: approval-gated active tests and bounded adapters.
+- `src/flopbench/reporting`: typed redaction, JCS digests, offline renderers, diff, and comparison.
 - `apps/api`: future FastAPI composition root; it must bind only to loopback.
 - `apps/web`: local React dashboard; it receives no private signing material.
 - `schemas`, `profiles`, and `fixtures`: versioned contracts and deterministic test data added from Stage 1 onward.
