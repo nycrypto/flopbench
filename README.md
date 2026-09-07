@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 3 (`v0.2.0`) and is validating Stage 4 active validator health tests. Strict data contracts, passive hardware inspection, explainable readiness checks, and consent-gated bounded disk/network/clock tests are available; benchmarking, report signing, and PoUI simulation are not implemented yet.
+FlopBench has completed Stage 4 (`v0.3.0`). Strict data contracts, passive hardware inspection, explainable readiness checks, and consent-gated bounded disk/network/clock tests are available; benchmarking, report signing, and PoUI simulation are not implemented yet.
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 

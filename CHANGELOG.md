@@ -4,6 +4,10 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.3.0] - 2026-09-07
+
 ### English
 
 - Added consent-gated, bounded disk, TCP-connect network, and optional NTP health tests.

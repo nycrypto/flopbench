@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 3'ü (`v0.2.0`) tamamlamış ve Aşama 4 aktif validator sağlık testlerini doğrulamaktadır. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri ve onay kapılı sınırlı disk/ağ/saat testleri mevcuttur; benchmark, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
+FlopBench Aşama 4'ü (`v0.3.0`) tamamlamıştır. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri ve onay kapılı sınırlı disk/ağ/saat testleri mevcuttur; benchmark, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 

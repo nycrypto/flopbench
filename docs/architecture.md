@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 4 active validator-test candidate. Versioned contracts, passive hardware
+Stage 4 active validator-test release. Versioned contracts, passive hardware
 collection, explainable readiness rules, and consent-gated bounded disk,
 network, and clock tests are implemented. Benchmark, API, and functional
 dashboard features remain future boundaries.
