@@ -1,6 +1,8 @@
 # Stage 5 acceptance record
 
 - Date: 2026-09-07
+- Stage gate: passed; user approval recorded in the project conversation
+- Release: `v0.4.0`
 - Platform: Windows, NVIDIA GeForce RTX 5060, 8,151 MiB VRAM, driver 610.88
 - Runtime: Ollama 0.33.3, loopback only, cloud disabled
 - Ollama archive SHA-256: `52cb36a62e7e501f61514f60212dec7117b6c098811357585e02fffe32d2fcd7`
@@ -53,6 +55,11 @@ chunk count is not used as a general tokenizer substitute.
 
 Local evidence under Git-ignored `.acceptance/stage5-recheck/`:
 
+The hardware capture predates the release version bump and therefore records
+tool version 0.3.0. Subsequent changes only adjusted the portable process flag,
+malformed-input handling, version metadata and the golden fixture; the measured
+success-path timing/throughput implementation is unchanged.
+
 - `report.json` SHA-256: `23d0ec1fa1c92a5be63d10ef994f33326dd2bf40b77fe458f0ca34b6896de294`
 - `nvidia-smi.csv` SHA-256: `ba07092698d8d5ef444c72e55f2b8da07646cc253d02534bda994676e599df9e`
 - `run-1.ndjson` through `run-4.ndjson`, and `summary.json`
@@ -83,14 +90,21 @@ git diff --check
   benchmark endpoint policy, bounded transport and response limits (66 branches)
 - Web: ESLint, TypeScript, 2 existing shell tests and Vite build passed
 - Python: wheel and sdist built; dependency consistency passed
-- Remote Windows/Ubuntu CI: release-candidate verification pending. Run
-  `34127285161` caught a Linux-only typecheck error in the Windows process flag;
-  the flag lookup is now portable, and local typechecking explicitly passes for
-  both Linux and Windows targets. Run `34127684736` checks that correction;
-  the final versioned release candidate must also pass before closure.
+- Remote Windows/Ubuntu CI: both jobs passed on the final Stage 5 commit
+  `150386f9a4f04df7cc6408f508febe93a90bf5ab` in
+  [run 34128860113](https://github.com/nycrypto/flopbench/actions/runs/34128860113).
+  Earlier run `34127285161` caught a Linux-only typecheck error in the Windows
+  process flag; the portable correction passed run `34127684736`. Local
+  typechecking also explicitly passes for both Linux and Windows targets.
+- Installed CLI: upgraded the workspace venv from stale 0.2.0 to 0.4.0;
+  `flopbench --version` and packaged default-workload mock execution passed.
+- Regression hardware check: the 8,546,942,976-byte GPU correctly fails the
+  versioned draft profile's 17,179,869,184-byte miner threshold.
 
 No official FLOP score, public hosted site, signing, or functional dashboard is
-claimed. Stage 6 is not open until the corrected Stage 5 remote gate passes.
+claimed. Stage 5 is complete in its defined scope; later stages are not implied
+complete by these results. The functional dashboard remains Stage 7 work, with
+the user's theme choice required before visual design.
 
 Method references: [NVIDIA NVML reference](https://docs.nvidia.com/deploy/pdf/NVML_API_Reference_Guide.pdf),
 [llama.cpp tokenizer API](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-tokenize-tokenize-a-given-text).
