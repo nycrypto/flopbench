@@ -43,7 +43,7 @@ def _addresses(host: str, port: int, check: Callable[[], None]) -> list[tuple[in
             [sys.executable, "-I", "-c", _RESOLVE, host, str(port)],
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
-            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
             env={
                 key: value
                 for key, value in os.environ.items()
