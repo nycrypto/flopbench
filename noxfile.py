@@ -44,7 +44,7 @@ def contract(session: nox.Session) -> None:
         "pytest",
         "tests/contract",
         "-m",
-        "stage0 or stage1 or stage2 or stage3 or stage4",
+        "stage0 or stage1 or stage2 or stage3 or stage4 or stage5",
         *pytest_isolation_args(session),
     )
 

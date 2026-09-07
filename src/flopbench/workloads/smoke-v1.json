@@ -1,0 +1,20 @@
+{
+  "schema": "flopbench-workload-v1",
+  "id": "smoke-v1",
+  "version": "1.0.0",
+  "seed": 5060,
+  "warmup_runs": 1,
+  "measured_runs": 3,
+  "prompts": [
+    {
+      "id": "concise-summary",
+      "prompt": "In one sentence, explain why deterministic benchmarks need fixed workloads.",
+      "max_tokens": 48
+    },
+    {
+      "id": "structured-list",
+      "prompt": "List exactly three properties of a reproducible inference benchmark.",
+      "max_tokens": 64
+    }
+  ]
+}

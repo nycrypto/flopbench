@@ -30,3 +30,8 @@ Thumbs.db
 # Local FlopBench output (never commit reports)
 /reports/
 *.flopbench-private.json
+
+# Local acceptance-test runtimes and model blobs
+/.tools/
+/.local-models/
+/.acceptance/

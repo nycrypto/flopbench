@@ -2,10 +2,10 @@
 
 ## Status
 
-Stage 4 active validator-test release. Versioned contracts, passive hardware
-collection, explainable readiness rules, and consent-gated bounded disk,
-network, and clock tests are implemented. Benchmark, API, and functional
-dashboard features remain future boundaries.
+Stage 5 inference-benchmark candidate. Versioned contracts, passive hardware
+collection, explainable readiness rules, consent-gated bounded health tests,
+and provider-independent inference benchmarking are implemented. API and
+functional dashboard features remain future boundaries.
 
 ## Component boundaries
 

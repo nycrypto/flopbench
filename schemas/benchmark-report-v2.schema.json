@@ -1,0 +1,440 @@
+{
+  "$defs": {
+    "BenchmarkAdapterIdentity": {
+      "additionalProperties": false,
+      "description": "Runtime identity without leaking a full endpoint URL.",
+      "properties": {
+        "endpoint_scope": {
+          "enum": [
+            "none",
+            "loopback",
+            "allowlisted_external"
+          ],
+          "title": "Endpoint Scope",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "runtime_version": {
+          "title": "Runtime Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "runtime_version",
+        "endpoint_scope"
+      ],
+      "title": "BenchmarkAdapterIdentity",
+      "type": "object"
+    },
+    "BenchmarkMetricSummary": {
+      "additionalProperties": false,
+      "description": "Raw successful samples plus nearest-rank percentiles.",
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/MetricConfidence"
+        },
+        "p50": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "P50"
+        },
+        "p95": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "P95"
+        },
+        "samples": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "title": "Samples",
+          "type": "array"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "confidence",
+        "samples",
+        "p50",
+        "p95"
+      ],
+      "title": "BenchmarkMetricSummary",
+      "type": "object"
+    },
+    "BenchmarkMetricsV2": {
+      "additionalProperties": false,
+      "description": "Required benchmark summaries.",
+      "properties": {
+        "latency": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        },
+        "peak_vram": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        },
+        "tokens_per_second": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        },
+        "ttft": {
+          "$ref": "#/$defs/BenchmarkMetricSummary"
+        }
+      },
+      "required": [
+        "ttft",
+        "tokens_per_second",
+        "latency",
+        "peak_vram"
+      ],
+      "title": "BenchmarkMetricsV2",
+      "type": "object"
+    },
+    "BenchmarkModelIdentity": {
+      "additionalProperties": false,
+      "description": "Model name and immutable content digest.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "digest_algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Digest Algorithm",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "digest"
+      ],
+      "title": "BenchmarkModelIdentity",
+      "type": "object"
+    },
+    "BenchmarkOutcome": {
+      "description": "Every terminal state of one measured request.",
+      "enum": [
+        "success",
+        "timeout",
+        "error",
+        "cancelled",
+        "partial"
+      ],
+      "title": "BenchmarkOutcome",
+      "type": "string"
+    },
+    "BenchmarkOutcomeSummary": {
+      "additionalProperties": false,
+      "description": "Complete measured-run accounting, including partial requests.",
+      "properties": {
+        "cancelled": {
+          "minimum": 0,
+          "title": "Cancelled",
+          "type": "integer"
+        },
+        "error": {
+          "minimum": 0,
+          "title": "Error",
+          "type": "integer"
+        },
+        "error_rate": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Error Rate",
+          "type": "number"
+        },
+        "partial": {
+          "minimum": 0,
+          "title": "Partial",
+          "type": "integer"
+        },
+        "success": {
+          "minimum": 0,
+          "title": "Success",
+          "type": "integer"
+        },
+        "timeout": {
+          "minimum": 0,
+          "title": "Timeout",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "success",
+        "timeout",
+        "error",
+        "cancelled",
+        "partial",
+        "error_rate"
+      ],
+      "title": "BenchmarkOutcomeSummary",
+      "type": "object"
+    },
+    "BenchmarkRunRecord": {
+      "additionalProperties": false,
+      "description": "Auditable outcome of one warmup or measured request.",
+      "properties": {
+        "error_code": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Code"
+        },
+        "generated_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Generated Tokens"
+        },
+        "latency_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latency Seconds"
+        },
+        "outcome": {
+          "$ref": "#/$defs/BenchmarkOutcome"
+        },
+        "peak_vram_bytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Peak Vram Bytes"
+        },
+        "prompt_id": {
+          "title": "Prompt Id",
+          "type": "string"
+        },
+        "raw_response_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Response Sha256"
+        },
+        "sequence": {
+          "exclusiveMinimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "tokens_per_second": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tokens Per Second"
+        },
+        "ttft_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ttft Seconds"
+        },
+        "warmup": {
+          "title": "Warmup",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "sequence",
+        "prompt_id",
+        "warmup",
+        "outcome"
+      ],
+      "title": "BenchmarkRunRecord",
+      "type": "object"
+    },
+    "BenchmarkWorkloadIdentity": {
+      "additionalProperties": false,
+      "description": "Exact versioned workload bytes and execution counts.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "measured_runs": {
+          "exclusiveMinimum": 0,
+          "title": "Measured Runs",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+          "title": "Version",
+          "type": "string"
+        },
+        "warmup_runs": {
+          "minimum": 0,
+          "title": "Warmup Runs",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "warmup_runs",
+        "measured_runs"
+      ],
+      "title": "BenchmarkWorkloadIdentity",
+      "type": "object"
+    },
+    "MetricConfidence": {
+      "description": "How a metric value was obtained.",
+      "enum": [
+        "measured",
+        "reported",
+        "derived",
+        "estimated",
+        "simulated"
+      ],
+      "title": "MetricConfidence",
+      "type": "string"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/benchmark-report-v2.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Published benchmark-report-v2 contract emitted by Stage 5.",
+  "properties": {
+    "adapter": {
+      "$ref": "#/$defs/BenchmarkAdapterIdentity"
+    },
+    "benchmark_id": {
+      "format": "uuid",
+      "title": "Benchmark Id",
+      "type": "string"
+    },
+    "finished_at": {
+      "format": "date-time",
+      "title": "Finished At",
+      "type": "string"
+    },
+    "metrics": {
+      "$ref": "#/$defs/BenchmarkMetricsV2"
+    },
+    "model": {
+      "$ref": "#/$defs/BenchmarkModelIdentity"
+    },
+    "outcomes": {
+      "$ref": "#/$defs/BenchmarkOutcomeSummary"
+    },
+    "runs": {
+      "items": {
+        "$ref": "#/$defs/BenchmarkRunRecord"
+      },
+      "title": "Runs",
+      "type": "array"
+    },
+    "schema": {
+      "const": "flopbench-benchmark-report-v2",
+      "title": "Schema",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "tool_version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$",
+      "title": "Tool Version",
+      "type": "string"
+    },
+    "workload": {
+      "$ref": "#/$defs/BenchmarkWorkloadIdentity"
+    }
+  },
+  "required": [
+    "schema",
+    "benchmark_id",
+    "adapter",
+    "model",
+    "workload",
+    "runs",
+    "metrics",
+    "outcomes",
+    "started_at",
+    "finished_at",
+    "tool_version"
+  ],
+  "title": "BenchmarkReportV2",
+  "type": "object"
+}

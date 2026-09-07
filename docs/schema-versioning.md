@@ -32,3 +32,8 @@ final values.
 The checked-in schemas, including `flopbench-probe-v1`, are generated
 deterministically from Pydantic models.
 Contract tests fail if generated and committed bytes differ.
+
+Stage 5 emits `flopbench-benchmark-report-v2`. The original v1 schema remains
+unchanged and supported as a validation contract; v2 adds per-run outcomes,
+nearest-rank summaries, runtime identity, and peak-VRAM observations without
+mutating the published v1 acceptance set.

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from flopbench.benchmark.models import BenchmarkReportV2
 from flopbench.contracts import BenchmarkReport, ReadinessReport, Receipt, SourceProfile
 from flopbench.probe.models import ProbeReport
 from flopbench.validator_doctor.models import ValidatorDoctorReport
@@ -16,6 +17,7 @@ SCHEMA_MODELS: dict[str, type[BaseModel]] = {
     "profile-v1.schema.json": SourceProfile,
     "readiness-report-v1.schema.json": ReadinessReport,
     "benchmark-report-v1.schema.json": BenchmarkReport,
+    "benchmark-report-v2.schema.json": BenchmarkReportV2,
     "receipt-v1.schema.json": Receipt,
     "probe-v1.schema.json": ProbeReport,
     "validator-doctor-v1.schema.json": ValidatorDoctorReport,

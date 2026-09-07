@@ -30,3 +30,10 @@ The passive probe calls Python platform APIs, `psutil`, filesystem capacity
 APIs, and NVIDIA NVML. It does not enumerate network interfaces and does not
 open sockets. Active disk, network, and clock tests are outside Stage 2 and
 require explicit user approval in Stage 4.
+
+Stage 5 benchmark adapters contact only the endpoint selected for that run.
+Loopback is the default; external hosts require an exact allowlist entry and an
+explicit approval flag. Redirects are not followed. Runtime response content
+is not stored in the report; only a SHA-256 digest of the bounded response is
+retained. Optional OpenAI-compatible API keys are read from the selected
+environment variable and are not serialized.

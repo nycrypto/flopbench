@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 4'ü (`v0.3.0`) tamamlamıştır. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri ve onay kapılı sınırlı disk/ağ/saat testleri mevcuttur; benchmark, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
+FlopBench Aşama 4'ü (`v0.3.0`) tamamlamış ve Aşama 5 inference benchmark'ını doğrulamaktadır. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri ve mock/Ollama/OpenAI-compatible benchmark adapter'ları mevcuttur; rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -18,6 +18,8 @@ Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosy
 - Git
 
 Docker ve GNU Make isteğe bağlıdır. Bütün kalite görevleri Python/Nox, pnpm ve PowerShell üzerinden çalıştırılabilir.
+
+Benchmark davranışı, metrik tanımları ve endpoint güvenlik kuralları [`docs/benchmarks.md`](./docs/benchmarks.md) içinde belgelenmiştir.
 
 ## Geliştirici kurulumu
 
