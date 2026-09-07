@@ -51,3 +51,11 @@ def test_mock_fixture_is_canonical_and_matches_v2_schema() -> None:
 
     Draft202012Validator(schema, format_checker=FormatChecker()).validate(json.loads(raw))
     assert canonical_benchmark_json(report) == raw
+    regenerated = run_benchmark(
+        DeterministicMockAdapter(),
+        load_workload(WORKLOAD),
+        report.model.name,
+        benchmark_id=report.benchmark_id,
+        now=lambda: report.started_at,
+    ).model_copy(update={"tool_version": report.tool_version})
+    assert canonical_benchmark_json(regenerated) == raw
