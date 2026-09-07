@@ -5,8 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import StrEnum
 from ipaddress import ip_address
+from re import fullmatch
 from typing import Literal
-from urllib.parse import unquote, urlsplit
+from urllib.parse import urlsplit
 
 
 class EndpointErrorCode(StrEnum):
@@ -51,7 +52,12 @@ def validate_endpoint(
 ) -> SafeEndpoint:
     """Accept loopback by default and exact, approved external hosts only."""
 
-    parsed = urlsplit(value)
+    if any(ord(character) <= 32 or ord(character) >= 127 for character in value):
+        raise EndpointError(EndpointErrorCode.INVALID, "Endpoint must use printable ASCII")
+    try:
+        parsed = urlsplit(value)
+    except ValueError as exc:
+        raise EndpointError(EndpointErrorCode.INVALID, "Endpoint URL is invalid") from exc
     if parsed.scheme not in {"http", "https"} or parsed.hostname is None:
         raise EndpointError(EndpointErrorCode.INVALID, "Endpoint must be an HTTP(S) URL")
     if parsed.username is not None or parsed.password is not None:
@@ -61,17 +67,21 @@ def validate_endpoint(
             EndpointErrorCode.INVALID, "Endpoint query and fragment are not allowed"
         )
     host = parsed.hostname.casefold().rstrip(".")
-    if not host or any(character.isspace() for character in host):
+    if not host or not fullmatch(r"[a-z0-9.:_-]+", host):
         raise EndpointError(EndpointErrorCode.INVALID, "Endpoint host is invalid")
     try:
-        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        port = parsed.port
     except ValueError as exc:
         raise EndpointError(EndpointErrorCode.INVALID, "Endpoint port is invalid") from exc
+    if port is None:
+        port = 443 if parsed.scheme == "https" else 80
     if not 1 <= port <= 65535:
         raise EndpointError(EndpointErrorCode.INVALID, "Endpoint port is invalid")
     scope: Literal["loopback", "allowlisted_external"]
     if _is_loopback(host):
         scope = "loopback"
+        if host == "localhost":
+            host = "127.0.0.1"  # Never resolve a supposedly local target through DNS.
     else:
         normalized_allowlist = {item.casefold().rstrip(".") for item in allowlist}
         if not allow_external or host not in normalized_allowlist:
@@ -81,8 +91,8 @@ def validate_endpoint(
             )
         scope = "allowlisted_external"
     base_path = parsed.path.rstrip("/")
-    if ".." in unquote(base_path).split("/"):
-        raise EndpointError(EndpointErrorCode.INVALID, "Endpoint path traversal is not allowed")
+    if not fullmatch(r"(?:/[A-Za-z0-9._~-]+)*", base_path) or ".." in base_path.split("/"):
+        raise EndpointError(EndpointErrorCode.INVALID, "Endpoint path is invalid")
     return SafeEndpoint(
         scheme=parsed.scheme,
         host=host,

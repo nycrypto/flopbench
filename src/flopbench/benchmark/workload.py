@@ -66,7 +66,8 @@ def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
 
 def load_workload(path: Path, *, max_bytes: int = MAX_WORKLOAD_BYTES) -> LoadedWorkload:
     try:
-        raw = path.read_bytes()
+        with path.open("rb") as stream:
+            raw = stream.read(max_bytes + 1)
     except OSError as exc:
         raise WorkloadError(WorkloadErrorCode.READ_ERROR, "Workload could not be read") from exc
     if len(raw) > max_bytes:

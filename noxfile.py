@@ -55,7 +55,12 @@ def security(session: nox.Session) -> None:
     session.run(
         "pytest",
         "tests/security",
+        "tests/unit/test_benchmark_transport.py",
+        "tests/unit/test_benchmark_response_limits.py",
         "--cov=flopbench.probe.privacy",
+        "--cov=flopbench.benchmark.endpoint",
+        "--cov=flopbench.benchmark.transport",
+        "--cov=flopbench.benchmark.response_limits",
         "--cov-branch",
         "--cov-report=term-missing",
         "--cov-fail-under=100",

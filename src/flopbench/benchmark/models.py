@@ -82,6 +82,12 @@ class BenchmarkRunRecord(StrictModel):
             raise ValueError("successful run cannot contain an error code")
         if self.outcome is not BenchmarkOutcome.SUCCESS and self.error_code is None:
             raise ValueError("non-successful run requires an error code")
+        if (
+            self.ttft_seconds is not None
+            and self.latency_seconds is not None
+            and self.ttft_seconds > self.latency_seconds
+        ):
+            raise ValueError("TTFT must not exceed latency")
         return self
 
 
@@ -100,8 +106,13 @@ class BenchmarkMetricSummary(StrictModel):
             raise ValueError("empty metric samples require null percentiles")
         if self.samples and (self.p50 is None or self.p95 is None):
             raise ValueError("metric samples require p50 and p95")
-        if any(not math.isfinite(sample) for sample in self.samples):
-            raise ValueError("metric samples must be finite")
+        if self.samples:
+            ordered = sorted(self.samples)
+            if (
+                self.p50 != ordered[math.ceil(len(ordered) * 0.5) - 1]
+                or self.p95 != ordered[math.ceil(len(ordered) * 0.95) - 1]
+            ):
+                raise ValueError("percentiles must match nearest-rank samples")
         return self
 
 
@@ -153,6 +164,12 @@ class BenchmarkReportV2(StrictModel):
         if self.finished_at < self.started_at:
             raise ValueError("finished_at must not precede started_at")
         measured = [run for run in self.runs if not run.warmup]
+        total = self.workload.warmup_runs + self.workload.measured_runs
+        if len(self.runs) != total or any(
+            run.sequence != index + 1 or run.warmup != (index < self.workload.warmup_runs)
+            for index, run in enumerate(self.runs)
+        ):
+            raise ValueError("run sequence and warmup count must match workload")
         if len(measured) != self.workload.measured_runs:
             raise ValueError("measured run count must match workload")
         expected = dict.fromkeys(BenchmarkOutcome, 0)
@@ -169,4 +186,16 @@ class BenchmarkReportV2(StrictModel):
         expected_error_rate = (self.outcomes.total - self.outcomes.success) / self.outcomes.total
         if not math.isclose(self.outcomes.error_rate, expected_error_rate, abs_tol=1e-12):
             raise ValueError("error_rate must include every non-success outcome")
+        successful = [run for run in measured if run.outcome is BenchmarkOutcome.SUCCESS]
+        for summary, field in (
+            (self.metrics.ttft, "ttft_seconds"),
+            (self.metrics.latency, "latency_seconds"),
+            (self.metrics.tokens_per_second, "tokens_per_second"),
+            (self.metrics.peak_vram, "peak_vram_bytes"),
+        ):
+            observed = [
+                getattr(run, field) for run in successful if getattr(run, field) is not None
+            ]
+            if summary.samples != observed:
+                raise ValueError("summary samples must match successful measured runs")
         return self

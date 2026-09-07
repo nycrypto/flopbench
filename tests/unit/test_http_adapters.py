@@ -4,11 +4,19 @@ import json
 from collections.abc import Iterator
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from threading import Event, Thread
+from threading import Event, Thread, Timer
+from threading import enumerate as enumerate_threads
+from time import perf_counter, sleep
 
 import pytest
 
-from flopbench.benchmark.adapters import AdapterError, AdapterRequest
+from flopbench.benchmark.adapters import (
+    AdapterCancelledError,
+    AdapterError,
+    AdapterPartialError,
+    AdapterRequest,
+    AdapterTimeoutError,
+)
 from flopbench.benchmark.endpoint import validate_endpoint
 from flopbench.benchmark.http_adapters import OllamaAdapter, OpenAICompatibleAdapter
 
@@ -49,6 +57,46 @@ class _RuntimeHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         length = int(self.headers.get("Content-Length", "0"))
         self.server.requests.append((self.path, self.rfile.read(length)))  # type: ignore[attr-defined]
+        if self.path.startswith(("/delay/", "/trickle/", "/silent/", "/eof/", "/bad-length/")):
+            ollama = self.path.endswith("/api/generate")
+            content = (
+                b'{"response":"hello","done":false}\n'
+                if ollama
+                else b'data: {"choices":[{"delta":{"content":"hello"}}]}\n\n'
+            )
+            final = (
+                b'{"done":true,"eval_count":2,"eval_duration":100000000}\n'
+                if ollama
+                else b'data: {"usage":{"completion_tokens":2}}\n\ndata: [DONE]\n\n'
+            )
+            try:
+                if self.path.startswith("/delay/"):
+                    sleep(0.2)
+                    self._write(200, content + final, "text/plain")
+                elif self.path.startswith("/eof/"):
+                    self._write(
+                        200, content + final.replace(b"data: [DONE]\n\n", b""), "text/plain"
+                    )
+                else:
+                    self.send_response(200)
+                    self.send_header("Connection", "close")
+                    if self.path.startswith("/bad-length/"):
+                        self.send_header("Content-Length", "invalid")
+                    self.end_headers()
+                    self.close_connection = True
+                    if self.path.startswith("/silent/"):
+                        sleep(0.8)
+                    elif self.path.startswith("/trickle/"):
+                        self.wfile.write(content)
+                        self.wfile.flush()
+                        # No newline: socket activity must not reset the total deadline.
+                        for _ in range(20):
+                            self.wfile.write(b" ")
+                            self.wfile.flush()
+                            sleep(0.05)
+            except OSError:
+                pass  # Expected when the client cancels or reaches its deadline.
+            return
         if self.path == "/api/generate":
             body = (
                 b'{"response":"hello","done":false}\n'
@@ -206,3 +254,87 @@ def test_cancelled_stream_closes_active_connection() -> None:
         with pytest.raises(AdapterCancelledError):
             adapter.run(_request(), cancelled)
         assert adapter._active is None
+
+
+def _adapter(url: str, kind: str) -> OllamaAdapter | OpenAICompatibleAdapter:
+    if kind == "ollama":
+        adapter = OllamaAdapter(validate_endpoint(url))
+        adapter._model_name = "fixture:latest"
+        return adapter
+    return OpenAICompatibleAdapter(validate_endpoint(url), model_digest=DIGEST)
+
+
+@pytest.mark.parametrize("kind", ["ollama", "openai"])
+def test_ttft_includes_delayed_response_headers(kind: str) -> None:
+    with _runtime() as (url, _):
+        adapter = _adapter(f"{url}/delay", kind)
+        sample = adapter.run(_request(), Event())
+        assert sample.ttft_seconds >= 0.18
+        assert sample.latency_seconds >= sample.ttft_seconds
+        assert adapter._active is None
+
+
+@pytest.mark.parametrize("kind", ["ollama", "openai"])
+@pytest.mark.parametrize("path", ["delay", "silent", "trickle"])
+def test_total_deadline_includes_headers_and_trickling_body(kind: str, path: str) -> None:
+    with _runtime() as (url, _):
+        adapter = _adapter(f"{url}/{path}", kind)
+        started = perf_counter()
+        with pytest.raises(AdapterTimeoutError) as caught:
+            adapter.run(AdapterRequest("test", 8, 7, 0.12), Event())
+        if path == "trickle":
+            assert caught.value.sample is not None
+            assert caught.value.sample.generated_tokens is None
+        assert perf_counter() - started < 0.7
+        assert adapter._active is None
+        assert not any(t.name == "flopbench-http-deadline" for t in enumerate_threads())
+
+
+@pytest.mark.parametrize("kind", ["ollama", "openai"])
+@pytest.mark.parametrize("path", ["delay", "silent", "trickle"])
+def test_cancellation_interrupts_blocking_io(kind: str, path: str) -> None:
+    with _runtime() as (url, _):
+        adapter = _adapter(f"{url}/{path}", kind)
+        cancel = Event()
+        timer = Timer(0.08, cancel.set)
+        timer.start()
+        started = perf_counter()
+        try:
+            with pytest.raises(AdapterCancelledError) as caught:
+                adapter.run(_request(), cancel)
+            if path == "trickle":
+                assert caught.value.sample is not None
+        finally:
+            timer.cancel()
+            timer.join()
+        assert perf_counter() - started < 0.7
+        assert adapter._active is None
+        assert not any(t.name == "flopbench-http-deadline" for t in enumerate_threads())
+
+
+@pytest.mark.parametrize("kind", ["ollama", "openai"])
+def test_invalid_header_closes_connection_without_caller_cleanup(kind: str) -> None:
+    with _runtime() as (url, _):
+        adapter = _adapter(f"{url}/bad-length", kind)
+        with pytest.raises(AdapterError, match="Content-Length"):
+            adapter.run(_request(), Event())
+        assert adapter._active is None
+
+
+def test_openai_eof_with_usage_but_without_done_is_partial() -> None:
+    with _runtime() as (url, _):
+        adapter = _adapter(f"{url}/eof", "openai")
+        with pytest.raises(AdapterPartialError) as caught:
+            adapter.run(_request(), Event())
+        assert caught.value.sample.generated_tokens == 2
+        assert caught.value.sample.tokens_per_second is None
+
+
+@pytest.mark.parametrize("kind", ["ollama", "openai"])
+def test_unknown_partial_token_count_is_null_not_zero(kind: str) -> None:
+    with _runtime() as (url, _):
+        adapter = _adapter(f"{url}/partial", kind)
+        with pytest.raises(AdapterPartialError) as caught:
+            adapter.run(_request(), Event())
+        assert caught.value.sample.generated_tokens is None
+        assert caught.value.sample.tokens_per_second is None

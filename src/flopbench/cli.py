@@ -445,3 +445,5 @@ def benchmark_run(
         )
         raise typer.Exit(code=130) from exc
     typer.echo(canonical_benchmark_json(report))
+    if any(run.outcome == "cancelled" for run in report.runs):
+        raise typer.Exit(code=130)

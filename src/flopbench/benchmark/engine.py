@@ -38,10 +38,12 @@ class BenchmarkCancelledError(RuntimeError):
     """Raised after adapter cleanup when the user cancels a benchmark."""
 
 
-def _metric(samples: list[float], unit: str) -> BenchmarkMetricSummary:
+def _metric(
+    samples: list[float], unit: str, confidence: MetricConfidence = MetricConfidence.MEASURED
+) -> BenchmarkMetricSummary:
     return BenchmarkMetricSummary(
         unit=unit,
-        confidence=MetricConfidence.MEASURED,
+        confidence=confidence,
         samples=samples,
         p50=nearest_rank(samples, 50) if samples else None,
         p95=nearest_rank(samples, 95) if samples else None,
@@ -99,7 +101,16 @@ def run_benchmark(
             warmup = offset < definition.warmup_runs
             prompt = definition.prompts[offset % len(definition.prompts)]
             if cancellation.is_set():
-                raise BenchmarkCancelledError("Benchmark cancelled by user")
+                records.append(
+                    _record(
+                        offset + 1,
+                        prompt.id,
+                        warmup,
+                        BenchmarkOutcome.CANCELLED,
+                        error_code="benchmark.cancelled_before_start",
+                    )
+                )
+                continue
             request = AdapterRequest(
                 prompt=prompt.prompt,
                 max_tokens=prompt.max_tokens,
@@ -111,7 +122,6 @@ def run_benchmark(
             sample: AdapterSample | None = None
             outcome = BenchmarkOutcome.SUCCESS
             error_code: str | None = None
-            cancelled_error: AdapterCancelledError | None = None
             try:
                 sample = adapter.run(request, cancellation)
             except AdapterPartialError as exc:
@@ -120,16 +130,23 @@ def run_benchmark(
                 error_code = exc.code
             except AdapterTimeoutError as exc:
                 outcome = BenchmarkOutcome.TIMEOUT
+                sample = exc.sample
                 error_code = exc.code
             except AdapterCancelledError as exc:
-                cancelled_error = exc
+                cancellation.set()
+                outcome = BenchmarkOutcome.CANCELLED
+                sample = exc.sample
+                error_code = exc.code
+            except KeyboardInterrupt:
+                cancellation.set()
+                outcome = BenchmarkOutcome.CANCELLED
+                error_code = "benchmark.cancelled"
             except AdapterError as exc:
                 outcome = BenchmarkOutcome.ERROR
+                sample = exc.sample
                 error_code = exc.code
             finally:
                 peak_vram_bytes = vram_observer.stop() if vram_observer is not None else None
-            if cancelled_error is not None:
-                raise BenchmarkCancelledError("Benchmark cancelled by user") from cancelled_error
             records.append(
                 _record(
                     offset + 1,
@@ -153,6 +170,13 @@ def run_benchmark(
     vram_samples = [
         float(record.peak_vram_bytes) for record in successful if record.peak_vram_bytes is not None
     ]
+    timing_confidence = (
+        MetricConfidence.SIMULATED if adapter.identity.name == "mock" else MetricConfidence.MEASURED
+    )
+    throughput_confidence = {
+        "mock": MetricConfidence.SIMULATED,
+        "ollama": MetricConfidence.REPORTED,
+    }.get(adapter.identity.name, MetricConfidence.DERIVED)
     return BenchmarkReportV2(
         schema="flopbench-benchmark-report-v2",
         benchmark_id=benchmark_id or uuid4(),
@@ -170,6 +194,7 @@ def run_benchmark(
             ttft=_metric(
                 [record.ttft_seconds for record in successful if record.ttft_seconds is not None],
                 "second",
+                timing_confidence,
             ),
             tokens_per_second=_metric(
                 [
@@ -178,6 +203,7 @@ def run_benchmark(
                     if record.tokens_per_second is not None
                 ],
                 "token/second",
+                throughput_confidence,
             ),
             latency=_metric(
                 [
@@ -186,6 +212,7 @@ def run_benchmark(
                     if record.latency_seconds is not None
                 ],
                 "second",
+                timing_confidence,
             ),
             peak_vram=_metric(vram_samples, "byte"),
         ),

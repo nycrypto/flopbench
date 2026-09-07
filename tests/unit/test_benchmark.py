@@ -20,7 +20,6 @@ from flopbench.benchmark.adapters import (
 )
 from flopbench.benchmark.endpoint import EndpointError, EndpointErrorCode, validate_endpoint
 from flopbench.benchmark.engine import (
-    BenchmarkCancelledError,
     canonical_benchmark_json,
     run_benchmark,
 )
@@ -63,6 +62,8 @@ def test_s5_t01_deterministic_mock_has_fixed_metrics() -> None:
     assert report.metrics.latency.samples == [0.41, 0.42, 0.43]
     assert report.outcomes.success == 3
     assert report.outcomes.error_rate == 0
+    assert report.metrics.ttft.confidence == "simulated"
+    assert report.metrics.tokens_per_second.confidence == "simulated"
     assert adapter.closed
 
 
@@ -158,12 +159,30 @@ def test_s5_t08_same_fixture_has_byte_identical_canonical_report() -> None:
 
 
 def test_s5_t09_cancellation_always_closes_adapter() -> None:
-    adapter = _ScriptedAdapter([AdapterCancelledError("cancel")])
-
-    with pytest.raises(BenchmarkCancelledError):
-        run_benchmark(adapter, _workload(warmups=0, measured=1), "fixture", now=lambda: FIXED_TIME)
+    adapter = _ScriptedAdapter([_sample(0.1, 1), AdapterCancelledError("cancel")])
+    report = run_benchmark(adapter, _workload(warmups=0), "fixture", now=lambda: FIXED_TIME)
 
     assert adapter.closed
+    assert report.outcomes.success == 1
+    assert report.outcomes.cancelled == 2
+    assert report.outcomes.error_rate == pytest.approx(2 / 3)
+    assert report.runs[-1].error_code == "benchmark.cancelled_before_start"
+    assert adapter.position == 2
+
+
+def test_keyboard_interrupt_preserves_completed_runs_and_cleans_observer() -> None:
+    adapter = _ScriptedAdapter([_sample(0.1, 1), KeyboardInterrupt()])
+    observer = _FakeVramObserver()
+    report = run_benchmark(
+        adapter,
+        _workload(warmups=0),
+        "fixture",
+        vram_observer=observer,
+    )
+    assert adapter.closed
+    assert observer.starts == observer.stops == 2
+    assert report.outcomes.success == 1
+    assert report.outcomes.cancelled == 2
 
 
 class _FakeVramObserver:

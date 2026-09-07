@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 import http.client
+import io
 import json
+import socket
+from collections.abc import Callable
 from threading import Event
 from time import perf_counter
 from typing import Any
 
 from flopbench.benchmark.adapters import (
-    AdapterCancelledError,
     AdapterError,
     AdapterPartialError,
     AdapterRequest,
@@ -18,9 +20,42 @@ from flopbench.benchmark.adapters import (
 )
 from flopbench.benchmark.endpoint import SafeEndpoint
 from flopbench.benchmark.models import BenchmarkAdapterIdentity, BenchmarkModelIdentity
+from flopbench.benchmark.response_limits import bounded_body, bounded_lines, reject_unsafe_response
+from flopbench.benchmark.transport import BoundedConnection, check_deadline
 
-MAX_RESPONSE_BYTES = 2 * 1024 * 1024
-MAX_LINE_BYTES = 128 * 1024
+
+class _InterruptibleReader(io.RawIOBase):
+    """Keep HTTP parser buffers intact while polling a silent socket for cancellation."""
+
+    def __init__(self, sock: socket.socket, check: Callable[[], None]) -> None:
+        self._socket = sock
+        self._check = check
+        # Keep the descriptor alive if HTTPConnection detaches a close-delimited response.
+        self._lease = sock.makefile("rb", buffering=0)
+
+    def readable(self) -> bool:
+        return True
+
+    def readinto(self, buffer: Any) -> int:
+        while True:
+            self._check()
+            try:
+                return self._socket.recv_into(buffer)
+            except TimeoutError:
+                continue
+
+    def close(self) -> None:
+        self._lease.close()
+        super().close()
+
+
+class _ResponseSocket:
+    def __init__(self, sock: socket.socket, check: Callable[[], None]) -> None:
+        self.sock = sock
+        self.check = check
+
+    def makefile(self, mode: str) -> io.BufferedReader:
+        return io.BufferedReader(_InterruptibleReader(self.sock, self.check))
 
 
 class _HttpAdapter:
@@ -28,20 +63,10 @@ class _HttpAdapter:
         self.endpoint = endpoint
         self._active: http.client.HTTPConnection | None = None
 
-    def _connection(self, timeout: float) -> http.client.HTTPConnection:
-        connection_type = (
-            http.client.HTTPSConnection
-            if self.endpoint.scheme == "https"
-            else http.client.HTTPConnection
-        )
-        connection = connection_type(self.endpoint.host, self.endpoint.port, timeout=timeout)
-        self._active = connection
-        return connection
-
     def _path(self, route: str) -> str:
         return f"{self.endpoint.base_path}{route}" or "/"
 
-    def _request(
+    def _exchange[T](
         self,
         method: str,
         route: str,
@@ -49,58 +74,74 @@ class _HttpAdapter:
         timeout: float,
         body: bytes | None = None,
         headers: dict[str, str] | None = None,
-    ) -> tuple[http.client.HTTPConnection, http.client.HTTPResponse]:
-        connection = self._connection(timeout)
+        cancel: Event | None = None,
+        consume: Callable[[http.client.HTTPResponse, float], T],
+    ) -> T:
+        # Include connect, headers and the entire body in both the clock and deadline.
+        started = perf_counter()
+        cancellation = cancel if cancel is not None else Event()
+        response: http.client.HTTPResponse | None = None
+
+        def check(sample: AdapterSample | None = None) -> None:
+            try:
+                check_deadline(started, timeout, cancellation)
+            except AdapterError as exc:
+                exc.sample = sample
+                raise
+
+        connection = BoundedConnection(
+            self.endpoint.host,
+            self.endpoint.port,
+            tls=self.endpoint.scheme == "https",
+            check=check,
+        )
+        self._active = connection
         try:
+            check()
+            connection.connect()
+            check()
             connection.request(method, self._path(route), body=body, headers=headers or {})
+            assert connection.sock is not None
+            connection.sock.settimeout(min(0.05, timeout))
+
+            class InterruptibleResponse(http.client.HTTPResponse):
+                def __init__(self, sock: socket.socket, **kwargs: Any) -> None:
+                    super().__init__(_ResponseSocket(sock, check), **kwargs)  # type: ignore[arg-type]
+
+            connection.response_class = InterruptibleResponse
             response = connection.getresponse()
+            check()
+            reject_unsafe_response(response)
+            result = consume(response, started)
+            check()
+            return result
+        except AdapterError as exc:
+            check(exc.sample)
+            raise
         except TimeoutError as exc:
-            connection.close()
-            self._active = None
+            check()
             raise AdapterTimeoutError("Runtime request timed out") from exc
-        except OSError as exc:
-            connection.close()
-            self._active = None
+        except (OSError, http.client.HTTPException) as exc:
+            check()
             raise AdapterError("Runtime connection failed") from exc
-        if 300 <= response.status < 400:
+        finally:
+            if response is not None:
+                response.close()
             connection.close()
             self._active = None
-            raise AdapterError("Runtime redirect was rejected")
-        if response.status < 200 or response.status >= 300:
-            connection.close()
-            self._active = None
-            raise AdapterError(f"Runtime returned HTTP {response.status}")
-        return connection, response
 
     def _json(self, route: str, *, timeout: float) -> dict[str, Any]:
-        connection, response = self._request("GET", route, timeout=timeout)
-        try:
-            content_length = response.getheader("Content-Length")
-            if content_length is not None and int(content_length) > MAX_RESPONSE_BYTES:
-                raise AdapterError("Runtime response exceeds the size limit")
-            raw = response.read(MAX_RESPONSE_BYTES + 1)
-            if len(raw) > MAX_RESPONSE_BYTES:
-                raise AdapterError("Runtime response exceeds the size limit")
-            payload = json.loads(raw)
+        def consume(response: http.client.HTTPResponse, started: float) -> dict[str, Any]:
+            raw = bounded_body(response)
+            try:
+                payload = json.loads(raw)
+            except (ValueError, UnicodeDecodeError) as exc:
+                raise AdapterError("Runtime returned malformed JSON") from exc
             if not isinstance(payload, dict):
                 raise AdapterError("Runtime returned malformed JSON")
             return payload
-        except (ValueError, UnicodeDecodeError) as exc:
-            raise AdapterError("Runtime returned malformed JSON") from exc
-        finally:
-            connection.close()
-            self._active = None
 
-    @staticmethod
-    def _reject_oversized_header(response: http.client.HTTPResponse) -> None:
-        content_length = response.getheader("Content-Length")
-        if content_length is not None:
-            try:
-                declared_length = int(content_length)
-            except ValueError as exc:
-                raise AdapterError("Runtime Content-Length is invalid") from exc
-            if declared_length < 0 or declared_length > MAX_RESPONSE_BYTES:
-                raise AdapterError("Runtime response exceeds the size limit")
+        return self._exchange("GET", route, timeout=timeout, consume=consume)
 
     def close(self) -> None:
         if self._active is not None:
@@ -127,27 +168,24 @@ class OllamaAdapter(_HttpAdapter):
             },
             separators=(",", ":"),
         ).encode()
-        connection, response = self._request(
+        return self._exchange(
             "POST",
             "/api/generate",
             timeout=request.timeout_seconds,
             body=body,
             headers={"Content-Type": "application/json"},
+            cancel=cancel,
+            consume=lambda response, started: self._consume(response, started, cancel),
         )
-        self._reject_oversized_header(response)
-        started = perf_counter()
+
+    def _consume(
+        self, response: http.client.HTTPResponse, started: float, cancel: Event
+    ) -> AdapterSample:
         first_token_at: float | None = None
         raw = bytearray()
         text_seen = False
         try:
-            while True:
-                if cancel.is_set():
-                    raise AdapterCancelledError("Benchmark cancelled")
-                line = response.readline(MAX_LINE_BYTES + 1)
-                if not line:
-                    break
-                if len(line) > MAX_LINE_BYTES or len(raw) + len(line) > MAX_RESPONSE_BYTES:
-                    raise AdapterError("Runtime response exceeds the size limit")
+            for line in bounded_lines(response, cancel):
                 raw.extend(line)
                 try:
                     chunk = json.loads(line)
@@ -188,15 +226,16 @@ class OllamaAdapter(_HttpAdapter):
             if text_seen:
                 raise AdapterPartialError(self._partial_sample(started, first_token_at, bytes(raw)))
             raise AdapterError("Ollama stream ended without output")
-        except TimeoutError as exc:
+        except AdapterError as exc:
+            if text_seen and exc.sample is None:
+                exc.sample = self._partial_sample(started, first_token_at, bytes(raw))
+            raise
+        except (OSError, http.client.HTTPException) as exc:
             if text_seen:
                 raise AdapterPartialError(
                     self._partial_sample(started, first_token_at, bytes(raw))
                 ) from exc
-            raise AdapterTimeoutError("Runtime request timed out") from exc
-        finally:
-            connection.close()
-            self._active = None
+            raise
 
     def _partial_sample(
         self, started: float, first_token_at: float | None, raw: bytes
@@ -206,8 +245,8 @@ class OllamaAdapter(_HttpAdapter):
         return AdapterSample(
             ttft_seconds=ttft,
             latency_seconds=finished - started,
-            generated_tokens=0,
-            tokens_per_second=0.0,
+            generated_tokens=None,
+            tokens_per_second=None,
             raw_response=raw,
         )
 
@@ -283,34 +322,33 @@ class OpenAICompatibleAdapter(_HttpAdapter):
         headers = {"Content-Type": "application/json", "Accept": "text/event-stream"}
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
-        connection, response = self._request(
+        return self._exchange(
             "POST",
             "/chat/completions",
             timeout=request.timeout_seconds,
             body=body,
             headers=headers,
+            cancel=cancel,
+            consume=lambda response, started: self._consume(response, started, cancel),
         )
-        self._reject_oversized_header(response)
-        started = perf_counter()
+
+    def _consume(
+        self, response: http.client.HTTPResponse, started: float, cancel: Event
+    ) -> AdapterSample:
         first_token_at: float | None = None
         completion_tokens: int | None = None
         raw = bytearray()
         content_seen = False
+        done_seen = False
         try:
-            while True:
-                if cancel.is_set():
-                    raise AdapterCancelledError("Benchmark cancelled")
-                line = response.readline(MAX_LINE_BYTES + 1)
-                if not line:
-                    break
-                if len(line) > MAX_LINE_BYTES or len(raw) + len(line) > MAX_RESPONSE_BYTES:
-                    raise AdapterError("Runtime response exceeds the size limit")
+            for line in bounded_lines(response, cancel):
                 raw.extend(line)
                 stripped = line.strip()
                 if not stripped or not stripped.startswith(b"data:"):
                     continue
                 data = stripped[5:].strip()
                 if data == b"[DONE]":
+                    done_seen = True
                     break
                 try:
                     chunk = json.loads(data)
@@ -348,7 +386,7 @@ class OpenAICompatibleAdapter(_HttpAdapter):
                     ):
                         completion_tokens = candidate
             finished = perf_counter()
-            if not content_seen or first_token_at is None or completion_tokens is None:
+            if not done_seen or first_token_at is None or completion_tokens is None:
                 if content_seen:
                     raise AdapterPartialError(
                         self._partial_sample(started, first_token_at, completion_tokens, bytes(raw))
@@ -362,15 +400,18 @@ class OpenAICompatibleAdapter(_HttpAdapter):
                 tokens_per_second=completion_tokens / generation_seconds,
                 raw_response=bytes(raw),
             )
-        except TimeoutError as exc:
+        except AdapterError as exc:
+            if content_seen and exc.sample is None:
+                exc.sample = self._partial_sample(
+                    started, first_token_at, completion_tokens, bytes(raw)
+                )
+            raise
+        except (OSError, http.client.HTTPException) as exc:
             if content_seen:
                 raise AdapterPartialError(
                     self._partial_sample(started, first_token_at, completion_tokens, bytes(raw))
                 ) from exc
-            raise AdapterTimeoutError("Runtime request timed out") from exc
-        finally:
-            connection.close()
-            self._active = None
+            raise
 
     def _partial_sample(
         self,
@@ -380,12 +421,10 @@ class OpenAICompatibleAdapter(_HttpAdapter):
         raw: bytes,
     ) -> AdapterSample:
         finished = perf_counter()
-        tokens = completion_tokens or 0
-        generation_seconds = max(finished - (first_token_at or finished), 1e-12)
         return AdapterSample(
             ttft_seconds=0.0 if first_token_at is None else first_token_at - started,
             latency_seconds=finished - started,
-            generated_tokens=tokens,
-            tokens_per_second=tokens / generation_seconds,
+            generated_tokens=completion_tokens,
+            tokens_per_second=None,
             raw_response=raw,
         )

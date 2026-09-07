@@ -55,8 +55,8 @@ jobs:
       - name: Python typecheck
         run: python -m nox -s typecheck
 
-      - name: Python unit and contract tests
-        run: python -m nox -s unit contract
+      - name: Python unit, contract and security tests
+        run: python -m nox -s unit contract security
 
       - name: Web lint
         run: pnpm --filter @flopbench/web lint
@@ -67,7 +67,8 @@ jobs:
       - name: Web tests
         run: pnpm --filter @flopbench/web test
 
-      - name: Build Python and web artifacts
-        run: |
-          python -m nox -s build
-          pnpm --filter @flopbench/web build
+      - name: Build Python artifacts
+        run: python -m nox -s build
+
+      - name: Build web artifacts
+        run: pnpm --filter @flopbench/web build

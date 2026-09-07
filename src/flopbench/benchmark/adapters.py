@@ -22,13 +22,17 @@ class AdapterRequest:
 class AdapterSample:
     ttft_seconds: float
     latency_seconds: float
-    generated_tokens: int
-    tokens_per_second: float
+    generated_tokens: int | None
+    tokens_per_second: float | None
     raw_response: bytes
 
 
 class AdapterError(RuntimeError):
     code = "benchmark.adapter_error"
+
+    def __init__(self, message: str, sample: AdapterSample | None = None) -> None:
+        super().__init__(message)
+        self.sample = sample
 
 
 class AdapterTimeoutError(AdapterError):
@@ -41,9 +45,10 @@ class AdapterCancelledError(AdapterError):
 
 class AdapterPartialError(AdapterError):
     code = "benchmark.partial"
+    sample: AdapterSample
 
     def __init__(self, sample: AdapterSample) -> None:
-        super().__init__("Adapter stream ended after partial output")
+        super().__init__("Adapter stream ended after partial output", sample)
         self.sample = sample
 
 

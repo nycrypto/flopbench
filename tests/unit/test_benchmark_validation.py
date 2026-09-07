@@ -5,7 +5,9 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from flopbench.benchmark.models import BenchmarkMetricSummary, BenchmarkRunRecord
+from flopbench.benchmark.adapters import DeterministicMockAdapter
+from flopbench.benchmark.engine import run_benchmark
+from flopbench.benchmark.models import BenchmarkMetricSummary, BenchmarkReportV2, BenchmarkRunRecord
 from flopbench.benchmark.workload import WorkloadError, WorkloadErrorCode, load_workload
 from flopbench.contracts import MetricConfidence
 
@@ -76,6 +78,24 @@ def test_metric_summary_empty_state_is_consistent() -> None:
             p50=1.0,
             p95=None,
         )
+
+
+@pytest.mark.parametrize("mutation", ["sequence", "warmup", "percentile", "samples", "ttft"])
+def test_report_rejects_tampered_measurement_accounting(mutation: str) -> None:
+    report = run_benchmark(DeterministicMockAdapter(), load_workload(WORKLOAD), "fixture")
+    payload = report.model_dump(mode="json", by_alias=True)
+    if mutation == "sequence":
+        payload["runs"][0]["sequence"] = 99
+    elif mutation == "warmup":
+        payload["runs"][0]["warmup"] = False
+    elif mutation == "percentile":
+        payload["metrics"]["latency"]["p95"] = 100.0
+    elif mutation == "samples":
+        payload["metrics"]["latency"].update(samples=[1.0], p50=1.0, p95=1.0)
+    else:
+        payload["runs"][0]["ttft_seconds"] = 100.0
+    with pytest.raises(ValidationError):
+        BenchmarkReportV2.model_validate(payload)
     with pytest.raises(ValidationError, match="require p50"):
         BenchmarkMetricSummary(
             unit="second",
