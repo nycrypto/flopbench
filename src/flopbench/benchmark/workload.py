@@ -84,7 +84,7 @@ def load_workload(path: Path, *, max_bytes: int = MAX_WORKLOAD_BYTES) -> LoadedW
         definition = WorkloadDefinition.model_validate(
             json.loads(text, object_pairs_hook=_unique_object)
         )
-    except (ValueError, ValidationError) as exc:
+    except (ValueError, ValidationError, RecursionError) as exc:
         raise WorkloadError(WorkloadErrorCode.INVALID, "Workload is invalid") from exc
     return LoadedWorkload(
         definition=definition, sha256=sha256(raw).hexdigest(), byte_length=len(raw)

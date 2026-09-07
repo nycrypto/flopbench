@@ -135,7 +135,7 @@ class _HttpAdapter:
             raw = bounded_body(response)
             try:
                 payload = json.loads(raw)
-            except (ValueError, UnicodeDecodeError) as exc:
+            except (ValueError, UnicodeDecodeError, RecursionError) as exc:
                 raise AdapterError("Runtime returned malformed JSON") from exc
             if not isinstance(payload, dict):
                 raise AdapterError("Runtime returned malformed JSON")
@@ -189,7 +189,7 @@ class OllamaAdapter(_HttpAdapter):
                 raw.extend(line)
                 try:
                     chunk = json.loads(line)
-                except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+                except (json.JSONDecodeError, UnicodeDecodeError, RecursionError) as exc:
                     if text_seen:
                         raise AdapterPartialError(
                             self._partial_sample(started, first_token_at, bytes(raw))
@@ -352,7 +352,7 @@ class OpenAICompatibleAdapter(_HttpAdapter):
                     break
                 try:
                     chunk = json.loads(data)
-                except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+                except (json.JSONDecodeError, UnicodeDecodeError, RecursionError) as exc:
                     if content_seen:
                         raise AdapterPartialError(
                             self._partial_sample(

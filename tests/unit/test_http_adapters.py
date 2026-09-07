@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import http.client
+import io
 import json
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -7,6 +9,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Event, Thread, Timer
 from threading import enumerate as enumerate_threads
 from time import perf_counter, sleep
+from typing import cast
 
 import pytest
 
@@ -338,3 +341,14 @@ def test_unknown_partial_token_count_is_null_not_zero(kind: str) -> None:
             adapter.run(_request(), Event())
         assert caught.value.sample.generated_tokens is None
         assert caught.value.sample.tokens_per_second is None
+
+
+@pytest.mark.parametrize("kind", ["ollama", "openai"])
+def test_deeply_nested_runtime_json_is_a_controlled_adapter_error(kind: str) -> None:
+    raw = b"[" * 5000 + b"0" + b"]" * 5000 + b"\n"
+    if kind == "openai":
+        raw = b"data: " + raw
+    adapter = _adapter("http://127.0.0.1", kind)
+    response = cast(http.client.HTTPResponse, io.BytesIO(raw))
+    with pytest.raises(AdapterError, match="malformed"):
+        adapter._consume(response, perf_counter(), Event())

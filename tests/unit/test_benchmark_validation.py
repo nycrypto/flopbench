@@ -23,6 +23,7 @@ WORKLOAD = ROOT / "src" / "flopbench" / "workloads" / "smoke-v1.json"
         (b"\xff", WorkloadErrorCode.INVALID_ENCODING),
         (b"not-json\n", WorkloadErrorCode.INVALID),
         (b'{"schema":"one","schema":"two"}\n', WorkloadErrorCode.INVALID),
+        (b"[" * 5000 + b"0" + b"]" * 5000, WorkloadErrorCode.INVALID),
     ],
 )
 def test_workload_loader_rejects_unsafe_bytes(

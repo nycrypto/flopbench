@@ -4,15 +4,19 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-07
+
 ### English
 
 - Added deterministic mock, Ollama, and OpenAI-compatible streaming benchmark adapters.
 - Added versioned workloads, complete run accounting, nearest-rank p50/p95 metrics, bounded endpoint policy, and NVML peak-VRAM sampling.
+- Corrected end-to-end timing, bounded DNS/TCP/TLS/stream cancellation, partial-result accounting, and metric confidence labels; added cross-platform security gates.
 
 ### Türkçe
 
 - Deterministik mock, Ollama ve OpenAI-compatible streaming benchmark adapter'ları eklendi.
 - Sürümlü workload'lar, eksiksiz run muhasebesi, nearest-rank p50/p95 metrikleri, sınırlı endpoint politikası ve NVML peak-VRAM örneklemesi eklendi.
+- Uçtan uca zaman ölçümü, sınırlı DNS/TCP/TLS/akış iptali, kısmi sonuç muhasebesi ve metrik güven etiketleri düzeltildi; platformlar arası güvenlik kapıları eklendi.
 
 ## [0.3.0] - 2026-09-07
 

@@ -77,14 +77,17 @@ git diff --check
 ```
 
 - Ruff and strict mypy: passed
-- Unit: 159 passed; combined line/branch coverage 88.71%
+- Unit: 162 passed; combined line/branch coverage 88.71%
 - Contract: 59 passed (including immutable v1 schema byte checks)
 - Security session: 63 passed; 100% line/branch coverage across probe privacy,
   benchmark endpoint policy, bounded transport and response limits (66 branches)
 - Web: ESLint, TypeScript, 2 existing shell tests and Vite build passed
 - Python: wheel and sdist built; dependency consistency passed
-- Remote Windows/Ubuntu CI: pending corrected candidate push; previous run
-  `34122942013` only validates the superseded candidate, not these fixes.
+- Remote Windows/Ubuntu CI: release-candidate verification pending. Run
+  `34127285161` caught a Linux-only typecheck error in the Windows process flag;
+  the flag lookup is now portable, and local typechecking explicitly passes for
+  both Linux and Windows targets. Run `34127684736` checks that correction;
+  the final versioned release candidate must also pass before closure.
 
 No official FLOP score, public hosted site, signing, or functional dashboard is
 claimed. Stage 6 is not open until the corrected Stage 5 remote gate passes.
