@@ -4,6 +4,8 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-09
+
 ### English
 
 - Added private, support, and public report exports with RFC 8785 canonical JSON and SHA-256 provenance.
