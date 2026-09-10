@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench gizlilik duyarlı raporlama ve dışa aktarma Aşama 6'yı (`v0.5.0`) tamamladı. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri, inference benchmark'ları, redakte JCS çıktıları, çevrimdışı HTML, diff ve uyumluluk kapılı karşılaştırma mevcuttur. Aşama 7 işlevsel dashboard'u, rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır. [Aşama 6 kabul kaydına](./docs/stage-6-acceptance.md) ve [raporlama belgesine](./docs/reporting.md) bakın.
+FlopBench Aşama 6'yı (`v0.5.0`) tamamladı ve Aşama 7 yerel dashboard sürüm adayı kabul sürecindedir. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri, inference benchmark'ları, gizlilik duyarlı raporlar ve güvenli iki dilli yerel dashboard mevcuttur. Rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır. [Dashboard belgesine](./docs/dashboard.tr.md) bakın.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -34,14 +34,14 @@ Linux üzerinde `.venv\Scripts\python` yerine `.venv/bin/python` kullanılır.
 
 ## Yerel dashboard
 
-Dashboard hâlâ yalnızca yerelde çalışan temel bir kabuktur; işlevsel dashboard Aşama 7'de planlanmıştır. Mevcut kabuğu derlemek ve `http://127.0.0.1:4173` adresinde açmak için:
+Dashboard'u derleyip bütünleşik yerel API ile `http://127.0.0.1:4173` adresinde başlatmak için:
 
 ```powershell
 pnpm --filter @flopbench/web build
-pnpm --filter @flopbench/web preview
+flopbench serve
 ```
 
-Önizleme sunucusu yalnızca loopback adresine bağlanır; genel internetten veya ağdaki başka cihazlardan erişilemez.
+Servis yalnızca açık loopback adreslerini kabul eder; genel internetten veya ağdaki başka cihazlardan erişilemez. Arayüz Türkçe ve İngilizce çalışır, ilk ziyarette tarayıcı dilini kullanır ve açık dil/tema tercihini yalnız tarayıcıda saklar.
 
 ## Pasif donanım probe'u
 

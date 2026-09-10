@@ -72,3 +72,14 @@ jobs:
 
       - name: Build web artifacts
         run: pnpm --filter @flopbench/web build
+
+      - name: Install Chromium (Ubuntu)
+        if: runner.os == 'Linux'
+        run: pnpm --filter @flopbench/web exec playwright install --with-deps chromium
+
+      - name: Install Chromium (Windows)
+        if: runner.os == 'Windows'
+        run: pnpm --filter @flopbench/web exec playwright install chromium
+
+      - name: Dashboard E2E and accessibility
+        run: pnpm --filter @flopbench/web e2e

@@ -26,6 +26,7 @@ dependencies = [
   "PyYAML==6.0.3",
   "rfc8785==0.1.4",
   "typer==0.27.2",
+  "uvicorn==0.52.4",
 ]
 
 [project.scripts]
@@ -50,6 +51,7 @@ markers = [
   "stage4: active validator health acceptance tests",
   "stage5: inference benchmark acceptance tests",
   "stage6: reporting and redaction acceptance tests",
+  "stage7: local API and dashboard acceptance tests",
 ]
 
 [tool.coverage.run]

@@ -1,3 +1,7 @@
 # Local API composition root
 
-The FastAPI composition root will be implemented in Stage 7. The domain models and services will remain in `src/flopbench`; this directory will contain only API wiring, loopback security controls, and static dashboard integration.
+The Stage 7 FastAPI composition root lives in `src/flopbench/webapp.py` so it is
+included in the Python package. Domain models and services remain in their
+existing `src/flopbench` modules. This directory documents the boundary; API
+wiring is limited to loopback security controls and static dashboard
+integration.

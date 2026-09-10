@@ -31,6 +31,7 @@ def unit(session: nox.Session) -> None:
     session.run(
         "pytest",
         "tests/unit",
+        "tests/contract/test_stage7_api.py",
         "--cov=flopbench",
         "--cov-branch",
         "--cov-report=term-missing",
@@ -46,7 +47,7 @@ def contract(session: nox.Session) -> None:
         "pytest",
         "tests/contract",
         "-m",
-        "stage0 or stage1 or stage2 or stage3 or stage4 or stage5 or stage6",
+        "stage0 or stage1 or stage2 or stage3 or stage4 or stage5 or stage6 or stage7",
         *pytest_isolation_args(session),
     )
 

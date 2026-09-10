@@ -7,6 +7,7 @@ param(
         "test-integration",
         "test-security",
         "test-web",
+        "test-e2e",
         "test-all",
         "lint",
         "typecheck",
@@ -28,10 +29,13 @@ try {
         "test-integration" { Write-Output "Integration tests begin in a later stage." }
         "test-security" { & $PythonCommand -m nox -s security }
         "test-web" { pnpm --filter "@flopbench/web" test }
+        "test-e2e" { pnpm --filter "@flopbench/web" e2e }
         "test-all" {
             & $PythonCommand -m nox -s unit contract security
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             pnpm --filter "@flopbench/web" test
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            pnpm --filter "@flopbench/web" e2e
         }
         "lint" {
             & $PythonCommand -m nox -s lint

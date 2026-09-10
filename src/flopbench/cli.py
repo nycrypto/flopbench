@@ -42,6 +42,7 @@ from flopbench.validator_doctor.service import (
     run_fixture_doctor,
     run_live_doctor,
 )
+from flopbench.webapp import DEFAULT_WEB_DIST, create_app, validate_bind_host
 
 app = typer.Typer(
     add_completion=False,
@@ -76,6 +77,33 @@ def main(
     ] = None,
 ) -> None:
     """FlopBench is unofficial and does not provide FLOP eligibility or rewards."""
+
+
+@app.command()
+def serve(
+    host: Annotated[
+        str,
+        typer.Option("--host", help="Literal loopback address (127.0.0.1 or ::1)."),
+    ] = "127.0.0.1",
+    port: Annotated[
+        int,
+        typer.Option("--port", min=1024, max=65535, help="Local dashboard port."),
+    ] = 4173,
+) -> None:
+    """Serve the secured local API and built dashboard on loopback."""
+
+    try:
+        bind_host = validate_bind_host(host)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc), param_hint="--host") from exc
+    if not (DEFAULT_WEB_DIST / "index.html").is_file():
+        typer.echo("Dashboard assets are missing; run the web build first.", err=True)
+        raise typer.Exit(code=2)
+    import uvicorn
+
+    display_host = f"[{bind_host}]" if ":" in bind_host else bind_host
+    typer.echo(f"FlopBench dashboard: http://{display_host}:{port}")
+    uvicorn.run(create_app(), host=bind_host, port=port, log_level="warning")
 
 
 class OutputFormat(StrEnum):

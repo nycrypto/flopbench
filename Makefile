@@ -1,4 +1,4 @@
-.PHONY: test-unit test-contract test-integration test-security test-web test-all lint typecheck build
+.PHONY: test-unit test-contract test-integration test-security test-web test-e2e test-all lint typecheck build
 
 test-unit:
 	python -m nox -s unit
@@ -10,12 +10,15 @@ test-integration:
 	@echo "Integration tests begin in a later stage."
 
 test-security:
-	@echo "Security suites begin with the relevant implementation stages."
+	python -m nox -s security
 
 test-web:
 	pnpm --filter @flopbench/web test
 
-test-all: test-unit test-contract test-web
+test-e2e:
+	pnpm --filter @flopbench/web e2e
+
+test-all: test-unit test-contract test-security test-web test-e2e
 
 lint:
 	python -m nox -s lint

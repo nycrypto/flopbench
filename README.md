@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 6 (`v0.5.0`), privacy-aware reporting and export. Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, redacted JCS exports, offline HTML, diff, and compatibility-gated comparison are available. The Stage 7 functional dashboard, report signing, and PoUI simulation are not implemented yet. See the [Stage 6 acceptance record](./docs/stage-6-acceptance.md) and [reporting documentation](./docs/reporting.md).
+FlopBench has completed Stage 6 (`v0.5.0`) and has a Stage 7 local-dashboard release candidate under acceptance. Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, privacy-aware reports, and a secured bilingual local dashboard are available. Report signing and PoUI simulation are not implemented yet. See the [dashboard documentation](./docs/dashboard.md).
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
@@ -34,14 +34,14 @@ On Linux, replace `.venv\Scripts\python` with `.venv/bin/python`.
 
 ## Local dashboard
 
-The dashboard is still a local-only foundation shell; the functional dashboard is scheduled for Stage 7. Build and open the current shell at `http://127.0.0.1:4173`:
+Build the dashboard and start its integrated local API at `http://127.0.0.1:4173`:
 
 ```powershell
 pnpm --filter @flopbench/web build
-pnpm --filter @flopbench/web preview
+flopbench serve
 ```
 
-The preview server binds only to loopback; it is not reachable from the public internet or other devices on the network.
+The service accepts literal loopback addresses only; it is not reachable from the public internet or other devices on the network. The UI supports English and Turkish, uses the browser language on first visit, and saves explicit language/theme preferences locally.
 
 ## Passive hardware probe
 
