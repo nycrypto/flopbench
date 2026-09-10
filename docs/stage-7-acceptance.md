@@ -1,8 +1,8 @@
 # Stage 7 acceptance record
 
 - Date: 2026-09-10
-- Stage gate: automated and implementer acceptance passed; final user approval pending
-- Release candidate: `v0.6.0`
+- Stage gate: passed; the user approved the tested candidate on 2026-09-10
+- Release: `v0.6.0`
 - Candidate implementation commit: `91f53376aa7148cebdd408c28c635058e2b01699`
 - Platform: Windows, NVIDIA GeForce RTX 5060, driver 610.88
 
@@ -92,5 +92,5 @@ not shared. The dashboard was returned to Turkish and light mode for review.
   not started. Stage 12 remains blocked on an official versioned testnet
   contract.
 
-User approval is still required before merging this branch into `main`, updating
-the changelog/version, and creating the `v0.6.0` tag.
+The approved candidate is ready to merge into `main` and receive the `v0.6.0`
+release tag. Stage 8 remains a separate gated branch.

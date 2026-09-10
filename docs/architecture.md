@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 7 local-dashboard candidate. Versioned contracts, passive hardware collection,
+Stage 7 local dashboard is complete. Versioned contracts, passive hardware collection,
 explainable readiness rules, consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected

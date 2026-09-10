@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 6'yı (`v0.5.0`) tamamladı ve Aşama 7 yerel dashboard sürüm adayı kabul sürecindedir. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri, inference benchmark'ları, gizlilik duyarlı raporlar ve güvenli iki dilli yerel dashboard mevcuttur. Rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır. [Dashboard belgesine](./docs/dashboard.tr.md) ve [Aşama 7 kabul kaydına](./docs/stage-7-acceptance.md) bakın.
+FlopBench Aşama 7'yi (`v0.6.0`) tamamladı. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri, inference benchmark'ları, gizlilik duyarlı raporlar ve güvenli iki dilli yerel dashboard mevcuttur. Rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır. [Dashboard belgesine](./docs/dashboard.tr.md) ve [Aşama 7 kabul kaydına](./docs/stage-7-acceptance.md) bakın.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 

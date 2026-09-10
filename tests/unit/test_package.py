@@ -4,15 +4,15 @@ from flopbench import __version__
 from flopbench.cli import app
 
 
-def test_version_is_stage_six_version() -> None:
-    assert __version__ == "0.5.0"
+def test_version_is_stage_seven_version() -> None:
+    assert __version__ == "0.6.0"
 
 
 def test_cli_reports_version() -> None:
     result = CliRunner().invoke(app, ["--version"])
 
     assert result.exit_code == 0
-    assert result.stdout == "flopbench 0.5.0\n"
+    assert result.stdout == "flopbench 0.6.0\n"
 
 
 def test_cli_help_contains_unofficial_boundary() -> None:

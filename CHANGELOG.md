@@ -4,6 +4,20 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-10
+
+### English
+
+- Added a loopback-only FastAPI service protected by startup-token, Host, and Origin checks.
+- Added a restrained orange React dashboard with Turkish/English language selection, light and dark themes, live miner and validator readiness, user-initiated mock benchmarks, and public-report privacy preview.
+- Added Chromium end-to-end, XSS, keyboard, refresh-safety, and basic WCAG 2.2 AA coverage on Windows and Ubuntu CI.
+
+### Türkçe
+
+- Başlangıç token'ı, Host ve Origin kontrolleriyle korunan yalnızca loopback FastAPI servisi eklendi.
+- Türkçe/İngilizce dil seçimi, açık ve koyu tema, canlı miner ve validator readiness, kullanıcı tarafından başlatılan mock benchmark ve public rapor gizlilik önizlemesi içeren sade turuncu React dashboard eklendi.
+- Windows ve Ubuntu CI üzerinde Chromium uçtan uca, XSS, klavye, yenileme güvenliği ve temel WCAG 2.2 AA kapsamı eklendi.
+
 ## [0.5.0] - 2026-09-09
 
 ### English
