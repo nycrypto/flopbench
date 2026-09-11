@@ -123,3 +123,11 @@ test("basic WCAG 2.2 AA scan has no serious or critical findings", async ({ page
   );
   expect(blocking).toEqual([]);
 });
+
+test("S8-T09 dashboard has no private-key upload control", async ({ page }) => {
+  await installApi(page);
+  await page.goto("/");
+  await expect(page.locator('input[type="file"]')).toHaveCount(0);
+  await expect(page.locator('input[name*="private" i]')).toHaveCount(0);
+  await expect(page.getByLabel(/private key|özel anahtar/i)).toHaveCount(0);
+});

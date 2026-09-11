@@ -298,7 +298,7 @@ class BenchmarkReport(StrictModel):
 
 
 class Receipt(StrictModel):
-    """Published receipt-v1 envelope; cryptographic verification is Stage 8."""
+    """Published receipt-v1 envelope with an external Ed25519 signature."""
 
     schema_id: Literal["flopbench-receipt-v1"] = Field(alias="schema", serialization_alias="schema")
     report_schema: Literal["flopbench-readiness-report-v1", "flopbench-benchmark-report-v1"]
@@ -306,7 +306,7 @@ class Receipt(StrictModel):
     did: Annotated[str, Field(pattern=r"^did:key:z[1-9A-HJ-NP-Za-km-z]+$")]
     canonicalization: Literal["jcs-rfc8785"]
     signature_algorithm: Literal["Ed25519"]
-    signature: Annotated[str, Field(pattern=r"^[A-Za-z0-9_-]+$")]
+    signature: Annotated[str, Field(min_length=86, max_length=86, pattern=r"^[A-Za-z0-9_-]+$")]
     signed_at: datetime
 
     _signed_at_utc = field_validator("signed_at")(_require_utc)

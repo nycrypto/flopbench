@@ -2,12 +2,14 @@
 
 ## Status
 
-Stage 7 local dashboard is complete. Versioned contracts, passive hardware collection,
+Stage 7 local dashboard is complete and the Stage 8 receipt candidate is under
+acceptance. Versioned contracts, passive hardware collection,
 explainable readiness rules, consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected
 loopback API and bilingual functional dashboard now compose these capabilities.
-Signing and PoUI simulation remain future boundaries.
+External Ed25519 receipt signing now remains outside the process boundary;
+PoUI simulation remains a future boundary.
 
 ## Component boundaries
 

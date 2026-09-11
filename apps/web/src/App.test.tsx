@@ -268,4 +268,14 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "FlopBench" }));
     expect(screen.getByRole("heading", { name: "Genel Bakış" })).toBeInTheDocument();
   });
+
+  it("S8-T09 never exposes a private-key upload control", async () => {
+    installFetch();
+    const { container } = render(<App />);
+    await screen.findByText("Ekran kartı belleği yetersiz.");
+
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+    expect(container.querySelector('input[name*="private" i]')).toBeNull();
+    expect(screen.queryByLabelText(/private key|özel anahtar/i)).not.toBeInTheDocument();
+  });
 });

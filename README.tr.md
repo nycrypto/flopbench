@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 7'yi (`v0.6.0`) tamamladı. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri, inference benchmark'ları, gizlilik duyarlı raporlar ve güvenli iki dilli yerel dashboard mevcuttur. Rapor imzalama ve PoUI simülasyonu henüz uygulanmamıştır. [Dashboard belgesine](./docs/dashboard.tr.md) ve [Aşama 7 kabul kaydına](./docs/stage-7-acceptance.md) bakın.
+FlopBench Aşama 7'yi (`v0.6.0`) tamamladı ve Aşama 8 haricî imzalı DID receipt adayı kabul sürecindedir. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri, inference benchmark'ları, gizlilik duyarlı raporlar ve güvenli iki dilli yerel dashboard mevcuttur. PoUI simülasyonu henüz uygulanmamıştır. [Dashboard belgesine](./docs/dashboard.tr.md), [receipt güvenlik modeline](./docs/receipt-security.tr.md) ve [Aşama 7 kabul kaydına](./docs/stage-7-acceptance.md) bakın.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -89,6 +89,21 @@ Hedef açıkça verilmedikçe ağ veya saat testi çalışmaz. Disk dosyaları y
 izole geçici dizinde tutulur; başarı, hata, zaman aşımı veya iptal sonrasında
 silinir. Ayrıntılar için [`docs/active-tests.md`](./docs/active-tests.md)
 belgesine bakın.
+
+## Haricî imzalı receipt'ler
+
+Mevcut bir Ed25519 DID için kesin JCS baytlarını hazırlayın, FlopBench dışında
+çalışan bir araçla imzalayın, sonra receipt'i oluşturup doğrulayın:
+
+```powershell
+flopbench receipt prepare report.json --did did:key:z6Mk... --output request.json
+flopbench receipt create request.json --signature BASE64URL_SIGNATURE --output receipt.json
+flopbench receipt verify report.json receipt.json
+```
+
+FlopBench private key, seed, PEM, anahtar dosyası veya parola kabul etmez.
+Geçerli receipt yalnız DID anahtarının kullanıldığını kanıtlar. Ayrıntılar için
+[receipt güvenlik modeline](./docs/receipt-security.tr.md) bakın.
 
 ## Kalite kapıları
 

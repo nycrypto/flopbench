@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "ReceiptSigningPayload": {
+      "additionalProperties": false,
+      "description": "Domain-separated JCS payload signed by an external Ed25519 signer.",
+      "properties": {
+        "canonicalization": {
+          "const": "jcs-rfc8785",
+          "default": "jcs-rfc8785",
+          "title": "Canonicalization",
+          "type": "string"
+        },
+        "did": {
+          "maxLength": 128,
+          "minLength": 20,
+          "title": "Did",
+          "type": "string"
+        },
+        "report_schema": {
+          "enum": [
+            "flopbench-readiness-report-v1",
+            "flopbench-benchmark-report-v1"
+          ],
+          "title": "Report Schema",
+          "type": "string"
+        },
+        "report_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Report Sha256",
+          "type": "string"
+        },
+        "schema": {
+          "const": "flopbench-receipt-signing-payload-v1",
+          "title": "Schema",
+          "type": "string"
+        },
+        "signature_algorithm": {
+          "const": "Ed25519",
+          "default": "Ed25519",
+          "title": "Signature Algorithm",
+          "type": "string"
+        },
+        "signed_at": {
+          "format": "date-time",
+          "title": "Signed At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema",
+        "report_schema",
+        "report_sha256",
+        "did",
+        "signed_at"
+      ],
+      "title": "ReceiptSigningPayload",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/signing-request-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Portable request passed to a signer that lives outside FlopBench.",
+  "properties": {
+    "payload": {
+      "$ref": "#/$defs/ReceiptSigningPayload"
+    },
+    "payload_base64url": {
+      "maxLength": 4096,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Payload Base64Url",
+      "type": "string"
+    },
+    "payload_encoding": {
+      "const": "jcs-rfc8785+base64url",
+      "default": "jcs-rfc8785+base64url",
+      "title": "Payload Encoding",
+      "type": "string"
+    },
+    "payload_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Payload Sha256",
+      "type": "string"
+    },
+    "schema": {
+      "const": "flopbench-signing-request-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "signer_contract": {
+      "const": "external-ed25519-v1",
+      "default": "external-ed25519-v1",
+      "title": "Signer Contract",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "payload",
+    "payload_base64url",
+    "payload_sha256"
+  ],
+  "title": "SigningRequest",
+  "type": "object"
+}

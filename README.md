@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 7 (`v0.6.0`). Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, privacy-aware reports, and a secured bilingual local dashboard are available. Report signing and PoUI simulation are not implemented yet. See the [dashboard documentation](./docs/dashboard.md) and [Stage 7 acceptance record](./docs/stage-7-acceptance.md).
+FlopBench has completed Stage 7 (`v0.6.0`) and has a Stage 8 externally signed DID receipt candidate under acceptance. Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, privacy-aware reports, and a secured bilingual local dashboard are available. PoUI simulation is not implemented yet. See the [dashboard documentation](./docs/dashboard.md), [receipt security model](./docs/receipt-security.md), and [Stage 7 acceptance record](./docs/stage-7-acceptance.md).
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
@@ -88,6 +88,21 @@ No network or clock test runs unless its target is explicitly supplied. Disk
 files live only in an isolated temporary directory and are removed after
 success, failure, timeout, or cancellation. See
 [`docs/active-tests.md`](./docs/active-tests.md).
+
+## Externally signed receipts
+
+Prepare exact JCS bytes for an existing Ed25519 DID, sign them with a tool that
+runs outside FlopBench, then assemble and verify the receipt:
+
+```powershell
+flopbench receipt prepare report.json --did did:key:z6Mk... --output request.json
+flopbench receipt create request.json --signature BASE64URL_SIGNATURE --output receipt.json
+flopbench receipt verify report.json receipt.json
+```
+
+FlopBench never accepts a private key, seed, PEM, key file, or password. A valid
+receipt proves possession of the DID key only. See the
+[receipt security model](./docs/receipt-security.md).
 
 ## Quality gates
 

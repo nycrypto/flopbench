@@ -2,7 +2,7 @@
   "$id": "https://schemas.flopbench.dev/v1/receipt-v1.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "description": "Published receipt-v1 envelope; cryptographic verification is Stage 8.",
+  "description": "Published receipt-v1 envelope with an external Ed25519 signature.",
   "properties": {
     "canonicalization": {
       "const": "jcs-rfc8785",
@@ -33,6 +33,8 @@
       "type": "string"
     },
     "signature": {
+      "maxLength": 86,
+      "minLength": 86,
       "pattern": "^[A-Za-z0-9_-]+$",
       "title": "Signature",
       "type": "string"

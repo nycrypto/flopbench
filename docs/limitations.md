@@ -12,8 +12,9 @@ At the Stage 6 candidate:
 - inference benchmarks are local measurements and are not official FLOP scores;
 - OpenAI-compatible runtimes require the operator to provide the model digest;
 - no estimated FLOP value is emitted;
-- report digests provide change detection but are not signatures or identity proofs;
-- no DID receipt or PoUI simulation is produced;
+- a DID receipt proves Ed25519 key possession only, not identity, report truth,
+  hardware ownership, eligibility, rewards, or trusted time;
+- no private-key management or PoUI simulation is provided;
 - no FLOP testnet or mainnet request is supported;
 - no eligibility, airdrop score, token amount, reward, ROI, stake, wallet, claim, or real slashing behavior is provided.
 

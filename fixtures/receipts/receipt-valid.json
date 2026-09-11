@@ -2,9 +2,9 @@
   "schema": "flopbench-receipt-v1",
   "report_schema": "flopbench-readiness-report-v1",
   "report_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
-  "did": "did:key:z6Mkh9Qq7Vx5B3R2Yp8N",
+  "did": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
   "canonicalization": "jcs-rfc8785",
   "signature_algorithm": "Ed25519",
-  "signature": "AAECAwQFBgcICQ",
+  "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
   "signed_at": "2026-08-30T09:01:00Z"
 }

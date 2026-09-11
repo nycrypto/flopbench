@@ -2,6 +2,7 @@
 
 import json
 import os
+from datetime import UTC, datetime
 from enum import StrEnum
 from pathlib import Path
 from typing import Annotated, Never
@@ -30,6 +31,15 @@ from flopbench.probe.service import (
 from flopbench.profile_loader import ProfileLoadError, load_profile
 from flopbench.readiness.engine import evaluate_readiness
 from flopbench.readiness.formatters import readiness_json, readiness_terminal
+from flopbench.receipt.errors import ReceiptError
+from flopbench.receipt.service import (
+    create_receipt,
+    load_receipt,
+    load_signing_request,
+    prepare_receipt,
+    render_contract,
+    verify_receipt,
+)
 from flopbench.reporting.canonical import canonical_bytes
 from flopbench.reporting.compare import compare_benchmarks, diff_exports
 from flopbench.reporting.errors import ReportError
@@ -57,6 +67,8 @@ benchmark_app = typer.Typer(help="Run provider-independent inference benchmarks.
 app.add_typer(benchmark_app, name="benchmark")
 report_app = typer.Typer(help="Export, inspect, and compare privacy-aware reports.")
 app.add_typer(report_app, name="report")
+receipt_app = typer.Typer(help="Prepare and verify externally signed DID receipts.")
+app.add_typer(receipt_app, name="receipt")
 
 DEFAULT_PROFILE = Path("profiles/flop-teaser-0.1.yaml")
 DEFAULT_WORKLOAD = Path(__file__).resolve().parent / "workloads" / "smoke-v1.json"
@@ -579,3 +591,108 @@ def report_compare(
     except ReportError as exc:
         _report_failure(exc)
     typer.echo(canonical_bytes(result.model_dump(mode="json", by_alias=True)).decode("utf-8"))
+
+
+def _receipt_failure(exc: ReceiptError | ReportError) -> Never:
+    typer.echo(
+        json.dumps({"code": exc.code, "message": str(exc)}, separators=(",", ":"), sort_keys=True),
+        err=True,
+    )
+    raise typer.Exit(code=2) from exc
+
+
+def _signed_at(value: str | None) -> datetime:
+    if value is None:
+        return datetime.now(UTC)
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ReceiptError(
+            "receipt.invalid_signed_at", "signed-at must be an RFC3339 UTC timestamp"
+        ) from exc
+    offset = parsed.utcoffset()
+    if offset is None or offset.total_seconds() != 0:
+        raise ReceiptError(
+            "receipt.invalid_signed_at", "signed-at must be an RFC3339 UTC timestamp"
+        )
+    return parsed
+
+
+@receipt_app.command("prepare")
+def receipt_prepare(
+    report: Annotated[Path, typer.Argument(help="Verified FlopBench report export.")],
+    did: Annotated[str, typer.Option("--did", help="Existing Ed25519 did:key identifier.")],
+    signed_at_text: Annotated[
+        str | None,
+        typer.Option("--signed-at", help="Optional RFC3339 UTC local signing declaration."),
+    ] = None,
+    output: Annotated[
+        Path | None, typer.Option("--output", help="Write a new signing-request JSON file.")
+    ] = None,
+) -> None:
+    """Prepare JCS bytes for a signer that runs outside FlopBench."""
+
+    try:
+        request = prepare_receipt(load_export(report), did, _signed_at(signed_at_text))
+        rendered = render_contract(request)
+        if output is not None:
+            write_new_file(output, rendered)
+    except (ReceiptError, ReportError) as exc:
+        _receipt_failure(exc)
+    typer.echo(f"Report digest: sha256:{request.payload.report_sha256}", err=True)
+    typer.echo(f"Signer DID: {request.payload.did}", err=True)
+    typer.echo(f"Signing payload: sha256:{request.payload_sha256}", err=True)
+    typer.echo(
+        "Use your existing DID. FlopBench does not generate, read, or store private keys.",
+        err=True,
+    )
+    typer.echo(
+        "signed_at is a local declaration, not a trusted timestamp or identity proof.", err=True
+    )
+    if output is None:
+        typer.echo(rendered.decode("utf-8"), nl=False)
+    else:
+        typer.echo(f"Wrote {output.name}; pass its payload to an external Ed25519 signer.")
+
+
+@receipt_app.command("create")
+def receipt_create(
+    request_path: Annotated[Path, typer.Argument(help="Prepared signing-request JSON file.")],
+    signature: Annotated[
+        str | None,
+        typer.Option("--signature", help="External canonical base64url Ed25519 signature."),
+    ] = None,
+    output: Annotated[
+        Path | None, typer.Option("--output", help="Write a new receipt JSON file.")
+    ] = None,
+) -> None:
+    """Create a receipt from an external signature; cancellation writes nothing."""
+
+    if signature is None:
+        typer.echo("No signature supplied; receipt creation cancelled.")
+        return
+    try:
+        receipt = create_receipt(load_signing_request(request_path), signature)
+        rendered = render_contract(receipt)
+        if output is not None:
+            write_new_file(output, rendered)
+    except (ReceiptError, ReportError) as exc:
+        _receipt_failure(exc)
+    if output is None:
+        typer.echo(rendered.decode("utf-8"), nl=False)
+    else:
+        typer.echo(f"Wrote {output.name}; external signature verified.")
+
+
+@receipt_app.command("verify")
+def receipt_verify(
+    report: Annotated[Path, typer.Argument(help="Verified FlopBench report export.")],
+    receipt_path: Annotated[Path, typer.Argument(help="Receipt JSON file.")],
+) -> None:
+    """Verify the report binding and DID signature using public data only."""
+
+    try:
+        result = verify_receipt(load_export(report), load_receipt(receipt_path))
+    except (ReceiptError, ReportError) as exc:
+        _receipt_failure(exc)
+    typer.echo(render_contract(result).decode("utf-8"), nl=False)
