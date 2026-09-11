@@ -1,0 +1,471 @@
+{
+  "$defs": {
+    "Actor": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_id": {
+          "pattern": "^[a-z][a-z0-9-]+$",
+          "title": "Actor Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "agent",
+            "miner",
+            "validator"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "role",
+        "actor_id"
+      ],
+      "title": "Actor",
+      "type": "object"
+    },
+    "ChallengeResult": {
+      "additionalProperties": false,
+      "properties": {
+        "full_rerun_performed": {
+          "title": "Full Rerun Performed",
+          "type": "boolean"
+        },
+        "outcome": {
+          "enum": [
+            "settled",
+            "rejected"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "reason_code": {
+          "enum": [
+            "model_digest_mismatch",
+            "latency_limit_exceeded",
+            "canned_answer_detected",
+            "validator_sample_mismatch"
+          ],
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "validator_action": {
+          "enum": [
+            "sample",
+            "full-rerun"
+          ],
+          "title": "Validator Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason_code",
+        "validator_action",
+        "full_rerun_performed",
+        "outcome"
+      ],
+      "title": "ChallengeResult",
+      "type": "object"
+    },
+    "ComputeEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "exclusiveMinimum": 0,
+          "title": "Amount",
+          "type": "integer"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "unit": {
+          "const": "mock-compute-unit",
+          "default": "mock-compute-unit",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "ComputeEstimate",
+      "type": "object"
+    },
+    "MockAmount": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "minimum": 0,
+          "title": "Amount",
+          "type": "integer"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "unit": {
+          "const": "mock-credit",
+          "default": "mock-credit",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "MockAmount",
+      "type": "object"
+    },
+    "SessionEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "enum": [
+            "agent",
+            "miner",
+            "validator",
+            "simulator"
+          ],
+          "title": "Actor",
+          "type": "string"
+        },
+        "code": {
+          "pattern": "^[a-z][a-z0-9_.-]+$",
+          "title": "Code",
+          "type": "string"
+        },
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "from_state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SessionState"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "index": {
+          "minimum": 0,
+          "title": "Index",
+          "type": "integer"
+        },
+        "observation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observation"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "to_state": {
+          "$ref": "#/$defs/SessionState"
+        }
+      },
+      "required": [
+        "index",
+        "event_id",
+        "recorded_at",
+        "actor",
+        "from_state",
+        "to_state",
+        "code"
+      ],
+      "title": "SessionEvent",
+      "type": "object"
+    },
+    "SessionState": {
+      "enum": [
+        "created",
+        "offered",
+        "accepted",
+        "running",
+        "submitted",
+        "validating",
+        "settled",
+        "challenged",
+        "rejected",
+        "timed_out",
+        "cancelled"
+      ],
+      "title": "SessionState",
+      "type": "string"
+    },
+    "SimulatedModel": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "digest_algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Digest Algorithm",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "digest"
+      ],
+      "title": "SimulatedModel",
+      "type": "object"
+    },
+    "SimulationAccounting": {
+      "additionalProperties": false,
+      "properties": {
+        "charged_fee": {
+          "$ref": "#/$defs/MockAmount"
+        },
+        "mock_refunded": {
+          "$ref": "#/$defs/MockAmount"
+        },
+        "mock_slashed": {
+          "$ref": "#/$defs/MockAmount"
+        },
+        "mock_stake": {
+          "$ref": "#/$defs/MockAmount"
+        },
+        "requested_fee": {
+          "$ref": "#/$defs/MockAmount"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "requested_fee",
+        "charged_fee",
+        "mock_stake",
+        "mock_slashed",
+        "mock_refunded"
+      ],
+      "title": "SimulationAccounting",
+      "type": "object"
+    },
+    "SimulationActors": {
+      "additionalProperties": false,
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/Actor"
+        },
+        "miner": {
+          "$ref": "#/$defs/Actor"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "validator": {
+          "$ref": "#/$defs/Actor"
+        }
+      },
+      "required": [
+        "agent",
+        "miner",
+        "validator"
+      ],
+      "title": "SimulationActors",
+      "type": "object"
+    },
+    "SimulationScenario": {
+      "enum": [
+        "success",
+        "wrong-model",
+        "high-latency",
+        "canned-answer",
+        "timeout",
+        "miner-cancel",
+        "validator-match",
+        "validator-mismatch"
+      ],
+      "title": "SimulationScenario",
+      "type": "string"
+    },
+    "SimulationSessionRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "compute_estimate": {
+          "$ref": "#/$defs/ComputeEstimate"
+        },
+        "confidentiality": {
+          "const": "local-simulation",
+          "default": "local-simulation",
+          "title": "Confidentiality",
+          "type": "string"
+        },
+        "max_latency_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Max Latency Ms",
+          "type": "integer"
+        },
+        "mock_fee": {
+          "$ref": "#/$defs/MockAmount"
+        },
+        "model": {
+          "$ref": "#/$defs/SimulatedModel"
+        },
+        "scenario": {
+          "$ref": "#/$defs/SimulationScenario"
+        },
+        "schema": {
+          "const": "flopbench-poui-session-request-v1",
+          "title": "Schema",
+          "type": "string"
+        },
+        "seed": {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema",
+        "session_id",
+        "scenario",
+        "seed",
+        "model",
+        "max_latency_ms",
+        "compute_estimate",
+        "mock_fee"
+      ],
+      "title": "SimulationSessionRequest",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/poui-simulation-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "accounting": {
+      "$ref": "#/$defs/SimulationAccounting"
+    },
+    "actors": {
+      "$ref": "#/$defs/SimulationActors"
+    },
+    "challenge": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ChallengeResult"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "disclaimer": {
+      "const": "Educational local simulation; not an official FLOP protocol, token, stake, or reward operation.",
+      "default": "Educational local simulation; not an official FLOP protocol, token, stake, or reward operation.",
+      "title": "Disclaimer",
+      "type": "string"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/SessionEvent"
+      },
+      "minItems": 2,
+      "title": "Events",
+      "type": "array"
+    },
+    "final_state": {
+      "$ref": "#/$defs/SessionState"
+    },
+    "official_protocol": {
+      "const": false,
+      "default": false,
+      "title": "Official Protocol",
+      "type": "boolean"
+    },
+    "request": {
+      "$ref": "#/$defs/SimulationSessionRequest"
+    },
+    "schema": {
+      "const": "flopbench-poui-simulation-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "simulated": {
+      "const": true,
+      "default": true,
+      "title": "Simulated",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema",
+    "request",
+    "actors",
+    "events",
+    "challenge",
+    "accounting",
+    "final_state"
+  ],
+  "title": "SimulationResult",
+  "type": "object"
+}

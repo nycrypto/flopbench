@@ -33,6 +33,8 @@ def unit(session: nox.Session) -> None:
         "tests/unit",
         "tests/contract/test_stage7_api.py",
         "tests/contract/test_stage8_receipts.py",
+        "tests/contract/test_stage9_simulator.py",
+        "tests/contract/test_stage9_api.py",
         "--cov=flopbench",
         "--cov-branch",
         "--cov-report=term-missing",
@@ -44,11 +46,12 @@ def unit(session: nox.Session) -> None:
 @nox.session(python="3.14")
 def contract(session: nox.Session) -> None:
     install_project(session)
+    stage_markers = " or ".join(f"stage{stage}" for stage in range(10))
     session.run(
         "pytest",
         "tests/contract",
         "-m",
-        "stage0 or stage1 or stage2 or stage3 or stage4 or stage5 or stage6 or stage7 or stage8",
+        stage_markers,
         *pytest_isolation_args(session),
     )
 
@@ -63,6 +66,8 @@ def security(session: nox.Session) -> None:
         "tests/unit/test_benchmark_response_limits.py",
         "tests/unit/test_receipt.py",
         "tests/contract/test_stage8_receipts.py",
+        "tests/unit/test_simulator.py",
+        "tests/contract/test_stage9_simulator.py",
         "--cov=flopbench.probe.privacy",
         "--cov=flopbench.benchmark.endpoint",
         "--cov=flopbench.benchmark.transport",
@@ -71,6 +76,7 @@ def security(session: nox.Session) -> None:
         "--cov=flopbench.receipt.codec",
         "--cov=flopbench.receipt.models",
         "--cov=flopbench.receipt.service",
+        "--cov=flopbench.simulator",
         "--cov-branch",
         "--cov-report=term-missing",
         "--cov-fail-under=100",

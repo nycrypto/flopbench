@@ -38,7 +38,27 @@ const reportPreview = {
   redacted_fields: ["host identifiers", "local paths", "access tokens", "raw response content"],
 };
 
-async function installApi(page: Page, onBenchmark?: () => void) {
+const simulation = {
+  simulated: true,
+  official_protocol: false,
+  disclaimer: "Educational local simulation; not an official protocol.",
+  request: { session_id: "session-9", scenario: "validator-mismatch", seed: 9 },
+  events: [
+    { event_id: "event-1", actor: "agent", from_state: null, to_state: "created", code: "session.created" },
+    { event_id: "event-2", actor: "miner", from_state: "created", to_state: "running", code: "miner.start" },
+    { event_id: "event-3", actor: "validator", from_state: "validating", to_state: "challenged", code: "challenge.validator_sample_mismatch" },
+    { event_id: "event-4", actor: "validator", from_state: "challenged", to_state: "rejected", code: "challenge.rejected" },
+  ],
+  challenge: { reason_code: "validator_sample_mismatch", validator_action: "full-rerun", full_rerun_performed: true, outcome: "rejected" },
+  accounting: {
+    requested_fee: { amount: 25, unit: "mock-credit" },
+    charged_fee: { amount: 0, unit: "mock-credit" },
+    mock_slashed: { amount: 40, unit: "mock-credit" },
+  },
+  final_state: "rejected",
+};
+
+async function installApi(page: Page, onBenchmark?: () => void, onSimulation?: () => void) {
   await page.route("**/api/v1/**", async (route: Route) => {
     const path = new URL(route.request().url()).pathname;
     if (path.includes("/checks/")) return route.fulfill({ json: readiness });
@@ -47,6 +67,10 @@ async function installApi(page: Page, onBenchmark?: () => void) {
       return route.fulfill({ status: 201, json: benchmark });
     }
     if (path.endsWith("/reports/preview")) return route.fulfill({ json: reportPreview });
+    if (path.endsWith("/simulations")) {
+      onSimulation?.();
+      return route.fulfill({ status: 201, json: simulation });
+    }
     return route.fulfill({ status: 404, json: { code: "not_found" } });
   });
 }
@@ -130,4 +154,30 @@ test("S8-T09 dashboard has no private-key upload control", async ({ page }) => {
   await expect(page.locator('input[type="file"]')).toHaveCount(0);
   await expect(page.locator('input[name*="private" i]')).toHaveCount(0);
   await expect(page.getByLabel(/private key|özel anahtar/i)).toHaveCount(0);
+});
+
+test("S9-T08 PoUI flow stays explicit, visual, and simulated", async ({ page }) => {
+  let simulationRuns = 0;
+  await installApi(page, undefined, () => { simulationRuns += 1; });
+  await page.goto("/");
+  await page.getByRole("button", { name: "PoUI Simülasyonu" }).click();
+  await expect(page.getByText(/resmî protokol veya gerçek token işlemi değildir/i)).toBeVisible();
+  expect(simulationRuns).toBe(0);
+  await page.getByLabel("Senaryo").selectOption("validator-mismatch");
+  await page.getByRole("button", { name: "Simülasyonu çalıştır" }).click();
+  await expect(page.getByRole("heading", { name: "Olay akışı" })).toBeVisible();
+  await expect(page.getByText("validator_sample_mismatch", { exact: true })).toBeVisible();
+  await expect(page.getByText("40 mock-credit")).toBeVisible();
+  await expect(page.getByText("simulated: true", { exact: true })).toBeVisible();
+  expect(simulationRuns).toBe(1);
+
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(results.violations.filter((violation) =>
+    violation.impact === "critical" || violation.impact === "serious"
+  )).toEqual([]);
+
+  await page.reload();
+  expect(simulationRuns).toBe(1);
 });

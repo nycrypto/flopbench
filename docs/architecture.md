@@ -2,14 +2,14 @@
 
 ## Status
 
-Stage 8 externally signed DID receipts are complete and Stage 9 PoUI simulation
-is the next isolated boundary. Versioned contracts, passive hardware collection,
+Stage 8 externally signed DID receipts are complete and the Stage 9 deterministic
+PoUI simulation candidate is under acceptance. Versioned contracts, passive hardware collection,
 explainable readiness rules, consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected
 loopback API and bilingual functional dashboard now compose these capabilities.
-External Ed25519 receipt signing remains outside the process boundary; PoUI
-simulation is not yet part of the released implementation.
+External Ed25519 receipt signing remains outside the process boundary. The PoUI
+state machine is pure and performs no protocol, wallet, token, or network I/O.
 
 ## Component boundaries
 
@@ -27,6 +27,8 @@ Optional external signer / future official testnet adapter
 
 - `src/flopbench`: Python CLI and domain core.
 - `src/flopbench/readiness`: pure profile-versus-probe rules and output formatting.
+- `src/flopbench/simulator`: deterministic agent/miner/validator state machine,
+  event log, challenges, and mock-only accounting.
 - `src/flopbench/validator_doctor`: approval-gated active tests and bounded adapters.
 - `src/flopbench/reporting`: typed redaction, JCS digests, offline renderers, diff, and comparison.
 - `src/flopbench/webapp.py`: FastAPI composition root with literal-loopback,

@@ -14,7 +14,9 @@ At the Stage 6 candidate:
 - no estimated FLOP value is emitted;
 - a DID receipt proves Ed25519 key possession only, not identity, report truth,
   hardware ownership, eligibility, rewards, or trusted time;
-- no private-key management is provided and PoUI simulation is not yet released;
+- no private-key management is provided;
+- PoUI actors, fees, compute, stake, slashing, and challenges are deterministic
+  educational simulations, not protocol or economic operations;
 - no FLOP testnet or mainnet request is supported;
 - no eligibility, airdrop score, token amount, reward, ROI, stake, wallet, claim, or real slashing behavior is provided.
 

@@ -35,8 +35,9 @@ The overview runs a passive public probe and evaluates miner or validator
 readiness against the bundled versioned profile. `unknown`, `skipped`, and
 `unsupported` remain visually distinct from `fail`.
 
-The dashboard never starts a benchmark on load or browser refresh. The mock
-benchmark runs only after the user activates its button. Public report preview
+The dashboard never starts a benchmark or simulation on load or browser refresh. The mock
+benchmark and PoUI scenarios run only after the user activates their controls.
+The PoUI view presents every local simulated transition as an event timeline. Public report preview
 lists categories removed from sharing before showing its JCS digest.
 
 Turkish and English are first-class interface languages. The browser language

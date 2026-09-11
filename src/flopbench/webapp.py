@@ -24,6 +24,7 @@ from flopbench.probe.service import run_fixture_probe, run_live_probe
 from flopbench.profile_loader import load_profile
 from flopbench.readiness.engine import evaluate_readiness
 from flopbench.reporting.service import create_export, load_report
+from flopbench.simulator import SimulationScenario, build_session_request, run_simulation
 
 
 def _discover_project_root() -> Path:
@@ -58,6 +59,11 @@ class BenchmarkRequest(StrictModel):
 
 class ReportPreviewRequest(StrictModel):
     privacy: Literal["private", "support", "public"] = "public"
+
+
+class SimulationRunRequest(StrictModel):
+    scenario: SimulationScenario = SimulationScenario.SUCCESS
+    seed: Annotated[int, Field(ge=0, le=2_147_483_647)] = 9
 
 
 def validate_bind_host(host: str) -> str:
@@ -136,6 +142,7 @@ def create_app(
     )
     app.state.startup_token = startup_token
     app.state.benchmarks = {}
+    app.state.simulations = {}
 
     @app.middleware("http")
     async def local_boundary(
@@ -221,6 +228,24 @@ def create_app(
             else []
         )
         return {"export": _as_json(exported), "redacted_fields": hidden}
+
+    @app.get("/api/v1/simulations")
+    def simulations() -> dict[str, object]:
+        return {"simulations": list(app.state.simulations.values())}
+
+    @app.post("/api/v1/simulations", status_code=201)
+    def simulation(payload: SimulationRunRequest) -> object:
+        result = run_simulation(build_session_request(payload.scenario, payload.seed))
+        serialized = _as_json(result)
+        app.state.simulations[str(result.request.session_id)] = serialized
+        return serialized
+
+    @app.get("/api/v1/simulations/{session_id}")
+    def simulation_detail(session_id: str) -> object:
+        try:
+            return app.state.simulations[session_id]
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="simulation not found") from exc
 
     resolved_static = static_dir.resolve() if static_dir is not None else None
     if resolved_static is not None and (resolved_static / "assets").is_dir():

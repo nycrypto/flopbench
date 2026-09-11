@@ -4,17 +4,20 @@ import {
   loadPublicPreview,
   loadReadiness,
   runMockBenchmark,
+  runSimulation,
   type BenchmarkResponse,
   type ReadinessCheck,
   type ReadinessResponse,
   type ReportPreviewResponse,
   type Role,
+  type SimulationResponse,
+  type SimulationScenario,
   type Status,
 } from "./api";
 
 type Theme = "light" | "dark";
 type Locale = "en" | "tr";
-type View = "overview" | "benchmark" | "reports";
+type View = "overview" | "benchmark" | "reports" | "simulation";
 
 const copy = {
   tr: {
@@ -25,6 +28,7 @@ const copy = {
     overview: "Genel Bakış",
     benchmark: "Benchmark",
     reports: "Raporlar",
+    simulation: "PoUI Simülasyonu",
     localOnly: "Yalnızca yerel",
     closeMenu: "Menüyü kapat",
     openMenu: "Menüyü aç",
@@ -87,6 +91,22 @@ const copy = {
     digest: "Özet",
     authenticity: "Doğruluk",
     hiddenFields: "Paylaşılmayan alanlar",
+    simulationTitle: "PoUI yaşam döngüsü",
+    simulationIntro: "Agent, miner ve validator akışını tamamen yerel ve sahte değerlerle inceleyin.",
+    runSimulation: "Simülasyonu çalıştır",
+    runningSimulation: "Simülasyon çalışıyor…",
+    noSimulation: "Henüz simülasyon çalıştırılmadı.",
+    simulationFailed: "Simülasyon tamamlanamadı.",
+    simulatedOnly: "Eğitim simülasyonu · resmî protokol veya gerçek token işlemi değildir.",
+    scenario: "Senaryo",
+    finalState: "Son durum",
+    eventFlow: "Olay akışı",
+    challenge: "Challenge",
+    noChallenge: "Challenge oluşmadı.",
+    mockAccounting: "Sahte muhasebe",
+    requestedFee: "İstenen ücret",
+    chargedFee: "Yazılan ücret",
+    mockSlashed: "Sahte kesinti",
     redactions: {
       "host identifiers": "Cihaz ve kullanıcı adları",
       "local paths": "Yerel dosya yolları",
@@ -102,6 +122,7 @@ const copy = {
     overview: "Overview",
     benchmark: "Benchmark",
     reports: "Reports",
+    simulation: "PoUI Simulation",
     localOnly: "Local only",
     closeMenu: "Close menu",
     openMenu: "Open menu",
@@ -164,6 +185,22 @@ const copy = {
     digest: "Digest",
     authenticity: "Authenticity",
     hiddenFields: "Fields not shared",
+    simulationTitle: "PoUI lifecycle",
+    simulationIntro: "Explore the agent, miner, and validator flow using entirely local mock values.",
+    runSimulation: "Run simulation",
+    runningSimulation: "Simulation is running…",
+    noSimulation: "No simulation has been run yet.",
+    simulationFailed: "Simulation could not be completed.",
+    simulatedOnly: "Educational simulation · not an official protocol or real token operation.",
+    scenario: "Scenario",
+    finalState: "Final state",
+    eventFlow: "Event flow",
+    challenge: "Challenge",
+    noChallenge: "No challenge was created.",
+    mockAccounting: "Mock accounting",
+    requestedFee: "Requested fee",
+    chargedFee: "Charged fee",
+    mockSlashed: "Mock slash",
     redactions: {
       "host identifiers": "Device and user names",
       "local paths": "Local file paths",
@@ -176,6 +213,29 @@ const copy = {
 const statusLabels: Record<Locale, Record<Status, string>> = {
   tr: { pass: "Geçti", warn: "Uyarı", fail: "Yetersiz", unknown: "Bilinmiyor", skipped: "Atlandı", unsupported: "Desteklenmiyor" },
   en: { pass: "Passed", warn: "Warning", fail: "Insufficient", unknown: "Unknown", skipped: "Skipped", unsupported: "Unsupported" },
+};
+
+const scenarioLabels: Record<Locale, Record<SimulationScenario, string>> = {
+  tr: {
+    success: "Başarılı akış",
+    "wrong-model": "Yanlış model",
+    "high-latency": "Yüksek gecikme",
+    "canned-answer": "Hazır yanıt",
+    timeout: "Zaman aşımı",
+    "miner-cancel": "Miner iptali",
+    "validator-match": "Validator eşleşmesi",
+    "validator-mismatch": "Validator uyuşmazlığı",
+  },
+  en: {
+    success: "Successful flow",
+    "wrong-model": "Wrong model",
+    "high-latency": "High latency",
+    "canned-answer": "Canned answer",
+    timeout: "Timeout",
+    "miner-cancel": "Miner cancellation",
+    "validator-match": "Validator match",
+    "validator-mismatch": "Validator mismatch",
+  },
 };
 
 const checkLabels: Record<Locale, Record<string, string>> = {
@@ -454,6 +514,76 @@ function ReportsView({ locale }: { locale: Locale }) {
   );
 }
 
+function SimulationView({ locale }: { locale: Locale }) {
+  const text = copy[locale];
+  const [scenario, setScenario] = useState<SimulationScenario>("success");
+  const [result, setResult] = useState<SimulationResponse | null>(null);
+  const [state, setState] = useState<"idle" | "running" | "failed">("idle");
+
+  const run = () => {
+    setState("running");
+    runSimulation(scenario)
+      .then((response) => {
+        setResult(response);
+        setState("idle");
+      })
+      .catch(() => setState("failed"));
+  };
+
+  return (
+    <section className="workspace-view" aria-labelledby="simulation-title">
+      <div className="workspace-heading simulation-heading">
+        <div><p className="eyebrow">{text.simulation}</p><h1 id="simulation-title">{text.simulationTitle}</h1><p>{text.simulationIntro}</p></div>
+        <div className="simulation-controls">
+          <label>{text.scenario}
+            <select value={scenario} onChange={(event) => setScenario(event.target.value as SimulationScenario)}>
+              {(Object.keys(scenarioLabels[locale]) as SimulationScenario[]).map((value) => (
+                <option key={value} value={value}>{scenarioLabels[locale][value]}</option>
+              ))}
+            </select>
+          </label>
+          <button type="button" className="primary-button" disabled={state === "running"} onClick={run}>{state === "running" ? text.runningSimulation : text.runSimulation}</button>
+        </div>
+      </div>
+      <div className="simulation-notice" role="note">{text.simulatedOnly}</div>
+      {state === "failed" && <div className="panel state-panel error-state" role="alert">{text.simulationFailed}</div>}
+      {result === null && state !== "failed" && <div className="panel state-panel">{state === "running" ? text.runningSimulation : text.noSimulation}</div>}
+      {result && (
+        <>
+          <section className="summary-grid simulation-summary" aria-label={text.simulationTitle}>
+            <article><span>{text.scenario}</span><strong>{scenarioLabels[locale][result.request.scenario]}</strong><small>seed {result.request.seed}</small></article>
+            <article><span>{text.finalState}</span><strong>{result.final_state}</strong><small>simulated: true</small></article>
+            <article><span>{text.challenge}</span><strong>{result.challenge?.outcome ?? "—"}</strong><small>{result.challenge?.validator_action ?? text.noChallenge}</small></article>
+            <article><span>{text.mockAccounting}</span><strong>{result.accounting.charged_fee.amount}</strong><small>mock-credit</small></article>
+          </section>
+          <div className="simulation-grid">
+            <section className="panel timeline-panel" aria-labelledby="event-flow-title">
+              <div className="panel-heading"><h2 id="event-flow-title">{text.eventFlow}</h2><span>{result.events.length}</span></div>
+              <ol className="event-timeline">
+                {result.events.map((event) => (
+                  <li key={event.event_id}>
+                    <span className="event-dot" aria-hidden="true" />
+                    <div><strong>{event.to_state}</strong><small>{event.actor} · {event.code}</small></div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+            <aside className="panel accounting-panel" aria-labelledby="accounting-title">
+              <div className="panel-heading"><h2 id="accounting-title">{text.mockAccounting}</h2><span>simulated</span></div>
+              <dl>
+                <div><dt>{text.requestedFee}</dt><dd>{result.accounting.requested_fee.amount} mock-credit</dd></div>
+                <div><dt>{text.chargedFee}</dt><dd>{result.accounting.charged_fee.amount} mock-credit</dd></div>
+                <div><dt>{text.mockSlashed}</dt><dd>{result.accounting.mock_slashed.amount} mock-credit</dd></div>
+              </dl>
+              <p>{result.challenge ? result.challenge.reason_code : text.noChallenge}</p>
+            </aside>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
 export function App() {
   const [theme, setTheme] = useState<Theme>(initialTheme);
   const [locale, setLocale] = useState<Locale>(initialLocale);
@@ -487,7 +617,7 @@ export function App() {
           <span className="brand-mark" aria-hidden="true">F</span><span>FlopBench</span>
         </button>
         <nav className="sidebar-nav" aria-label={text.dashboardSections}>
-          {(["overview", "benchmark", "reports"] as const).map((item, index) => (
+          {(["overview", "benchmark", "reports", "simulation"] as const).map((item, index) => (
             <button className={`nav-item${view === item ? " active" : ""}`} type="button" aria-current={view === item ? "page" : undefined} onClick={() => selectView(item)} key={item}>
               <span aria-hidden="true">0{index + 1}</span>{text[item]}
             </button>
@@ -525,6 +655,7 @@ export function App() {
           )}
           {view === "benchmark" && <BenchmarkView locale={locale} />}
           {view === "reports" && <ReportsView locale={locale} />}
+          {view === "simulation" && <SimulationView locale={locale} />}
         </main>
       </div>
     </div>

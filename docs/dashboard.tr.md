@@ -37,8 +37,9 @@ Genel bakış, pasif public probe çalıştırır ve miner veya validator hazır
 birlikte gelen sürümlü profile göre değerlendirir. `unknown`, `skipped` ve
 `unsupported` sonuçları `fail` sonucundan görsel olarak ayrı tutulur.
 
-Dashboard açılışta veya tarayıcı yenilemesinde benchmark başlatmaz. Mock
-benchmark yalnız kullanıcı düğmeyi etkinleştirdiğinde çalışır. Public rapor
+Dashboard açılışta veya tarayıcı yenilemesinde benchmark ya da simülasyon başlatmaz. Mock
+benchmark ve PoUI senaryoları yalnız kullanıcı kontrolleri etkinleştirdiğinde
+çalışır. PoUI görünümü her yerel simüle geçişi olay zaman çizgisinde gösterir. Public rapor
 önizlemesi, JCS özetinden önce paylaşım dışında bırakılan alan sınıflarını
 gösterir.
 

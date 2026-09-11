@@ -105,6 +105,19 @@ FlopBench private key, seed, PEM, anahtar dosyası veya parola kabul etmez.
 Geçerli receipt yalnız DID anahtarının kullanıldığını kanıtlar. Ayrıntılar için
 [receipt güvenlik modeline](./docs/receipt-security.tr.md) bakın.
 
+## PoUI eğitim simülasyonu
+
+Deterministik yerel yaşam döngüsünü veya challenge yolunu çalıştırın:
+
+```powershell
+flopbench simulate run --scenario success --seed 9
+flopbench simulate run --scenario validator-mismatch --seed 9
+```
+
+Agent, miner, validator, ücret, compute, stake, slashing ve olay günlüğünün tamamı
+açıkça simüle edilir. Resmî protokol, ağ, cüzdan, token veya gerçek ekonomik işlem
+kullanılmaz. Ayrıntılar için [simülasyon rehberine](./docs/simulation.tr.md) bakın.
+
 ## Kalite kapıları
 
 ```powershell

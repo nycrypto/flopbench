@@ -45,6 +45,8 @@ from flopbench.reporting.compare import compare_benchmarks, diff_exports
 from flopbench.reporting.errors import ReportError
 from flopbench.reporting.render import render_html, render_json, render_terminal
 from flopbench.reporting.service import create_export, load_export, load_report, write_new_file
+from flopbench.simulator import SimulationScenario, build_session_request, run_simulation
+from flopbench.simulator.errors import SimulationError
 from flopbench.validator_doctor.formatters import doctor_json, doctor_terminal
 from flopbench.validator_doctor.models import NetworkTarget, TestLimits
 from flopbench.validator_doctor.service import (
@@ -69,6 +71,8 @@ report_app = typer.Typer(help="Export, inspect, and compare privacy-aware report
 app.add_typer(report_app, name="report")
 receipt_app = typer.Typer(help="Prepare and verify externally signed DID receipts.")
 app.add_typer(receipt_app, name="receipt")
+simulate_app = typer.Typer(help="Run deterministic educational PoUI simulations.")
+app.add_typer(simulate_app, name="simulate")
 
 DEFAULT_PROFILE = Path("profiles/flop-teaser-0.1.yaml")
 DEFAULT_WORKLOAD = Path(__file__).resolve().parent / "workloads" / "smoke-v1.json"
@@ -593,7 +597,7 @@ def report_compare(
     typer.echo(canonical_bytes(result.model_dump(mode="json", by_alias=True)).decode("utf-8"))
 
 
-def _receipt_failure(exc: ReceiptError | ReportError) -> Never:
+def _receipt_failure(exc: ReceiptError | ReportError | SimulationError) -> Never:
     typer.echo(
         json.dumps({"code": exc.code, "message": str(exc)}, separators=(",", ":"), sort_keys=True),
         err=True,
@@ -696,3 +700,29 @@ def receipt_verify(
     except (ReceiptError, ReportError) as exc:
         _receipt_failure(exc)
     typer.echo(render_contract(result).decode("utf-8"), nl=False)
+
+
+@simulate_app.command("run")
+def simulate_run(
+    scenario: Annotated[
+        SimulationScenario,
+        typer.Option("--scenario", help="Deterministic local teaching scenario."),
+    ] = SimulationScenario.SUCCESS,
+    seed: Annotated[int, typer.Option("--seed", min=0, max=2_147_483_647)] = 9,
+    output: Annotated[
+        Path | None, typer.Option("--output", help="Write a new simulation JSON file.")
+    ] = None,
+) -> None:
+    """Simulate a PoUI lifecycle without any real protocol, token, or stake call."""
+
+    try:
+        result = run_simulation(build_session_request(scenario, seed))
+        rendered = canonical_bytes(result.model_dump(mode="json", by_alias=True)) + b"\n"
+        if output is not None:
+            write_new_file(output, rendered)
+    except (SimulationError, ReportError) as exc:
+        _receipt_failure(exc)
+    if output is None:
+        typer.echo(rendered.decode("utf-8"), nl=False)
+    else:
+        typer.echo(f"Wrote {output.name}; simulated only, no real token or stake operation.")

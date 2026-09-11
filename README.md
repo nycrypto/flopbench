@@ -104,6 +104,19 @@ FlopBench never accepts a private key, seed, PEM, key file, or password. A valid
 receipt proves possession of the DID key only. See the
 [receipt security model](./docs/receipt-security.md).
 
+## PoUI teaching simulation
+
+Run a deterministic local lifecycle or a challenge path:
+
+```powershell
+flopbench simulate run --scenario success --seed 9
+flopbench simulate run --scenario validator-mismatch --seed 9
+```
+
+The agent, miner, validator, fees, compute, stake, slashing, and event log are all
+explicitly simulated. No official protocol, network, wallet, token, or real
+economic operation is used. See the [simulation guide](./docs/simulation.md).
+
 ## Quality gates
 
 ```powershell

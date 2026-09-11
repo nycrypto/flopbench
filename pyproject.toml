@@ -54,6 +54,7 @@ markers = [
   "stage6: reporting and redaction acceptance tests",
   "stage7: local API and dashboard acceptance tests",
   "stage8: DID receipt and external signer acceptance tests",
+  "stage9: deterministic PoUI simulation acceptance tests",
 ]
 
 [tool.coverage.run]

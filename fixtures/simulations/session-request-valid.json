@@ -1,0 +1,25 @@
+{
+  "schema": "flopbench-poui-session-request-v1",
+  "simulated": true,
+  "session_id": "54a0d26c-22ff-5501-a2bb-491a366c8a06",
+  "scenario": "success",
+  "seed": 9,
+  "model": {
+    "simulated": true,
+    "name": "fixture-model",
+    "digest_algorithm": "sha256",
+    "digest": "22ed0753166ae4dbbc32995c6cff78ee1ef7008537cbdb5b7d741fba2ed1c58e"
+  },
+  "max_latency_ms": 500,
+  "compute_estimate": {
+    "simulated": true,
+    "amount": 120,
+    "unit": "mock-compute-unit"
+  },
+  "confidentiality": "local-simulation",
+  "mock_fee": {
+    "simulated": true,
+    "amount": 25,
+    "unit": "mock-credit"
+  }
+}

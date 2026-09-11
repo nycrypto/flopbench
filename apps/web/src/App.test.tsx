@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, vi } from "vitest";
 
 import { App } from "./App";
-import type { ReadinessResponse } from "./api";
+import type { ReadinessResponse, SimulationResponse } from "./api";
 
 const minerReadiness: ReadinessResponse = {
   probe: {
@@ -57,6 +57,25 @@ const preview = {
   redacted_fields: ["host identifiers", "local paths", "access tokens", "raw response content"],
 };
 
+const simulation: SimulationResponse = {
+  simulated: true,
+  official_protocol: false,
+  disclaimer: "Educational local simulation; not an official protocol.",
+  request: { session_id: "session-9", scenario: "validator-mismatch", seed: 9 },
+  events: [
+    { event_id: "event-1", actor: "agent", from_state: null, to_state: "created", code: "session.created" },
+    { event_id: "event-2", actor: "validator", from_state: "validating", to_state: "challenged", code: "challenge.validator_sample_mismatch" },
+    { event_id: "event-3", actor: "validator", from_state: "challenged", to_state: "rejected", code: "challenge.rejected" },
+  ],
+  challenge: { reason_code: "validator_sample_mismatch", validator_action: "full-rerun", full_rerun_performed: true, outcome: "rejected" },
+  accounting: {
+    requested_fee: { amount: 25, unit: "mock-credit" },
+    charged_fee: { amount: 0, unit: "mock-credit" },
+    mock_slashed: { amount: 40, unit: "mock-credit" },
+  },
+  final_state: "rejected",
+};
+
 function installFetch(options: { readiness?: ReadinessResponse; fail?: string } = {}) {
   const mock = vi.fn((input: RequestInfo | URL) => {
     const path = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
@@ -65,6 +84,7 @@ function installFetch(options: { readiness?: ReadinessResponse; fail?: string } 
     if (path.includes("/checks/miner")) return Promise.resolve(Response.json(options.readiness ?? minerReadiness));
     if (path.endsWith("/benchmarks")) return Promise.resolve(Response.json(benchmark, { status: 201 }));
     if (path.includes("/reports/preview")) return Promise.resolve(Response.json(preview));
+    if (path.endsWith("/simulations")) return Promise.resolve(Response.json(simulation, { status: 201 }));
     return Promise.resolve(new Response("missing", { status: 404 }));
   });
   vi.stubGlobal("fetch", mock);
@@ -277,5 +297,27 @@ describe("App", () => {
     expect(container.querySelector('input[type="file"]')).toBeNull();
     expect(container.querySelector('input[name*="private" i]')).toBeNull();
     expect(screen.queryByLabelText(/private key|özel anahtar/i)).not.toBeInTheDocument();
+  });
+
+  it("renders the explicitly simulated PoUI event flow", async () => {
+    installFetch();
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "PoUI Simülasyonu" }));
+    expect(screen.getByText(/resmî protokol veya gerçek token işlemi değildir/i)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Senaryo"), { target: { value: "validator-mismatch" } });
+    fireEvent.click(screen.getByRole("button", { name: "Simülasyonu çalıştır" }));
+
+    expect(await screen.findByText("validator_sample_mismatch")).toBeInTheDocument();
+    expect(screen.getAllByText("rejected").length).toBeGreaterThan(0);
+    expect(screen.getByText("40 mock-credit")).toBeInTheDocument();
+    expect(screen.getAllByText("simulated: true").length).toBeGreaterThan(0);
+  });
+
+  it("keeps simulation failures concise", async () => {
+    installFetch({ fail: "/simulations" });
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "PoUI Simülasyonu" }));
+    fireEvent.click(screen.getByRole("button", { name: "Simülasyonu çalıştır" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Simülasyon tamamlanamadı.");
   });
 });

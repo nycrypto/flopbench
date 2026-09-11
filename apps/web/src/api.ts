@@ -51,6 +51,42 @@ export type ReportPreviewResponse = {
   redacted_fields: string[];
 };
 
+export type SimulationScenario =
+  | "success"
+  | "wrong-model"
+  | "high-latency"
+  | "canned-answer"
+  | "timeout"
+  | "miner-cancel"
+  | "validator-match"
+  | "validator-mismatch";
+
+export type SimulationResponse = {
+  simulated: true;
+  official_protocol: false;
+  disclaimer: string;
+  request: { session_id: string; scenario: SimulationScenario; seed: number };
+  events: Array<{
+    event_id: string;
+    actor: "agent" | "miner" | "validator" | "simulator";
+    from_state: string | null;
+    to_state: string;
+    code: string;
+  }>;
+  challenge: null | {
+    reason_code: string;
+    validator_action: "sample" | "full-rerun";
+    full_rerun_performed: boolean;
+    outcome: "settled" | "rejected";
+  };
+  accounting: {
+    requested_fee: { amount: number; unit: "mock-credit" };
+    charged_fee: { amount: number; unit: "mock-credit" };
+    mock_slashed: { amount: number; unit: "mock-credit" };
+  };
+  final_state: string;
+};
+
 function startupToken(): string {
   return document.querySelector<HTMLMetaElement>('meta[name="flopbench-token"]')?.content ?? "";
 }
@@ -86,5 +122,15 @@ export function loadPublicPreview(): Promise<ReportPreviewResponse> {
   return apiRequest("/api/v1/reports/preview", {
     method: "POST",
     body: JSON.stringify({ privacy: "public" }),
+  });
+}
+
+export function runSimulation(
+  scenario: SimulationScenario = "success",
+  seed: number = 9,
+): Promise<SimulationResponse> {
+  return apiRequest("/api/v1/simulations", {
+    method: "POST",
+    body: JSON.stringify({ scenario, seed }),
   });
 }

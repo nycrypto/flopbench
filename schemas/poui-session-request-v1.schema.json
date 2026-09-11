@@ -1,0 +1,166 @@
+{
+  "$defs": {
+    "ComputeEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "exclusiveMinimum": 0,
+          "title": "Amount",
+          "type": "integer"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "unit": {
+          "const": "mock-compute-unit",
+          "default": "mock-compute-unit",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "ComputeEstimate",
+      "type": "object"
+    },
+    "MockAmount": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "minimum": 0,
+          "title": "Amount",
+          "type": "integer"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "unit": {
+          "const": "mock-credit",
+          "default": "mock-credit",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "MockAmount",
+      "type": "object"
+    },
+    "SimulatedModel": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "digest_algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Digest Algorithm",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "simulated": {
+          "const": true,
+          "default": true,
+          "title": "Simulated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "digest"
+      ],
+      "title": "SimulatedModel",
+      "type": "object"
+    },
+    "SimulationScenario": {
+      "enum": [
+        "success",
+        "wrong-model",
+        "high-latency",
+        "canned-answer",
+        "timeout",
+        "miner-cancel",
+        "validator-match",
+        "validator-mismatch"
+      ],
+      "title": "SimulationScenario",
+      "type": "string"
+    }
+  },
+  "$id": "https://schemas.flopbench.dev/v1/poui-session-request-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "compute_estimate": {
+      "$ref": "#/$defs/ComputeEstimate"
+    },
+    "confidentiality": {
+      "const": "local-simulation",
+      "default": "local-simulation",
+      "title": "Confidentiality",
+      "type": "string"
+    },
+    "max_latency_ms": {
+      "exclusiveMinimum": 0,
+      "title": "Max Latency Ms",
+      "type": "integer"
+    },
+    "mock_fee": {
+      "$ref": "#/$defs/MockAmount"
+    },
+    "model": {
+      "$ref": "#/$defs/SimulatedModel"
+    },
+    "scenario": {
+      "$ref": "#/$defs/SimulationScenario"
+    },
+    "schema": {
+      "const": "flopbench-poui-session-request-v1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "seed": {
+      "maximum": 2147483647,
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "simulated": {
+      "const": true,
+      "default": true,
+      "title": "Simulated",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema",
+    "session_id",
+    "scenario",
+    "seed",
+    "model",
+    "max_latency_ms",
+    "compute_estimate",
+    "mock_fee"
+  ],
+  "title": "SimulationSessionRequest",
+  "type": "object"
+}

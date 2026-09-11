@@ -12,6 +12,7 @@ from flopbench.contracts import BenchmarkReport, ReadinessReport, Receipt, Sourc
 from flopbench.probe.models import ProbeReport
 from flopbench.receipt.models import SigningRequest
 from flopbench.reporting.models import ReportExport
+from flopbench.simulator.models import SimulationResult, SimulationSessionRequest
 from flopbench.validator_doctor.models import ValidatorDoctorReport
 
 SCHEMA_BASE = "https://schemas.flopbench.dev/v1"
@@ -22,6 +23,8 @@ SCHEMA_MODELS: dict[str, type[BaseModel]] = {
     "benchmark-report-v2.schema.json": BenchmarkReportV2,
     "receipt-v1.schema.json": Receipt,
     "signing-request-v1.schema.json": SigningRequest,
+    "poui-session-request-v1.schema.json": SimulationSessionRequest,
+    "poui-simulation-v1.schema.json": SimulationResult,
     "probe-v1.schema.json": ProbeReport,
     "validator-doctor-v1.schema.json": ValidatorDoctorReport,
     "report-export-v1.schema.json": ReportExport,
