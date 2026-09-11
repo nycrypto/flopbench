@@ -1,8 +1,8 @@
 # Stage 8 acceptance record
 
 - Date: 2026-09-11
-- Stage gate: all local, manual, and remote checks passed; awaiting user approval
-- Base release: `v0.6.0`
+- Stage gate: passed; the user approved the tested candidate on 2026-09-11
+- Release: `v0.7.0`
 - Candidate implementation commit: `2b5205b1602050187e0e24dde3da19f39715a1cf`
 - Platform: Windows, Python 3.14.6, Node.js 24.17.0, pnpm 11.19.0
 
@@ -101,5 +101,5 @@ ignored `.acceptance/stage8/manual-20260911` directory and are not committed.
 - Stage 9 simulation has not started. Stage 12 remains blocked on a public,
   versioned official testnet contract.
 
-The candidate remains on `stage/8-did-receipts`. It must not be merged into
-`main` or tagged `v0.7.0` until the user approves this acceptance record.
+The approved candidate is ready to merge into `main` and receive the `v0.7.0`
+release tag. Stage 9 remains a separate gated branch.

@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 7 (`v0.6.0`) and has a Stage 8 externally signed DID receipt candidate under acceptance. Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, privacy-aware reports, and a secured bilingual local dashboard are available. PoUI simulation is not implemented yet. See the [dashboard documentation](./docs/dashboard.md), [receipt security model](./docs/receipt-security.md), and [Stage 8 acceptance record](./docs/stage-8-acceptance.md).
+FlopBench has completed Stage 8 (`v0.7.0`). Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, privacy-aware reports, externally signed DID receipts, and a secured bilingual local dashboard are available. Stage 9 PoUI simulation is under development. See the [dashboard documentation](./docs/dashboard.md), [receipt security model](./docs/receipt-security.md), and [Stage 8 acceptance record](./docs/stage-8-acceptance.md).
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 

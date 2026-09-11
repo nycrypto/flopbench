@@ -2,14 +2,14 @@
 
 ## Status
 
-Stage 7 local dashboard is complete and the Stage 8 receipt candidate is under
-acceptance. Versioned contracts, passive hardware collection,
+Stage 8 externally signed DID receipts are complete and Stage 9 PoUI simulation
+is the next isolated boundary. Versioned contracts, passive hardware collection,
 explainable readiness rules, consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected
 loopback API and bilingual functional dashboard now compose these capabilities.
-External Ed25519 receipt signing now remains outside the process boundary;
-PoUI simulation remains a future boundary.
+External Ed25519 receipt signing remains outside the process boundary; PoUI
+simulation is not yet part of the released implementation.
 
 ## Component boundaries
 

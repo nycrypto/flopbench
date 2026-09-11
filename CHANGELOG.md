@@ -4,6 +4,26 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-11
+
+### English
+
+- Added RFC 8785/JCS signing requests bound to report digest, schema, existing
+  Ed25519 `did:key`, algorithms, and a local UTC signing declaration.
+- Added offline Ed25519 receipt creation and verification with strict base58btc,
+  multicodec, and canonical unpadded base64url validation.
+- Added an external-signer-only trust boundary, bilingual security guidance,
+  RFC 8032 interoperability vectors, and complete critical branch coverage.
+
+### Türkçe
+
+- Rapor özeti, şema, mevcut Ed25519 `did:key`, algoritmalar ve yerel UTC imza
+  beyanına bağlı RFC 8785/JCS imza istekleri eklendi.
+- Katı base58btc, multicodec ve canonical padding'siz base64url doğrulamasıyla
+  çevrimdışı Ed25519 receipt oluşturma ve doğrulama eklendi.
+- Yalnız haricî signer kullanan güven sınırı, iki dilli güvenlik rehberi, RFC
+  8032 uyumluluk vektörleri ve kritik yollarda tam dal kapsamı eklendi.
+
 ## [0.6.0] - 2026-09-10
 
 ### English
