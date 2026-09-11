@@ -4,6 +4,26 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-09-12
+
+### English
+
+- Added deterministic PoUI session contracts and a fully covered lifecycle
+  state machine for agent, miner, and validator actors.
+- Added success, challenge, timeout, cancellation, validator sampling, and
+  full re-run mock scenarios with canonical seeded event logs.
+- Added mock-only accounting, CLI and secured local API surfaces, bilingual
+  documentation, and an accessible visual simulation timeline.
+
+### Türkçe
+
+- Agent, miner ve validator aktörleri için deterministik PoUI oturum
+  sözleşmeleri ve tamamen kapsanan yaşam döngüsü durum makinesi eklendi.
+- Canonical seed'li olay günlükleriyle başarı, challenge, zaman aşımı, iptal,
+  validator örneklemesi ve tam yeniden çalıştırma mock senaryoları eklendi.
+- Yalnız sahte muhasebe, CLI ve güvenli yerel API yüzeyleri, iki dilli belgeler
+  ve erişilebilir görsel simülasyon zaman çizelgesi eklendi.
+
 ## [0.7.0] - 2026-09-11
 
 ### English

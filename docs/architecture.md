@@ -2,8 +2,8 @@
 
 ## Status
 
-Stage 8 externally signed DID receipts are complete and the Stage 9 deterministic
-PoUI simulation candidate is under acceptance. Versioned contracts, passive hardware collection,
+Stage 9 deterministic PoUI simulation is complete and Stage 10 release-candidate
+packaging is under development. Versioned contracts, passive hardware collection,
 explainable readiness rules, consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected

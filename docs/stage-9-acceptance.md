@@ -1,8 +1,8 @@
 # Stage 9 acceptance record
 
 - Date: 2026-09-12
-- Stage gate: passed; awaiting explicit user approval to merge
-- Base release: `v0.7.0`
+- Stage gate: passed; the user approved the tested candidate on 2026-09-12
+- Release: `v0.8.0`
 - Candidate implementation commit: `73b4c17fb0ef7752776586adfa97caf2edc78102`
 - Platform: Windows, Python 3.14.6, Node.js 24.17.0, pnpm 11.19.0
 
@@ -103,9 +103,10 @@ remain in the ignored `.acceptance/stage9` directory and are not committed.
   financial or eligibility evidence.
 - FastAPI's test client still emits the previously recorded upstream Starlette
   `httpx2` migration warning; it does not affect these results.
-- Stage 10 packaging and release-candidate work has not started.
+- Stage 10 packaging and release-candidate work starts only after this approved
+  candidate is merged and tagged.
 - Stage 12 remains blocked until a public, versioned official testnet contract
   exists.
 
-The candidate is ready for user review. It must not be merged into `main` or
-tagged as `v0.8.0` until that approval is received.
+The approved candidate is ready to merge into `main` and receive the `v0.8.0`
+release tag. Stage 10 remains a separate gated branch.
