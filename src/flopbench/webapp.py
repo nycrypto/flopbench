@@ -28,7 +28,7 @@ from flopbench.simulator import SimulationScenario, build_session_request, run_s
 
 
 def _discover_project_root() -> Path:
-    """Prefer the source checkout until Stage 10 packages data and web assets."""
+    """Locate a source checkout when running from an unpackaged workspace."""
 
     working_directory = Path.cwd().resolve()
     if (working_directory / "profiles" / "flop-teaser-0.1.yaml").is_file():
@@ -37,15 +37,38 @@ def _discover_project_root() -> Path:
 
 
 PROJECT_ROOT = _discover_project_root()
-DEFAULT_PROFILE = PROJECT_ROOT / "profiles" / "flop-teaser-0.1.yaml"
-DEFAULT_WORKLOAD = Path(__file__).resolve().parent / "workloads" / "smoke-v1.json"
-DEFAULT_WEB_DIST = PROJECT_ROOT / "apps" / "web" / "dist"
+PACKAGE_ROOT = Path(__file__).resolve().parent
+PACKAGE_DATA = PACKAGE_ROOT / "data"
+
+
+def _source_or_packaged(source: Path, packaged: Path, *, directory: bool = False) -> Path:
+    """Prefer checkout data and otherwise use immutable wheel package data."""
+
+    available = source.is_dir() if directory else source.is_file()
+    return source if available else packaged
+
+
+DEFAULT_PROFILE = _source_or_packaged(
+    PROJECT_ROOT / "profiles" / "flop-teaser-0.1.yaml",
+    PACKAGE_DATA / "profiles" / "flop-teaser-0.1.yaml",
+)
+DEFAULT_WORKLOAD = PACKAGE_ROOT / "workloads" / "smoke-v1.json"
+DEFAULT_WEB_DIST = _source_or_packaged(
+    PROJECT_ROOT / "apps" / "web" / "dist",
+    PACKAGE_ROOT / "web_dist",
+    directory=True,
+)
+FIXTURE_ROOT = _source_or_packaged(
+    PROJECT_ROOT / "fixtures",
+    PACKAGE_DATA / "fixtures",
+    directory=True,
+)
 FIXTURES = {
-    "cpu-only": PROJECT_ROOT / "fixtures" / "hardware" / "cpu-only.json",
-    "miner": PROJECT_ROOT / "fixtures" / "hardware" / "miner-vram-15-99gb.json",
-    "unsupported": PROJECT_ROOT / "fixtures" / "hardware" / "unsupported-gpu.json",
+    "cpu-only": FIXTURE_ROOT / "hardware" / "cpu-only.json",
+    "miner": FIXTURE_ROOT / "hardware" / "miner-vram-15-99gb.json",
+    "unsupported": FIXTURE_ROOT / "hardware" / "unsupported-gpu.json",
 }
-REPORT_FIXTURE = PROJECT_ROOT / "fixtures" / "reports" / "benchmark-v2-mock.json"
+REPORT_FIXTURE = FIXTURE_ROOT / "reports" / "benchmark-v2-mock.json"
 
 
 class ProbeRequest(StrictModel):

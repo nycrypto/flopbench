@@ -11,7 +11,10 @@ param(
         "test-all",
         "lint",
         "typecheck",
-        "build"
+        "build",
+        "install-check",
+        "audit",
+        "release"
     )]
     [string]$Task
 )
@@ -52,6 +55,9 @@ try {
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             pnpm --filter "@flopbench/web" build
         }
+        "install-check" { & $PythonCommand -m nox -s install }
+        "audit" { & $PythonCommand -m nox -s audit }
+        "release" { & $PythonCommand -m nox -s release }
     }
 
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

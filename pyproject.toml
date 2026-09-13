@@ -40,6 +40,16 @@ Issues = "https://github.com/nycrypto/flopbench/issues"
 [tool.hatch.build.targets.wheel]
 packages = ["src/flopbench"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"profiles" = "flopbench/data/profiles"
+"schemas" = "flopbench/data/schemas"
+"fixtures" = "flopbench/data/fixtures"
+
+[tool.hatch.build.targets.sdist.force-include]
+"profiles" = "profiles"
+"schemas" = "schemas"
+"fixtures" = "fixtures"
+
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"
 cache_dir = ".cache/pytest"
@@ -55,6 +65,7 @@ markers = [
   "stage7: local API and dashboard acceptance tests",
   "stage8: DID receipt and external signer acceptance tests",
   "stage9: deterministic PoUI simulation acceptance tests",
+  "stage10: release-candidate packaging and security acceptance tests",
 ]
 
 [tool.coverage.run]

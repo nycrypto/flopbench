@@ -1,0 +1,33 @@
+{
+  "schema": "flopbench-license-policy-v1",
+  "policy": "Only documented permissive runtime licenses are accepted for the RC.",
+  "packages": {
+    "annotated-doc": "MIT",
+    "annotated-types": "MIT",
+    "anyio": "MIT",
+    "cffi": "MIT-0",
+    "click": "BSD-3-Clause",
+    "colorama": "BSD-3-Clause",
+    "cryptography": "Apache-2.0 OR BSD-3-Clause",
+    "fastapi": "MIT",
+    "h11": "MIT",
+    "idna": "BSD-3-Clause",
+    "markdown-it-py": "MIT",
+    "mdurl": "MIT",
+    "nvidia-ml-py": "BSD-3-Clause",
+    "psutil": "BSD-3-Clause",
+    "pycparser": "BSD-3-Clause",
+    "pydantic": "MIT",
+    "pydantic-core": "MIT",
+    "pygments": "BSD-2-Clause",
+    "pyyaml": "MIT",
+    "rfc8785": "Apache-2.0",
+    "rich": "MIT",
+    "shellingham": "ISC",
+    "starlette": "BSD-3-Clause",
+    "typer": "MIT",
+    "typing-extensions": "PSF-2.0",
+    "typing-inspection": "MIT",
+    "uvicorn": "BSD-3-Clause"
+  }
+}

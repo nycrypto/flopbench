@@ -6,7 +6,7 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-FlopBench has completed Stage 9 (`v0.8.0`). Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, privacy-aware reports, externally signed DID receipts, deterministic local PoUI simulation, and a secured bilingual dashboard are available. Stage 10 release-candidate packaging is under development. See the [dashboard documentation](./docs/dashboard.md), [simulation guide](./docs/simulation.md), and [Stage 9 acceptance record](./docs/stage-9-acceptance.md).
+FlopBench has completed Stage 9 (`v0.8.0`). Strict data contracts, passive hardware inspection, explainable readiness checks, consent-gated bounded health tests, inference benchmarks, privacy-aware reports, externally signed DID receipts, deterministic local PoUI simulation, and a secured bilingual dashboard are available. Stage 10 release-candidate packaging is under development. See the [installation guide](./docs/installation.md), [dashboard documentation](./docs/dashboard.md), [simulation guide](./docs/simulation.md), and [Stage 9 acceptance record](./docs/stage-9-acceptance.md).
 
 The normative project charter is [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md). Public FLOP parameters are provisional and will be stored in versioned source profiles rather than embedded throughout the code.
 
@@ -127,9 +127,14 @@ economic operation is used. See the [simulation guide](./docs/simulation.md).
 .\scripts\tasks.ps1 test-web
 .\scripts\tasks.ps1 test-all
 .\scripts\tasks.ps1 build
+.\scripts\tasks.ps1 install-check
+.\scripts\tasks.ps1 audit
+.\scripts\tasks.ps1 release
 ```
 
-Equivalent `make lint`, `make typecheck`, `make test-all`, and `make build` aliases are provided where Make is available.
+Equivalent Make aliases are provided where Make is available. `release` refuses
+to overwrite an existing release directory and produces checksums, an SBOM, and
+a license report alongside the wheel and sdist.
 
 ## Privacy and network defaults
 
