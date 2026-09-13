@@ -1,5 +1,5 @@
 -r runtime.in
-build==1.6.0
+build==1.6.1
 httpx==0.28.1
 hatchling==1.32.0
 jsonschema==4.26.0
