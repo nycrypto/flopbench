@@ -2,8 +2,8 @@
 
 ## Status
 
-Stage 9 deterministic PoUI simulation is complete and Stage 10 release-candidate
-packaging is under development. Versioned contracts, passive hardware collection,
+Stage 10 release-candidate packaging is complete and Stage 11 release work has
+not started. Versioned contracts, passive hardware collection,
 explainable readiness rules, consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected

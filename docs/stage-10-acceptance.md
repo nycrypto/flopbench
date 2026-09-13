@@ -1,9 +1,9 @@
 # Stage 10 acceptance record
 
 - Date: 2026-09-13
-- Stage gate: passed; waiting for user approval
+- Stage gate: passed; user approved on 2026-09-13
 - Candidate implementation commit: `09456e275d1bf42fba7efcbbb0b4592ddea5147b`
-- Candidate package version: `0.8.0` (the `v0.9.0-rc.1` release/tag is not created before approval)
+- Approved distribution version: `0.9.0rc1`; tool/release tag: `0.9.0-rc.1`
 - Local platform: Windows, Python 3.14.6, Node.js 24.17.0, pnpm 11.19.0
 
 ## Delivered scope
@@ -77,8 +77,8 @@ The verified `flopbench-release-candidate` artifact was published as artifact
 
 The final local wheel was built from the candidate source, installed with all
 27 runtime dependencies into a new disposable virtual environment, and executed
-without repository-relative data paths. The installed CLI reported version
-`0.8.0`, loaded the embedded CPU-only fixture and source profile, wrote a valid
+without repository-relative data paths. The installed CLI reported the candidate
+version, loaded the embedded CPU-only fixture and source profile, wrote a valid
 private probe and private report export, then uninstalled. Both user report files
 remained byte-identical and the package was no longer importable.
 
@@ -118,6 +118,6 @@ and automatic teardown successfully.
 - Stage 11 has not started. Stage 12 remains blocked until a public, versioned
   official testnet contract exists.
 
-The Stage 10 candidate has passed its gate. It must not be merged, tagged as
-`v0.9.0-rc.1`, or used to start Stage 11 until the user explicitly approves this
-acceptance record.
+The Stage 10 candidate passed its gate and the user approved this acceptance
+record on 2026-09-13. Version finalization, merge, and tagging may proceed before
+Stage 11 starts.

@@ -11,7 +11,7 @@ verify the hashes before installation:
 
 ```bash
 sha256sum --check SHA256SUMS
-python3.14 -m pip install flopbench-0.8.0-py3-none-any.whl
+python3.14 -m pip install flopbench-0.9.0rc1-py3-none-any.whl
 python3.14 -m flopbench.release verify --artifact-dir .
 flopbench --version
 flopbench probe --fixture cpu-only --privacy private

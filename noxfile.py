@@ -1,12 +1,25 @@
 from __future__ import annotations
 
+import re
 import tempfile
+import tomllib
 from pathlib import Path
 
 import nox
 
 nox.options.default_venv_backend = "virtualenv"
 nox.options.reuse_existing_virtualenvs = True
+
+with Path("pyproject.toml").open("rb") as pyproject_file:
+    PACKAGE_VERSION = tomllib.load(pyproject_file)["project"]["version"]
+
+version_match = re.fullmatch(r"(\d+\.\d+\.\d+)(?:(a|b|rc)(\d+))?", PACKAGE_VERSION)
+if version_match is None:
+    raise RuntimeError("pyproject.toml contains an unsupported package version")
+prerelease_names = {"a": "alpha", "b": "beta", "rc": "rc"}
+TOOL_VERSION = version_match.group(1)
+if version_match.group(2) is not None:
+    TOOL_VERSION += f"-{prerelease_names[version_match.group(2)]}.{version_match.group(3)}"
 
 
 def install_project(session: nox.Session) -> None:
@@ -143,7 +156,7 @@ def install_candidate(session: nox.Session) -> None:
         "--runtime-lock",
         "requirements/runtime.txt",
         "--expected-version",
-        "0.8.0",
+        TOOL_VERSION,
     )
 
 
@@ -167,7 +180,7 @@ def release(session: nox.Session) -> None:
         session.error(f"Release directory already exists: {artifact_dir}")
     artifact_dir.mkdir(parents=True)
     session.run("python", "-m", "build", "--no-isolation", "--outdir", str(artifact_dir))
-    sbom = artifact_dir / "flopbench-0.8.0.cdx.json"
+    sbom = artifact_dir / f"flopbench-{PACKAGE_VERSION}.cdx.json"
     session.run(
         "pip-audit",
         "--strict",

@@ -4,6 +4,30 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+## [0.9.0-rc.1] - 2026-09-13
+
+### English
+
+- Added self-contained wheel/sdist packaging with embedded dashboard, schemas,
+  profiles, fixtures, and workloads.
+- Added clean Windows and Ubuntu install/removal gates that preserve user-owned
+  reports and verify offline probe/report operation.
+- Added hash-locked release tools, CycloneDX SBOM, license compatibility report,
+  secret and vulnerability scans, and exact-set SHA-256 verification.
+- Added strict local configuration and existing-report compatibility checks,
+  bilingual installation guidance, and release-candidate CI artifacts.
+
+### Türkçe
+
+- Dashboard, şema, profil, fixture ve workload'ları içeren bağımsız wheel/sdist
+  paketlemesi eklendi.
+- Kullanıcı raporlarını koruyan, çevrimdışı probe/rapor çalışmasını doğrulayan
+  temiz Windows ve Ubuntu kurulum/kaldırma kapıları eklendi.
+- Hash-kilitli sürüm araçları, CycloneDX SBOM, lisans uyumluluk raporu, secret ve
+  güvenlik açığı taramaları ile tam-küme SHA-256 doğrulaması eklendi.
+- Katı yerel yapılandırma, eski rapor uyumluluk kontrolleri, iki dilli kurulum
+  rehberi ve CI sürüm adayı artifact'leri eklendi.
+
 ## [0.8.0] - 2026-09-12
 
 ### English

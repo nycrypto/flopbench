@@ -6,7 +6,7 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 9'u (`v0.8.0`) tamamladı. Katı veri sözleşmeleri, pasif donanım tespiti, açıklanabilir readiness kontrolleri, onay kapılı sınırlı sağlık testleri, inference benchmark'ları, gizlilik duyarlı raporlar, haricî imzalı DID receipt'leri, deterministik yerel PoUI simülasyonu ve güvenli iki dilli dashboard mevcuttur. Aşama 10 sürüm adayı paketlemesi geliştirilmektedir. [Kurulum rehberine](./docs/installation.tr.md), [dashboard belgesine](./docs/dashboard.tr.md), [simülasyon rehberine](./docs/simulation.tr.md) ve [Aşama 9 kabul kaydına](./docs/stage-9-acceptance.md) bakın.
+FlopBench Aşama 10'u (`v0.9.0-rc.1`) tamamladı. Kurulabilir artifact'ler, temiz Windows/Ubuntu doğrulaması, SBOM, checksum, bağımlılık/secret taramaları, katı uyumluluk kontrolleri ve önceki yerel öncelikli çalışma alanı mevcuttur. Aşama 11 sürüm belgeleri ve attestations çalışması henüz başlamadı. [Kurulum rehberine](./docs/installation.tr.md), [dashboard belgesine](./docs/dashboard.tr.md) ve [Aşama 10 kabul kaydına](./docs/stage-10-acceptance.md) bakın.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 

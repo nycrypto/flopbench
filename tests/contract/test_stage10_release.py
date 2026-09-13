@@ -12,6 +12,7 @@ import pytest
 from typer.testing import CliRunner
 
 import flopbench.release as release_module
+from flopbench import __version__
 from flopbench.benchmark.models import BenchmarkReportV2
 from flopbench.cli import app as cli_app
 from flopbench.config import ConfigError, LocalConfig, load_config
@@ -172,10 +173,10 @@ def test_s10_t07_reviewed_secret_baseline_exists() -> None:
 def test_s10_t08_checksums_cover_artifacts_and_detect_tampering(tmp_path: Path) -> None:
     artifact_dir = tmp_path / "release"
     artifact_dir.mkdir()
-    wheel = artifact_dir / "flopbench-0.8.0-py3-none-any.whl"
+    wheel = artifact_dir / f"flopbench-{__version__}-py3-none-any.whl"
     wheel.write_bytes(b"wheel")
-    (artifact_dir / "flopbench-0.8.0.tar.gz").write_bytes(b"sdist")
-    sbom = artifact_dir / "flopbench-0.8.0.cdx.json"
+    (artifact_dir / f"flopbench-{__version__}.tar.gz").write_bytes(b"sdist")
+    sbom = artifact_dir / f"flopbench-{__version__}.cdx.json"
     sbom.write_text(json.dumps(sbom_payload()), encoding="utf-8")
 
     finalize(artifact_dir, RUNTIME_LOCK, LICENSE_POLICY, sbom)
@@ -189,7 +190,7 @@ def test_s10_t08_checksums_cover_artifacts_and_detect_tampering(tmp_path: Path) 
 def test_s10_t08_checksum_manifest_rejects_extra_and_malformed_files(tmp_path: Path) -> None:
     artifact_dir = tmp_path / "release"
     artifact_dir.mkdir()
-    artifact = artifact_dir / "flopbench-0.8.0.whl"
+    artifact = artifact_dir / f"flopbench-{__version__}.whl"
     artifact.write_bytes(b"wheel")
     checksum = write_checksums(artifact_dir)
 
@@ -361,9 +362,9 @@ def test_s10_t08_release_cli_finalizes_verifies_and_reports_errors(
 ) -> None:
     artifact_dir = tmp_path / "release"
     artifact_dir.mkdir()
-    (artifact_dir / "flopbench-0.8.0-py3-none-any.whl").write_bytes(b"wheel")
-    (artifact_dir / "flopbench-0.8.0.tar.gz").write_bytes(b"sdist")
-    sbom = artifact_dir / "flopbench-0.8.0.cdx.json"
+    (artifact_dir / f"flopbench-{__version__}-py3-none-any.whl").write_bytes(b"wheel")
+    (artifact_dir / f"flopbench-{__version__}.tar.gz").write_bytes(b"sdist")
+    sbom = artifact_dir / f"flopbench-{__version__}.cdx.json"
     sbom.write_text(json.dumps(sbom_payload()), encoding="utf-8")
     monkeypatch.setattr(
         sys,
@@ -390,7 +391,7 @@ def test_s10_t08_release_cli_finalizes_verifies_and_reports_errors(
     )
     release_main()
 
-    (artifact_dir / "flopbench-0.8.0.tar.gz").write_bytes(b"tampered")
+    (artifact_dir / f"flopbench-{__version__}.tar.gz").write_bytes(b"tampered")
     with pytest.raises(SystemExit, match="2"):
         release_main()
 
