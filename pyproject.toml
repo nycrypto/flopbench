@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flopbench"
-version = "0.8.0"
+version = "0.9.0rc1"
 description = "Local-first readiness and benchmarking workbench for future FLOP participants"
 readme = "README.md"
 requires-python = ">=3.14,<3.15"
@@ -40,6 +40,16 @@ Issues = "https://github.com/nycrypto/flopbench/issues"
 [tool.hatch.build.targets.wheel]
 packages = ["src/flopbench"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"profiles" = "flopbench/data/profiles"
+"schemas" = "flopbench/data/schemas"
+"fixtures" = "flopbench/data/fixtures"
+
+[tool.hatch.build.targets.sdist.force-include]
+"profiles" = "profiles"
+"schemas" = "schemas"
+"fixtures" = "fixtures"
+
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"
 cache_dir = ".cache/pytest"
@@ -55,6 +65,7 @@ markers = [
   "stage7: local API and dashboard acceptance tests",
   "stage8: DID receipt and external signer acceptance tests",
   "stage9: deterministic PoUI simulation acceptance tests",
+  "stage10: release-candidate packaging and security acceptance tests",
 ]
 
 [tool.coverage.run]

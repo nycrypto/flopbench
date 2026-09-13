@@ -21,6 +21,7 @@ apps/web/dist/
 apps/web/coverage/
 playwright-report/
 test-results/
+debug.log
 
 # Editors and operating systems
 .idea/

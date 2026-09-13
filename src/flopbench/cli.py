@@ -21,6 +21,7 @@ from flopbench.benchmark.engine import (
 from flopbench.benchmark.http_adapters import OllamaAdapter, OpenAICompatibleAdapter
 from flopbench.benchmark.vram import NvidiaVramObserver
 from flopbench.benchmark.workload import WorkloadError, load_workload
+from flopbench.config import ConfigError, load_config
 from flopbench.contracts import PrivacyLevel, Role
 from flopbench.probe.service import (
     ProbeError,
@@ -54,7 +55,7 @@ from flopbench.validator_doctor.service import (
     run_fixture_doctor,
     run_live_doctor,
 )
-from flopbench.webapp import DEFAULT_WEB_DIST, create_app, validate_bind_host
+from flopbench.webapp import DEFAULT_PROFILE, DEFAULT_WEB_DIST, create_app, validate_bind_host
 
 app = typer.Typer(
     add_completion=False,
@@ -74,7 +75,6 @@ app.add_typer(receipt_app, name="receipt")
 simulate_app = typer.Typer(help="Run deterministic educational PoUI simulations.")
 app.add_typer(simulate_app, name="simulate")
 
-DEFAULT_PROFILE = Path("profiles/flop-teaser-0.1.yaml")
 DEFAULT_WORKLOAD = Path(__file__).resolve().parent / "workloads" / "smoke-v1.json"
 
 
@@ -105,6 +105,10 @@ def serve(
         int,
         typer.Option("--port", min=1024, max=65535, help="Local dashboard port."),
     ] = 4173,
+    config: Annotated[
+        Path | None,
+        typer.Option("--config", help="Optional strict local JSON configuration."),
+    ] = None,
 ) -> None:
     """Serve the secured local API and built dashboard on loopback."""
 
@@ -112,6 +116,11 @@ def serve(
         bind_host = validate_bind_host(host)
     except ValueError as exc:
         raise typer.BadParameter(str(exc), param_hint="--host") from exc
+    try:
+        load_config(config)
+    except ConfigError as exc:
+        typer.echo(f"{exc.code}: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     if not (DEFAULT_WEB_DIST / "index.html").is_file():
         typer.echo("Dashboard assets are missing; run the web build first.", err=True)
         raise typer.Exit(code=2)
