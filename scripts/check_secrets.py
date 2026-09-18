@@ -15,11 +15,21 @@ EXCLUDED = re.compile(
     r"^(?:\.secrets\.baseline|pnpm-lock\.yaml|requirements/.*\.txt|"
     r"src/flopbench/web_dist/)"
 )
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def tracked_files() -> list[str]:
     completed = subprocess.run(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+        [
+            "git",
+            "-c",
+            f"safe.directory={ROOT.as_posix()}",
+            "ls-files",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+        ],
+        cwd=ROOT,
         check=True,
         capture_output=True,
         text=True,

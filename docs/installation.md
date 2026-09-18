@@ -1,17 +1,17 @@
 # Installation and removal
 
-FlopBench Stage 10 targets Python 3.14.6 on 64-bit Windows and Ubuntu. The
+FlopBench v1 targets Python 3.14.6 on 64-bit Windows and Ubuntu. The
 dashboard and source profiles are included in the wheel; Node.js is not required
 to run an installed package.
 
-## Verify and install a release candidate
+## Verify and install the stable release
 
-Download every file from the same release-candidate artifact bundle. On Ubuntu,
+Download every file from the same GitHub release. On Ubuntu,
 verify the hashes before installation:
 
 ```bash
 sha256sum --check SHA256SUMS
-python3.14 -m pip install flopbench-0.9.0rc1-py3-none-any.whl
+python3.14 -m pip install flopbench-1.0.0-py3-none-any.whl
 python3.14 -m flopbench.release verify --artifact-dir .
 flopbench --version
 flopbench probe --fixture cpu-only --privacy private
@@ -26,6 +26,9 @@ not publish the dashboard to the internet.
 `SHA256SUMS` covers the wheel, sdist, CycloneDX JSON SBOM, and deterministic
 license report. Verification rejects a missing, extra, malformed, symlinked, or
 modified artifact.
+
+Also verify the GitHub build-provenance attestation before installation by
+following [`release-attestations.md`](./release-attestations.md).
 
 ## Removal and user data
 

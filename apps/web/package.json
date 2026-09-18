@@ -1,6 +1,6 @@
 {
   "name": "@flopbench/web",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc -b && vite build",
+    "demo:capture": "node scripts/capture-demo.mjs",
     "dev": "vite --host 127.0.0.1",
     "e2e": "playwright test",
     "lint": "eslint . --max-warnings 0",

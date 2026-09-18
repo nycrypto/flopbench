@@ -2,7 +2,7 @@
 
 FlopBench is an independent community project and is not an official FLOP Labs or Flop Foundation product.
 
-At the Stage 6 candidate:
+At the v1.0 candidate:
 
 - miner and validator readiness uses only the selected versioned source profile and explicitly labeled community checks;
 - validator-doctor network tests measure TCP connection latency, jitter, and connection loss, not bandwidth;
@@ -18,6 +18,10 @@ At the Stage 6 candidate:
 - PoUI actors, fees, compute, stake, slashing, and challenges are deterministic
   educational simulations, not protocol or economic operations;
 - no FLOP testnet or mainnet request is supported;
+- the dashboard is local-only; there is no hosted public application or remote
+  bind mode;
+- GitHub release attestations prove build provenance, not the truth of a local
+  readiness or benchmark report;
 - no eligibility, airdrop score, token amount, reward, ROI, stake, wallet, claim, or real slashing behavior is provided.
 
 The FLOP teaser is a draft and its parameters are provisional. The
@@ -26,3 +30,7 @@ raw-file content hash; this does not turn the values into official eligibility
 criteria. Published contracts distinguish measured, reported, derived,
 estimated, and simulated data. The Stage 3 runtime produces a local readiness
 comparison, not a protocol participation or reward determination.
+
+Stage 12 remains blocked until a public, versioned official testnet contract is
+available. FlopBench does not infer endpoints, wallet behavior, or transactions
+from announcements or draft prose.

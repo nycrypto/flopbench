@@ -2,14 +2,16 @@
 
 ## Status
 
-Stage 10 release-candidate packaging is complete and Stage 11 release work has
-not started. Versioned contracts, passive hardware collection,
+The Stage 11 `v1.0.0` candidate is implemented and remains behind its local,
+remote, and two-person publication gates. Versioned contracts, passive hardware collection,
 explainable readiness rules, consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected
 loopback API and bilingual functional dashboard now compose these capabilities.
 External Ed25519 receipt signing remains outside the process boundary. The PoUI
 state machine is pure and performs no protocol, wallet, token, or network I/O.
+The tag-only release workflow builds locked artifacts, creates a private draft,
+attests each artifact through GitHub OIDC, and only then makes the release public.
 
 ## Component boundaries
 
@@ -36,6 +38,10 @@ Optional external signer / future official testnet adapter
 - `apps/web`: bilingual local React dashboard; it receives no private signing material.
 - `schemas`, `profiles`, and `fixtures`: versioned contracts and deterministic test data added from Stage 1 onward.
 - `tests`: unit, contract, integration, security, and E2E suites.
+- `examples/reports`: generated, public-safe miner, validator, benchmark, report,
+  and simulated-agent outputs whose exact bytes are tested.
+- `.github/workflows/release.yml`: exact-tag stable build, draft, attestation,
+  and publish boundary.
 
 ## Trust boundaries
 
@@ -44,6 +50,8 @@ Optional external signer / future official testnet adapter
 - Provider output, model names, report contents, and imported fixtures are untrusted data.
 - DID private keys remain outside the web application, API process, logs, reports, and command-line arguments.
 - A future official testnet adapter remains optional and isolated from probe, benchmark, and report generation.
+- Release attestations bind artifacts to a repository workflow and commit; they
+  do not authenticate local measurements or user identity.
 
 ## Architectural decisions
 

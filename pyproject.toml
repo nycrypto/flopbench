@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flopbench"
-version = "0.9.0rc1"
+version = "1.0.0"
 description = "Local-first readiness and benchmarking workbench for future FLOP participants"
 readme = "README.md"
 requires-python = ">=3.14,<3.15"
 license = "Apache-2.0"
 authors = [{ name = "FlopBench contributors" }]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
@@ -53,6 +53,7 @@ packages = ["src/flopbench"]
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"
 cache_dir = ".cache/pytest"
+pythonpath = ["."]
 testpaths = ["tests"]
 markers = [
   "stage0: repository foundation acceptance tests",
@@ -66,6 +67,7 @@ markers = [
   "stage8: DID receipt and external signer acceptance tests",
   "stage9: deterministic PoUI simulation acceptance tests",
   "stage10: release-candidate packaging and security acceptance tests",
+  "stage11: stable-release documentation and end-to-end acceptance tests",
 ]
 
 [tool.coverage.run]

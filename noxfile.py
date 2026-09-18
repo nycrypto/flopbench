@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import sys
 import tempfile
 import tomllib
 from pathlib import Path
@@ -67,6 +68,7 @@ def unit(session: nox.Session) -> None:
         "tests/contract/test_stage9_simulator.py",
         "tests/contract/test_stage9_api.py",
         "tests/contract/test_stage10_release.py",
+        "tests/contract/test_stage11_release.py",
         "--cov=flopbench",
         "--cov-branch",
         "--cov-report=term-missing",
@@ -78,7 +80,7 @@ def unit(session: nox.Session) -> None:
 @nox.session(python="3.14")
 def contract(session: nox.Session) -> None:
     install_project(session)
-    stage_markers = " or ".join(f"stage{stage}" for stage in range(11))
+    stage_markers = " or ".join(f"stage{stage}" for stage in range(12))
     session.run(
         "pytest",
         "tests/contract",
@@ -130,6 +132,26 @@ def lint(session: nox.Session) -> None:
 def typecheck(session: nox.Session) -> None:
     install_project(session)
     session.run("mypy", "src", "tests", "scripts")
+
+
+@nox.session(python=False)
+def docs(session: nox.Session) -> None:
+    """Validate repository-local Markdown links and committed examples."""
+
+    source_environment = {"PYTHONPATH": str(Path("src").resolve())}
+    session.run(
+        sys.executable,
+        "scripts/check_links.py",
+        external=True,
+        env=source_environment,
+    )
+    session.run(
+        sys.executable,
+        "scripts/generate_examples.py",
+        "--check",
+        external=True,
+        env=source_environment,
+    )
 
 
 @nox.session(python="3.14")
