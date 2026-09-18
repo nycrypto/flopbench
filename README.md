@@ -6,10 +6,11 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-The Stage 11 `v1.0.0` candidate is implemented on its gated branch and is being
-validated. The stable tag and GitHub release are **not published** until every
-Windows/Ubuntu gate and the two-person release checklist pass. The latest
-published version remains `v0.9.0-rc.1`. See the
+The Stage 11 `v1.0.0` candidate passed its local, Windows, and Ubuntu automated
+gates. The stable tag and GitHub release are **not published** until the user
+completes the two-person release checklist. The latest published version remains
+`v0.9.0-rc.1`. See the [Stage 11 acceptance record](./docs/stage-11-acceptance.md),
+the
 [installation guide](./docs/installation.md), [dashboard documentation](./docs/dashboard.md),
 [fixture-only demo](./docs/demo.md), and [public roadmap](./ROADMAP.md).
 

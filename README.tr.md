@@ -6,10 +6,11 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-Aşama 11 `v1.0.0` adayı kendi kapılı dalında uygulandı ve doğrulanıyor. Kararlı
-etiket ile GitHub sürümü, bütün Windows/Ubuntu kapıları ve iki kişilik yayın
-kontrol listesi geçmeden **yayımlanmayacaktır**. Son yayımlanmış sürüm hâlâ
-`v0.9.0-rc.1`'dir. [Kurulum rehberine](./docs/installation.tr.md),
+Aşama 11 `v1.0.0` adayı yerel, Windows ve Ubuntu otomatik kapılarının tamamını
+geçti. Kararlı etiket ile GitHub sürümü, kullanıcı iki kişilik yayın kontrol
+listesini tamamlamadan **yayımlanmayacaktır**. Son yayımlanmış sürüm hâlâ
+`v0.9.0-rc.1`'dir. [Aşama 11 kabul kaydına](./docs/stage-11-acceptance.md),
+[kurulum rehberine](./docs/installation.tr.md),
 [dashboard belgesine](./docs/dashboard.tr.md), [yalnız fixture kullanan demoya](./docs/demo.md)
 ve [public roadmap'e](./ROADMAP.md) bakın.
 
