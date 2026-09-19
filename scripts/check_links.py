@@ -13,6 +13,7 @@ IGNORED_PARTS = {
     ".git",
     ".venv",
     ".nox",
+    ".pytest_cache",
     "node_modules",
     "dist",
     ".acceptance",

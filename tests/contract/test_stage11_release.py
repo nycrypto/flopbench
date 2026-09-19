@@ -187,6 +187,19 @@ def test_stage11_release_workflow_is_tag_only_pinned_and_fail_closed() -> None:
     assert workflow.index("Attest release artifacts") < workflow.index("Publish attested release")
 
 
+def test_stage11_release_notes_use_tag_pinned_public_links() -> None:
+    notes = (ROOT / "docs" / "releases" / "v1.0.0.md").read_text(encoding="utf-8")
+    base = "https://github.com/nycrypto/flopbench/blob/v1.0.0/docs/"
+    assert "](.." not in notes
+    for document in (
+        "installation.md",
+        "installation.tr.md",
+        "release-attestations.md",
+        "limitations.md",
+    ):
+        assert f"]({base}{document})" in notes
+
+
 def test_stage11_publication_documents_keep_unofficial_boundaries() -> None:
     paths = [
         ROOT / "README.md",
@@ -208,5 +221,8 @@ def test_stage11_publication_documents_keep_unofficial_boundaries() -> None:
 def test_stage11_markdown_link_checker_rejects_missing_target(tmp_path: Path) -> None:
     document = tmp_path / "README.md"
     document.write_text("[missing](./no-such-file.md)\n", encoding="utf-8")
+    cache = tmp_path / ".pytest_cache"
+    cache.mkdir()
+    (cache / "README.md").write_text("[cache](./missing-cache-file.md)\n", encoding="utf-8")
     assert broken_links(tmp_path) == ["README.md:1: missing target ./no-such-file.md"]
     assert broken_links(ROOT) == []

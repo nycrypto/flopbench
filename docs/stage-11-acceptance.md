@@ -95,6 +95,14 @@ SBOM, license inventory, and `SHA256SUMS`. GitHub's attestation API returns a
 Sigstore bundle binding the published subjects to the tagged workflow and
 commit.
 
+A post-publication recheck on 2026-09-19 found that four repository-relative
+documentation links in the GitHub release body resolved outside `docs/` and
+returned HTTP 404. The source release notes and live release body were updated
+to tag-pinned absolute URLs for both installation guides, the attestation
+guide, and the limitations document. All four rendered links now return HTTP
+200, and a Stage 11 contract test rejects a recurrence of relative release-note
+links.
+
 ## Manual acceptance
 
 The candidate wheel was installed into a fresh disposable virtual environment
@@ -112,8 +120,8 @@ the orange visual system remain covered by the Stage 7 dashboard tests.
 
 The release-candidate pipeline produced exactly one wheel, one sdist, one
 CycloneDX SBOM, one license report, and `SHA256SUMS`, then verified their exact
-set and hashes. The tag workflow itself is intentionally not triggered until
-the user completes the second-person gate.
+set and hashes. The tag workflow was triggered only after the user completed
+the second-person gate, and it published only after attestation succeeded.
 
 ## Security, privacy, and remaining risk
 
