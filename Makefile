@@ -1,4 +1,4 @@
-.PHONY: test-unit test-contract test-integration test-security test-web test-e2e test-all lint typecheck build install-check audit release
+.PHONY: test-unit test-contract test-integration test-security test-web test-e2e test-all lint typecheck docs build install-check audit release
 
 test-unit:
 	python -m nox -s unit
@@ -27,6 +27,9 @@ lint:
 typecheck:
 	python -m nox -s typecheck
 	pnpm --filter @flopbench/web typecheck
+
+docs:
+	python -m nox -s docs
 
 build:
 	python -m nox -s build

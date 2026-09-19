@@ -11,6 +11,7 @@ param(
         "test-all",
         "lint",
         "typecheck",
+        "docs",
         "build",
         "install-check",
         "audit",
@@ -50,6 +51,7 @@ try {
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             pnpm --filter "@flopbench/web" typecheck
         }
+        "docs" { & $PythonCommand -m nox -s docs }
         "build" {
             & $PythonCommand -m nox -s build
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

@@ -1,17 +1,17 @@
 # Kurulum ve kaldırma
 
-FlopBench Aşama 10, 64 bit Windows ve Ubuntu üzerinde Python 3.14.6'yı hedefler.
+FlopBench v1, 64 bit Windows ve Ubuntu üzerinde Python 3.14.6'yı hedefler.
 Dashboard ve kaynak profilleri wheel içine dahildir; kurulu paketi çalıştırmak
 için Node.js gerekmez.
 
-## Sürüm adayını doğrulama ve kurma
+## Kararlı sürümü doğrulama ve kurma
 
-Aynı sürüm adayı paketindeki bütün dosyaları indirin. Ubuntu'da kurulumdan önce
+Aynı GitHub sürümündeki bütün dosyaları indirin. Ubuntu'da kurulumdan önce
 o dizindeki hash'leri doğrulayın:
 
 ```bash
 sha256sum --check SHA256SUMS
-python3.14 -m pip install flopbench-0.9.0rc1-py3-none-any.whl
+python3.14 -m pip install flopbench-1.0.0-py3-none-any.whl
 python3.14 -m flopbench.release verify --artifact-dir .
 flopbench --version
 flopbench probe --fixture cpu-only --privacy private
@@ -26,6 +26,10 @@ bağlanır; kurulum dashboard'u internete açmaz.
 `SHA256SUMS`; wheel, sdist, CycloneDX JSON SBOM ve deterministik lisans raporunun
 tamamını kapsar. Doğrulama eksik, fazla, bozuk, sembolik bağlantı olan veya
 değiştirilmiş artifact'i reddeder.
+
+Kurulumdan önce GitHub build-provenance attestation'ını da
+[`release-attestations.md`](./release-attestations.md) belgesindeki adımlarla
+doğrulayın.
 
 ## Kaldırma ve kullanıcı verisi
 

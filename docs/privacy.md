@@ -49,3 +49,11 @@ redaction transform.
 Public files require a digest-bound preview confirmation and are never written
 by the export command without it. Offline HTML contains no scripts or external
 resources and escapes all report values. See [reporting.md](./reporting.md).
+
+## Local dashboard and demo media
+
+The dashboard stores only explicit language/theme preferences in browser local
+storage. It is served on literal loopback, uses a per-start token for API calls,
+and is not publicly hosted. The committed demo recording uses deterministic
+fixture responses only; no live machine value or token is captured. See
+[`demo.md`](./demo.md).

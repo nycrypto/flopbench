@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<title>FlopBench flopbench-readiness-report-v1</title><style>
+body{margin:2rem auto;max-width:72rem;padding:0 1rem;font:16px/1.5 system-ui;
+color:#18202a;background:#f5f1e8}
+main{background:#fff;padding:2rem;border:1px solid #18202a}
+code,pre{font-family:ui-monospace,monospace} pre{overflow:auto;padding:1rem;background:#f0eee7}
+.warning{border-left:.4rem solid #b74a22;padding-left:1rem}
+</style></head><body><main><h1>FlopBench flopbench-readiness-report-v1</h1>
+<p class="warning">Unofficial community output. It does not prove FLOP eligibility,
+identity, or rewards.</p>
+<dl><dt>Privacy</dt><dd>public</dd><dt>JCS SHA-256</dt><dd><code>ad09c542b43ed0142ed8c43578929e0648f8e410aceb33e0644105fee5dc0f61</code></dd></dl>
+<h2>Payload</h2><pre>{
+  &quot;checks&quot;: [
+    {
+      &quot;actual&quot;: 17179869184,
+      &quot;code&quot;: &quot;miner.vram_bytes&quot;,
+      &quot;confidence&quot;: &quot;reported&quot;,
+      &quot;reason_codes&quot;: [
+        &quot;miner.vram_meets_source_threshold&quot;
+      ],
+      &quot;required&quot;: true,
+      &quot;source_kind&quot;: &quot;source_profile&quot;,
+      &quot;status&quot;: &quot;pass&quot;,
+      &quot;threshold&quot;: 17179869184,
+      &quot;unit&quot;: &quot;byte&quot;
+    },
+    {
+      &quot;actual&quot;: 17179869184,
+      &quot;code&quot;: &quot;community.miner.vram_headroom&quot;,
+      &quot;confidence&quot;: &quot;derived&quot;,
+      &quot;reason_codes&quot;: [
+        &quot;community.miner.vram_low_headroom&quot;
+      ],
+      &quot;required&quot;: false,
+      &quot;source_kind&quot;: &quot;community&quot;,
+      &quot;status&quot;: &quot;warn&quot;,
+      &quot;threshold&quot;: 21474836480,
+      &quot;unit&quot;: &quot;byte&quot;
+    }
+  ],
+  &quot;created_at&quot;: &quot;2026-08-30T10:00:00Z&quot;,
+  &quot;environment&quot;: {
+    &quot;architecture&quot;: &quot;x86_64&quot;,
+    &quot;os_family&quot;: &quot;Linux&quot;,
+    &quot;privacy_level&quot;: &quot;public&quot;
+  },
+  &quot;profile&quot;: {
+    &quot;id&quot;: &quot;flop-teaser-0.1&quot;,
+    &quot;sha256&quot;: &quot;a58ba933752eff52b876fb3910cb31d824b14987a056fc62f2f919bfbe414f8c&quot;,
+    &quot;source_status&quot;: &quot;draft&quot;
+  },
+  &quot;report_id&quot;: &quot;e9d25c35-f48d-5326-a909-2faaa3366089&quot;,
+  &quot;role&quot;: &quot;miner&quot;,
+  &quot;schema&quot;: &quot;flopbench-readiness-report-v1&quot;,
+  &quot;summary&quot;: {
+    &quot;fail&quot;: 0,
+    &quot;pass&quot;: 1,
+    &quot;skipped&quot;: 0,
+    &quot;unknown&quot;: 0,
+    &quot;unsupported&quot;: 0,
+    &quot;warn&quot;: 1
+  },
+  &quot;tool_version&quot;: &quot;1.0.0&quot;
+}</pre></main></body></html>

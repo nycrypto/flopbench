@@ -5,7 +5,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "coverage", "eslint.config.js"] },
+  { ignores: ["dist", "coverage", "eslint.config.js", "scripts/*.mjs"] },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {

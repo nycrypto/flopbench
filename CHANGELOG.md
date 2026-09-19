@@ -4,6 +4,32 @@ All notable changes to FlopBench are documented in this file. The project follow
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-18
+
+### English
+
+- Added the first stable release contract, deterministic public miner,
+  validator, benchmark, report, and agent examples, plus fixture-only demo media.
+- Added architecture, security, methodology, limitations, roadmap, release-note,
+  and two-person checklist documentation with validated local links.
+- Added an exact-tag GitHub workflow that builds locked artifacts, creates a
+  draft, obtains OIDC-backed build-provenance attestations, and publishes only
+  after attestation succeeds.
+- Added Stage 11 end-to-end gates for clean Windows/Ubuntu install, reporting,
+  receipts, simulation, offline HTML, documentation, and release integrity.
+
+### Türkçe
+
+- İlk kararlı sürüm sözleşmesi; deterministik public miner, validator, benchmark,
+  rapor ve agent örnekleri ile yalnız fixture kullanan demo medyası eklendi.
+- Doğrulanmış yerel bağlantılarla mimari, güvenlik, metodoloji, sınırlamalar,
+  roadmap, sürüm notu ve iki kişilik kontrol listesi belgeleri eklendi.
+- Kilitli artifact üreten, taslak yayın açan, OIDC tabanlı build-provenance
+  attestation alan ve yalnız başarıdan sonra yayımlayan kesin etiketli GitHub
+  iş akışı eklendi.
+- Temiz Windows/Ubuntu kurulum, rapor, receipt, simülasyon, çevrimdışı HTML,
+  belge ve sürüm bütünlüğü için Aşama 11 uçtan uca kapıları eklendi.
+
 ## [0.9.0-rc.1] - 2026-09-13
 
 ### English

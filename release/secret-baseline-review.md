@@ -1,6 +1,6 @@
 # Secret baseline review
 
-- Reviewed: 2026-09-13
+- Reviewed: 2026-09-18
 - Scanner: detect-secrets 1.5.0
 - Policy: every new candidate fails CI until separately reviewed
 
@@ -11,8 +11,11 @@ approved. The reviewed candidate locations are:
 - `fixtures/hardware/secret-leak-trap.json`: synthetic redaction trap;
 - `fixtures/receipts/ed25519-rfc8032-test1.json`: public RFC 8032 vector;
 - readiness and simulation fixtures: deterministic SHA-256 model/profile digests;
+- Stage 11 public examples: generated profile and report digests;
+- the clean-install verifier: public RFC 8032 test seed used only by its external
+  test signer subprocess;
 - `src/flopbench/receipt/codec.py`: public base-encoding alphabet constant;
-- repository, benchmark, Stage 2, Stage 5, Stage 6, and Stage 8 tests: synthetic
+- repository, benchmark, Stage 2, Stage 5, Stage 6, Stage 8, and Stage 11 tests: synthetic
   hashes, authorization text, and fake key/secret markers used by negative tests.
 
 The review intentionally records paths and purpose without reproducing candidate

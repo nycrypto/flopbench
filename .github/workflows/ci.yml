@@ -55,6 +55,9 @@ jobs:
       - name: Python typecheck
         run: python -m nox -s typecheck
 
+      - name: Documentation and example integrity
+        run: python -m nox -s docs
+
       - name: Python unit, contract and security tests
         run: python -m nox -s unit contract security
 

@@ -6,7 +6,13 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-FlopBench Aşama 10'u (`v0.9.0-rc.1`) tamamladı. Kurulabilir artifact'ler, temiz Windows/Ubuntu doğrulaması, SBOM, checksum, bağımlılık/secret taramaları, katı uyumluluk kontrolleri ve önceki yerel öncelikli çalışma alanı mevcuttur. Aşama 11 sürüm belgeleri ve attestations çalışması henüz başlamadı. [Kurulum rehberine](./docs/installation.tr.md), [dashboard belgesine](./docs/dashboard.tr.md) ve [Aşama 10 kabul kaydına](./docs/stage-10-acceptance.md) bakın.
+Aşama 11 `v1.0.0` adayı yerel, Windows ve Ubuntu otomatik kapılarının tamamını
+geçti. Kararlı etiket ile GitHub sürümü, kullanıcı iki kişilik yayın kontrol
+listesini tamamlamadan **yayımlanmayacaktır**. Son yayımlanmış sürüm hâlâ
+`v0.9.0-rc.1`'dir. [Aşama 11 kabul kaydına](./docs/stage-11-acceptance.md),
+[kurulum rehberine](./docs/installation.tr.md),
+[dashboard belgesine](./docs/dashboard.tr.md), [yalnız fixture kullanan demoya](./docs/demo.md)
+ve [public roadmap'e](./ROADMAP.md) bakın.
 
 Normatif proje belgesi [`flopbench künye.md`](./flopbench%20k%C3%BCnye.md) dosyasıdır. FLOP'a ait geçici parametreler kod içine dağıtılmayacak; sürümlü ve kaynaklı profil dosyalarında tutulacaktır.
 
@@ -136,6 +142,25 @@ kullanılmaz. Ayrıntılar için [simülasyon rehberine](./docs/simulation.tr.md
 Make bulunan ortamlarda eşdeğer görevler kullanılabilir. `release` mevcut bir
 sürüm dizininin üzerine yazmayı reddeder; wheel ve sdist ile birlikte checksum,
 SBOM ve lisans raporu üretir.
+
+Belge bağlantıları ile byte düzeyinde kararlı örnekleri doğrulamak için:
+
+```powershell
+.\scripts\tasks.ps1 docs
+```
+
+## Public örnekler ve sürüm doğrulama
+
+Sentetik miner, validator, benchmark ve agent çıktıları
+[`examples/reports`](./examples/reports) içindedir. Yalnız fixture verisi içerir
+ve byte düzeyinde yeniden üretilebilir. Kararlı sürüm dosyaları checksum alır ve
+yayımdan önce GitHub OIDC build-provenance attestation'ı kazanır. Doğrulama
+adımları ve sınırları [attestation rehberinde](./docs/release-attestations.md)
+açıklanır.
+
+Benchmark tanımları ve karşılaştırma kuralları
+[metodoloji belgesinde](./docs/benchmark-methodology.md), güven sınırının tamamı
+ise [security modelinde](./docs/security-model.md) yer alır.
 
 ## Gizlilik ve ağ varsayılanları
 
