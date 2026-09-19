@@ -6,11 +6,11 @@ FlopBench is an **independent, community-built project** inspired by the public 
 
 ## Project status
 
-The Stage 11 `v1.0.0` candidate passed its local, Windows, and Ubuntu automated
-gates. The stable tag and GitHub release are **not published** until the user
-completes the two-person release checklist. The latest published version remains
-`v0.9.0-rc.1`. See the [Stage 11 acceptance record](./docs/stage-11-acceptance.md),
-the
+Stage 11 is complete. FlopBench `v1.0.0` passed its local, Windows, and Ubuntu
+gates, completed the two-person checklist, and was published with GitHub OIDC
+build-provenance attestations. See the
+[v1.0.0 release](https://github.com/nycrypto/flopbench/releases/tag/v1.0.0),
+the [Stage 11 acceptance record](./docs/stage-11-acceptance.md), and the
 [installation guide](./docs/installation.md), [dashboard documentation](./docs/dashboard.md),
 [fixture-only demo](./docs/demo.md), and [public roadmap](./ROADMAP.md).
 

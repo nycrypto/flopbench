@@ -1,7 +1,7 @@
 # Stage 11 acceptance record
 
 - Date: 2026-09-18
-- Stage gate: passed; user approved on 2026-09-19; publication in progress
+- Stage gate: passed; user approved and `v1.0.0` published on 2026-09-19
 - Candidate implementation commit: `9f6a009f8bbc0e7d628c442b279b36ebcb981442`
 - Candidate distribution and intended tag: `1.0.0` / `v1.0.0`
 - Local platform: Windows, Python 3.14.6, Node.js 24.17.0, pnpm 11.19.0
@@ -79,6 +79,22 @@ The verified `flopbench-release-candidate` artifact is artifact `10557517819`
 `sha256:da67d663f6f8e49e16c882dd2d9984bd15e93829ee30ecfccd74fbae40e7b4eb`,
 with retention through 2026-10-02.
 
+After user approval, merge commit
+`a2640c4e17e731225faf413da05736870c9bf7a0` passed all three jobs in
+[main CI run 35442043910](https://github.com/nycrypto/flopbench/actions/runs/35442043910).
+Annotated tag `v1.0.0` points to that merge commit.
+
+The tag-triggered
+[stable release run 35442416321](https://github.com/nycrypto/flopbench/actions/runs/35442416321)
+successfully validated the tag and main ancestry, reran documentation,
+dependency, and secret checks, built and verified the locked artifacts, created
+a draft, attested the artifacts, and only then published the release. The
+[public v1.0.0 release](https://github.com/nycrypto/flopbench/releases/tag/v1.0.0)
+is neither a draft nor a prerelease and contains the wheel, sdist, CycloneDX
+SBOM, license inventory, and `SHA256SUMS`. GitHub's attestation API returns a
+Sigstore bundle binding the published subjects to the tagged workflow and
+commit.
+
 ## Manual acceptance
 
 The candidate wheel was installed into a fresh disposable virtual environment
@@ -116,13 +132,11 @@ the user completes the second-person gate.
 - In the local Codex environment, Playwright's preview child occasionally
   required termination by its exact PID after all 7 tests passed. Clean GitHub
   Windows and Ubuntu runners completed the same E2E command and teardown.
-- No `v1.0.0` tag, stable GitHub release, or release attestation existed when
-  the candidate evidence was recorded. The user reviewed this record and
-  explicitly approved merge, tag, and publication on 2026-09-19; the guarded
-  release workflow must still complete successfully.
+- The `v1.0.0` tag, stable GitHub release, and artifact attestation now exist.
+  The attestation proves build provenance and artifact integrity, not benchmark
+  truth, hardware identity, FLOP eligibility, or rewards.
 - Stage 12 remains blocked until a public, versioned official testnet contract
   is available and separately reviewed.
 
-Both sides of the two-person checklist are complete. Merge and tagging may now
-proceed, but the stable release must remain a draft until its GitHub OIDC
-artifact attestation succeeds.
+Both sides of the two-person checklist are complete. The guarded workflow
+attested the artifacts before publication, so Stage 11 is complete.

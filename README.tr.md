@@ -6,10 +6,10 @@ FlopBench, kamuya açık FLOP Network taslağından ilham alan **bağımsız bir
 
 ## Proje durumu
 
-Aşama 11 `v1.0.0` adayı yerel, Windows ve Ubuntu otomatik kapılarının tamamını
-geçti. Kararlı etiket ile GitHub sürümü, kullanıcı iki kişilik yayın kontrol
-listesini tamamlamadan **yayımlanmayacaktır**. Son yayımlanmış sürüm hâlâ
-`v0.9.0-rc.1`'dir. [Aşama 11 kabul kaydına](./docs/stage-11-acceptance.md),
+Aşama 11 tamamlandı. FlopBench `v1.0.0` yerel, Windows ve Ubuntu kapılarını ve
+iki kişilik kontrol listesini geçti; GitHub OIDC derleme kaynağı
+attestation'larıyla yayımlandı. [`v1.0.0` sürümüne](https://github.com/nycrypto/flopbench/releases/tag/v1.0.0),
+[Aşama 11 kabul kaydına](./docs/stage-11-acceptance.md) ve
 [kurulum rehberine](./docs/installation.tr.md),
 [dashboard belgesine](./docs/dashboard.tr.md), [yalnız fixture kullanan demoya](./docs/demo.md)
 ve [public roadmap'e](./ROADMAP.md) bakın.
