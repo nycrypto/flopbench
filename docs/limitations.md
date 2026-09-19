@@ -2,7 +2,7 @@
 
 FlopBench is an independent community project and is not an official FLOP Labs or Flop Foundation product.
 
-At the v1.0 candidate:
+In the published `v1.0.0` release:
 
 - miner and validator readiness uses only the selected versioned source profile and explicitly labeled community checks;
 - validator-doctor network tests measure TCP connection latency, jitter, and connection loss, not bandwidth;

@@ -30,7 +30,7 @@ try {
     switch ($Task) {
         "test-unit" { & $PythonCommand -m nox -s unit }
         "test-contract" { & $PythonCommand -m nox -s contract }
-        "test-integration" { Write-Output "Integration tests begin in a later stage." }
+        "test-integration" { & $PythonCommand -m nox -s contract }
         "test-security" { & $PythonCommand -m nox -s security }
         "test-web" { pnpm --filter "@flopbench/web" test }
         "test-e2e" { pnpm --filter "@flopbench/web" e2e }

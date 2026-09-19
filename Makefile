@@ -7,7 +7,7 @@ test-contract:
 	python -m nox -s contract
 
 test-integration:
-	@echo "Integration tests begin in a later stage."
+	python -m nox -s contract
 
 test-security:
 	python -m nox -s security

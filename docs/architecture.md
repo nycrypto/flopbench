@@ -2,9 +2,10 @@
 
 ## Status
 
-The Stage 11 `v1.0.0` candidate is implemented and remains behind its local,
-remote, and two-person publication gates. Versioned contracts, passive hardware collection,
-explainable readiness rules, consent-gated bounded health tests,
+FlopBench `v1.0.0` passed its local, Windows, Ubuntu, two-person publication,
+and attestation gates and is published as the first stable release. Versioned
+contracts, passive hardware collection, explainable readiness rules,
+consent-gated bounded health tests,
 provider-independent inference benchmarking, privacy-aware exports, and
 compatibility-gated comparison are implemented. A startup-token-protected
 loopback API and bilingual functional dashboard now compose these capabilities.
