@@ -1,7 +1,7 @@
 # Stage 11 acceptance record
 
 - Date: 2026-09-18
-- Stage gate: candidate passed; user approval and publication pending
+- Stage gate: passed; user approved on 2026-09-19; publication in progress
 - Candidate implementation commit: `9f6a009f8bbc0e7d628c442b279b36ebcb981442`
 - Candidate distribution and intended tag: `1.0.0` / `v1.0.0`
 - Local platform: Windows, Python 3.14.6, Node.js 24.17.0, pnpm 11.19.0
@@ -116,11 +116,13 @@ the user completes the second-person gate.
 - In the local Codex environment, Playwright's preview child occasionally
   required termination by its exact PID after all 7 tests passed. Clean GitHub
   Windows and Ubuntu runners completed the same E2E command and teardown.
-- No `v1.0.0` tag, stable GitHub release, or release attestation exists yet.
-  These are deliberately withheld until the user reviews this record and
-  explicitly approves publication.
+- No `v1.0.0` tag, stable GitHub release, or release attestation existed when
+  the candidate evidence was recorded. The user reviewed this record and
+  explicitly approved merge, tag, and publication on 2026-09-19; the guarded
+  release workflow must still complete successfully.
 - Stage 12 remains blocked until a public, versioned official testnet contract
   is available and separately reviewed.
 
-The implementer side of the two-person checklist is complete. The user side is
-pending; therefore the branch must not be merged, tagged, or published yet.
+Both sides of the two-person checklist are complete. Merge and tagging may now
+proceed, but the stable release must remain a draft until its GitHub OIDC
+artifact attestation succeeds.
