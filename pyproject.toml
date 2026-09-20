@@ -27,7 +27,7 @@ dependencies = [
   "PyYAML==6.0.3",
   "rfc8785==0.1.4",
   "typer==0.27.2",
-  "uvicorn==0.52.4",
+  "uvicorn==0.53.0",
 ]
 
 [project.scripts]
