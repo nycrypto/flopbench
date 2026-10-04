@@ -20,7 +20,7 @@ classifiers = [
 ]
 dependencies = [
   "cryptography==50.0.1",
-  "fastapi==0.141.1",
+  "fastapi==0.142.2",
   "nvidia-ml-py==13.610.43",
   "psutil==7.2.2",
   "pydantic==2.13.5",
